@@ -3,7 +3,5 @@
 This repo contains course materials, tutorials, and example scripts for [Texas State University]'s microbial genomics course.
 
 ## Contents
-- 📋 [Syllabus](syllabus.md)
 - 💻 [HPC Access & Environment Setup](hpc_guide.md)
 - 📓 [Exercises](exercises/)
-- 📜 [Lecture Slides](lectures/)
