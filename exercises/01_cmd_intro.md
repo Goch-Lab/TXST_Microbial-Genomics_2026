@@ -1,27 +1,27 @@
-# Week 1: Intro to Unix and the Command Line
+# C1: Introduction to Command Line
 
-Welcome to Week 1! 
-This week, you'll get comfortable using the Unix command line, which is an essential skill for working with genomic data on any server or HPC.
+This session, you will get comfortable using the Unix command line, which is an essential skill for working with large datasets, including genomic and other omic data.
 
 ---
 ## 🧠 Learning Objectives
 
-By the end of this exercise, you should be able to:
+By the end of this computer lab, you should be able to:
 
 - Navigate the file system using `cd`, `ls`, and `pwd`
-- Create, move, copy, and delete files and directories
-- Use wildcards and pipes
-- Read and manipulate files using `head`, `tail`, `less`, `nano`, and `cat`. 
+- Create, move, copy, name and delete files and directories
+- Use redirectors and wildcards
+- Explore files using `head`, `tail`, `less`, `nano`, and `cat`.
+- Edit text files from the shell
 
 ---
 
 Let's establish some basics first. 
 
-Linux and Mac users will find a Terminal program already installed on their computers. If you are using windows, I recommend downloading MobaXTerm (https://mobaxterm.mobatek.net/), but other software is available. We can also get you set up on your personal computer later if you own a Window/PC. 
+Linux and Mac users will find a Terminal program already installed on their computers. If you are using Windows, I recommend downloading [MobaXTerm](https://mobaxterm.mobatek.net/), but other software are available. We can also get you set up on your personal computer later if you own a Window/PC. 
 
-Now, the _Terminal_ is a text input and output environment where we can type commands and see the output. In other words, it is the "window" in which you enter the actual commands and those commands are interpreted and run by a _Shell_. 
+Now, the *Terminal* is a text input and output environment where we can execute commands and see the output. In other words, it is the "window" in which you enter the actual commands and those commands are then interpreted and run by a *Shell*. 
 
-So the _Shell_ is the program inside the terminal that actually processes commands and returns the output. In most Linux and Mac operating systems, it uses a _Bash_ shell, which is essentially its own programming language and what we will use below. 
+The *Shell*  is the program inside the terminal that actually processes the commands and returns the output. In most Linux and Mac operating systems, it uses a *bash* shell, which is essentially its own programming language and what we will during this course. 
 
 Different shells provide unique features and syntax: on macOS, the default is Zsh (formerly Bash) with Unix-style commands, while Windows primarily uses PowerShell and Command Prompt, with options to install Unix-like shells such as WSL or Git Bash.
 
