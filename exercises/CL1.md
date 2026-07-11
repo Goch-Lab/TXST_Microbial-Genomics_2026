@@ -1,4 +1,4 @@
-# C1: Introduction to Command Line
+# CL1: Introduction to Command Line
 
 This session, you will get comfortable using the Unix command line, which is an essential skill for working with large datasets, including genomic and other omic data.
 
@@ -7,11 +7,11 @@ This session, you will get comfortable using the Unix command line, which is an 
 
 By the end of this computer lab, you should be able to:
 
-- Navigate the file system using `cd`, `ls`, and `pwd`
+- Navigate the file system using `cd`, `ls` and `pwd`
 - Create, move, copy, name and delete files and directories
 - Use redirectors and wildcards
-- Explore files using `head`, `tail`, `less`, `nano`, and `cat`.
-- Edit text files from the shell
+- Explore files using `head`, `tail`, `less`, `nano` and `cat`.
+- Edit text files directly from the shell
 
 ---
 
@@ -19,40 +19,42 @@ Let's establish some basics first.
 
 Linux and Mac users will find a Terminal program already installed on their computers. If you are using Windows, I recommend downloading [MobaXTerm](https://mobaxterm.mobatek.net/), but other software are available. We can also get you set up on your personal computer later if you own a Window/PC. 
 
-Now, the *Terminal* is a text input and output environment where we can execute commands and see the output. In other words, it is the "window" in which you enter the actual commands and those commands are then interpreted and run by a *Shell*. 
+Now, the *Terminal* is a text input and output environment where we can execute commands and see the output. In other words, it is the "window" in which you enter the actual commands, and those commands are then interpreted and run by a *Shell*. 
 
-The *Shell*  is the program inside the terminal that actually processes the commands and returns the output. In most Linux and Mac operating systems, it uses a *bash* shell, which is essentially its own programming language and what we will during this course. 
+The *Shell*  is the program inside the terminal that actually processes the commands and returns the output. In most Linux and Mac operating systems, it uses a *Bash* shell, which is essentially its own programming language and what we will during this course. 
 
 Different shells provide unique features and syntax: on macOS, the default is Zsh (formerly Bash) with Unix-style commands, while Windows primarily uses PowerShell and Command Prompt, with options to install Unix-like shells such as WSL or Git Bash.
 
-In summary, think of it this way: Terminal is the TV and Shell is the program running the TV. 
+In summary, think of it this way: terminal is the TV and shell is the program running the TV. 
 
 
-Computers store file locations in a hierarchical structure. We are typically already used to navigating through this stucture by clicking on various folders (also known as directories) in a Windows Explorer window or a Mac Finder window. Just like we need to select the appropriate files in the appropriate locations there (in a Graphical User-Interface, or GUI), we need to do the same when working at a command-line interface. What this means in practice is that each file and directory has its own “address”, and that address is called its “path”.
+Computers organize file locations in a hierarchical structure. Even though we might not notice, we are typically used to navigating through this stucture by clicking on various folders (also known as directories) in a Mac Finder or Windows Explorer window. Just like we need to select the appropriate files in the appropriate locations in a Graphical User-Interface (GUI), we need to do the same when working at a command-line interface. What this means in practice is that each file and directory has its own “address”, and that address is called a “path”.
 
-Additionally, there are two special locations in all Unix-based systems, so two more terms we should become familiar with: the “root” location and the current user’s “home” location. “Root” is where the address system of the computer starts; “home” is where the current user’s location starts (this is where you should be now)
+Additionally, there are two special locations in all file systems: 🫜"root” and the user’s 🏠“home”. *Root* is where the file system of a computer starts, whereas *home* is where a user’s file system starts (this is where you should be now 📍). An *absolute* path is that one that indicates location based on root; whereas a *relative* path is based on the user's home.
 
 <img width="1511" height="1799" alt="image" src="https://github.com/user-attachments/assets/d051f1d5-91ee-44b7-b175-9471422c174b" />
 
-## 🧪 Exercise 1: Navigating the Filesystem
+## Navigating the file system
 
-Before we begin exploring the command, let's download the exercise files from the GitHub like so:
+Before we begin exploring the command, let's get the tutorial files:
 
 ```bash
-git clone https://github.com/morgansobol/MicrobialGenomics-TXST-2025.git
+git clone https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026.git
 ```
-So you just ran your first command `git clone` which specifically allows us to copy files and data from a GitHub page to here. 
 
-Before we look at some other common commands, I just want to note a few keyboard commands that are very helpful:
+Congratulations! 🎉 
+You just ran your first command, `git clone`, which specifically allows us to clone files and data from a GitHub reposytory. 
 
-- `Up Arrow`: Will show your last command
-- `Down Arrow`: Will show your next command
-- `Tab`: Will auto-complete your command
-- `Ctrl + L`: Will clear the screen
-- `Ctrl + C`: Will cancel a command
-- `Ctrl + R`: Will search for a command
-- `Ctrl + D`: Will exit the terminal
-- `history`: Will show a history of commands used in that session
+Before we look at some other common commands, note a few keyboard commands that are very helpful:
+
+- `Up Arrow`: shows your last command
+- `Down Arrow`: shows your next command
+- `Tab`: auto-completes your command
+- `Ctrl + L`: clears the screen
+- `Ctrl + C`: cancels a command
+- `Ctrl + R`: searches for a command
+- `Ctrl + D`: exits the terminal
+- `history`: shows your command history
 
 Ok, let's explore the other basics.
 
