@@ -19,22 +19,21 @@ Let's establish some basics first.
 
 Linux and Mac users will find a Terminal program already installed on their computers. If you are using Windows, I recommend downloading [MobaXTerm](https://mobaxterm.mobatek.net/), but other software are available. We can also get you set up on your personal computer later if you own a Window/PC. 
 
-Now, the *Terminal* is a text input and output environment where we can execute commands and see the output. In other words, it is the "window" in which you enter the actual commands, and those commands are then interpreted and run by a *Shell*. 
+The *Terminal* is a text input and output environment where we can execute commands and see the output. In other words, it is the "window" in which you enter the actual commands, and those commands are then interpreted and run by a *Shell*. 
 
-The *Shell*  is the program inside the terminal that actually processes the commands and returns the output. In most Linux and Mac operating systems, it uses a *Bash* shell, which is essentially its own programming language and what we will during this course. 
+The *Shell* is the program inside the terminal that actually processes the commands and returns the output. In most Linux and Mac operating systems, it uses a *Bash* shell, which is essentially its own programming language and what we will be using during this course. 
 
 Different shells provide unique features and syntax: on macOS, the default is Zsh (formerly Bash) with Unix-style commands, while Windows primarily uses PowerShell and Command Prompt, with options to install Unix-like shells such as WSL or Git Bash.
 
 In summary, think of it this way: terminal is the TV and shell is the program running the TV. 
 
+Computers organize file locations in a hierarchical structure. Even though we might not notice, we are typically used to navigating through this stucture by clicking on various folders (also known as directories) in a Mac Finder or Windows Explorer window. Just like we need to select the right files in the appropriate locations in a Graphical User-Interface (GUI), we need to do the same when working at a command-line interface. What this means in practice is that each file and directory has its own “address”, and that address is called a “path”.
 
-Computers organize file locations in a hierarchical structure. Even though we might not notice, we are typically used to navigating through this stucture by clicking on various folders (also known as directories) in a Mac Finder or Windows Explorer window. Just like we need to select the appropriate files in the appropriate locations in a Graphical User-Interface (GUI), we need to do the same when working at a command-line interface. What this means in practice is that each file and directory has its own “address”, and that address is called a “path”.
-
-Additionally, there are two special locations in all file systems: 🫜"root” and the user’s 🏠“home”. *Root* is where the file system of a computer starts, whereas *home* is where a user’s file system starts (this is where you should be now 📍). An *absolute* path is that one that indicates location based on root; whereas a *relative* path is based on the user's home.
+Additionally, there are two special locations in all file systems: 🫜"root” and the user’s 🏠“home”. *Root* is where the file system of a computer starts, whereas *home* is where a user’s file system starts (this is where you should be now 📍). An *absolute* path is the one that indicates location based on root; whereas a *relative* path is based on the user's home.
 
 <img width="1511" height="1799" alt="image" src="https://github.com/user-attachments/assets/d051f1d5-91ee-44b7-b175-9471422c174b" />
 
-## Navigating the file system
+## Navigating the File System
 
 Before we begin exploring the command, let's get the tutorial files:
 
@@ -43,9 +42,9 @@ git clone https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026.git
 ```
 
 Congratulations! 🎉 
-You just ran your first command, `git clone`, which specifically allows us to clone files and data from a GitHub reposytory. 
+You just ran your first command, `git clone`, which specifically allows us to clone files and data from a GitHub repository. 
 
-Before we look at some other common commands, note a few keyboard commands that are very helpful:
+Before we look at other common commands, note a few keyboard commands that are very helpful:
 
 - `Up Arrow`: shows your last command
 - `Down Arrow`: shows your next command
@@ -56,34 +55,42 @@ Before we look at some other common commands, note a few keyboard commands that 
 - `Ctrl + D`: exits the terminal
 - `history`: shows your command history
 
-Ok, let's explore the other basics.
+Let's explore the other basics!
 
-Let's check where you are by <ins>p</ins>rinting your <ins>w</ins>orking <ins>d</ins>irectory (i.e. where you currently are in the system).
+Let's check your current location by <ins>p</ins>rinting your <ins>w</ins>orking <ins>d</ins>irectory (i.e., where you currently are in the system).
+
 ```bash
 pwd
 ```
+
 It should look something like this `/home/[name]` and tell you that you are in the "home" location. 
 
-Now <ins>l</ins>i<ins>s</ins>t the contents of your current directory using the `ls` command.
+Now <ins>l</ins>i<ins>s</ins>t the contents of your current directory using the `ls` command:
+
 ```bash
 ls
 ```
-You should see the directory we just downloaded from Github called "MicrobialGenomics-TXST-2025", we'll explore this in a minute. 
 
-Often, there are also *hidden* files, typically configuration files, which begin with a dot (`.`). E.g., your bash profile is configured by the file ~/.bash_profile. Configuration files do things like store settings and preferences for programs, determine what programs are "turned on" when you log in, and customize how your shell behaves. 
+You should see the directory we just cloned from GitHub called "TXST_Microbial-Genomics_2026", we will explore this in a minute. 
 
-To see these *hidden* files use the **'ls'** *command* with the *argument* -a, to see <ins>a</ins>ll files, including hidden ones.
+Often, there are *hidden* files, typically configuration files, which begin with a dot (`.`). E.g., your Bash profile is configured by the file ~/.bash_profile. Configuration files do things like store settings and preferences for programs, determine what programs are "turned on" when you log in, and customize how your shell behaves. 
+
+To see these *hidden* files use the `ls` command with the argument `-a`, to see <ins>a</ins>ll files, including hidden ones:
+
 ```bash
 ls -a
 ```
+
 You should see file names like these `.  ..  .bash_history  .bash_logout  .bash_profile  .bashrc  .emacs  example.txt  .kshrc  MicrobialGenomics-TXST-2025  .mozilla  .ssh`. 
 
-We can also use `ls` to see the sizes of the files, in bytes, in our directories with the argument -l.
+We can also use `ls` to see the size (in bytes) of the files in our directories with the argument `-l`.
+
 ```bash
 ls -l
 ```
 
-I prefer to add -lh, the "h" prints the sizes in a <ins>h</ins>uman-readable format.
+I prefer to add `-lh`, the "h" prints the sizes in a <ins>h</ins>uman-readable format:
+
 ```bash
 ls -lh
 ```
@@ -101,75 +108,81 @@ If the `man` command is not included, you can just type the command that you wan
   ls --help
 ```
 
-You should be able to use the arrow keys or page up and down. When you are ready to exit, just press `q`.
+You should be able to use the arrow keys, page up and down, or the space bar to scroll through. When you are ready to exit, just press `q`.
 
-
-Ok, lets move into our Github downloaded directory, or <ins>c</ins>hange <ins>d</ins>irectories using the `cd` command. Move to the MicrobialGenomics-TXST-2025 directory and use `pwd` and `ls` to see where you are and what is there. **Type each line one at a time and press enter**
+Let's move into our cloned GitHub directory, or <ins>c</ins>hange <ins>d</ins>irectories using the `cd` command. Move to the TXST_Microbial-Genomics_2026 directory and use `pwd` and `ls` to see where you are and what is there. **Type each line one at a time and press enter:**
 
 ```bash
-cd MicrobialGenomics-TXST-2025/
+cd TXST_Microbial-Genomics_2026/
 pwd
 ls
 ```
-What do you see? 
 
-To move back one directory to _home_, simply use `..` like so:
+To move back one directory to *home*, simply use `..`:
+
 ```bash
 cd ..
 pwd
 ls
 ```
-The pwd command should again give you `/home/[name]` and ls should give you `.  ..  .bash_history  .bash_logout  .bash_profile  .bashrc  .emacs  example.txt  .kshrc  MicrobialGenomics-TXST-2025  .mozilla  .ssh`. 
 
-You can also use `cd` to "jump" to other directories quickly, like below:
+Again, the `pwd` command should return `/home/[name]` and `ls` should return `.  ..  .bash_history  .bash_logout  .bash_profile  .bashrc  .emacs  example.txt  .kshrc  TXST_Microbial-Genomics_2026  .mozilla  .ssh`. 
+
+You can also use `cd` to "jump" to other directories quickly:
+
 ```bash
-cd MicrobialGenomics-TXST-2025/data/01_intro/
+cd TXST_Microbial-Genomics_2026/data/01_intro/
 pwd
 ```
 
-If you type `cd` alone, it will bring you all the way back to home. 
+If you type `cd` alone, it will bring you all the way back to home from whichever location you are at.
+
 ```bash
 cd
 pwd
 ```
 
-Ok, now let's go back to where we before and try something else.
+Let's go back to where we were before and try something else:
+
 ```bash
-cd MicrobialGenomics-TXST-2025/data/01_intro/
+cd TXST_Microbial-Genomics_2026/data/01_intro/
 pwd
 ```
 
-When combined with "..", you can move back multiple directories as well.
+When combined with `..`, you can move back multiple directories as well:
+
 ```bash
 cd ../../
 pwd
 ```
-Where are you now? (Hint: should be `/home/[name]/MicrobialGenomics-TXST-2025`)
+
+Where are you now? (Hint: should be `/home/[name]/TXST_Microbial-Genomics_2026`)
 
 > [!TIP]
-> If we are trying to specify a file or path we can begin typing its name and then press the <ins>tab</ins> key to complete it (try it out below). If there is only one possible way to finish what we’ve started typing, it will complete it entirely for us. If there is more than one possible way to finish what we’ve started typing, it will complete as far as it can, and then hitting tab twice quickly will show all the possible options. If tab-complete does not do either of those things, then we are either confused about where we are or what is where, or we've maybe spelled the name wrong.
+> When trying to specify a file or path, we can begin typing its name and then press the <ins>tab</ins> key to autocomplete it (try it out below). If there is only one possible way to finish what we started typing, it will complete it entirely for us. If there is more than one possible way to finish what we started typing, it will complete as far as it can, and then hitting tab twice quickly will show all the possible options. If tab-complete does not do either of those things, then we are either confused about where we are or what is where, or we may have misspelled the file name.
 
-Let's try this out. Go back to your home with `cd`. Now, let's go back to the `01_intro/` directory, but this time we will use tab to fill out our path, not type it out. Watch first.
+Let's try this out. Go back to your home with `cd`. Now, let's go back to the `01_intro/` directory, but this time we will use tab to fill out our path, not type it out:
+
 ```bash
 cd MicrobialGenomics-TXST-2025/data/01_intro/
 pwd
 ```
 
-Ok, that was a brief intro to moving around the command line. Practice makes perfect, so practice this when you can, and it will eventually become natural. 
+That was a brief intro to moving around the file system using the command line. Practice makes perfect, so practice this whenever you can, and it will eventually become natural. 
 
 Summary of commands used:
-| Command                             | Description                                                                       |
-| ----------------------------------- | --------------------------------------------------------------------------------- |
-| pwd                                 | Lists the path to the working directory                                           |
-| ls                                  | List directory contents                                                           |
-| ls -a                               | List contents including hidden files (Files that begin with a dot)                |
-| ls -l                               | List contents with more info including permissions (long listing)                 |
-| ls -lh                              | List content sizes in readable format                                             |
-| cd                                  | Change directory to home                                                          |
-| cd [dirname]                        | Change directory to specific directory                                            |
-| cd ~                                | Change to home directory                                                          |
-| cd ..                               | Change to parent directory                                                        |
 
+| Command        | Description                                                       |
+|----------------|-------------------------------------------------------------------|
+| `pwd`          | Prints the path to the working directory                          |
+| `ls`           | List directory contents                                           |
+| `ls -a`        | List contents including hidden files (files beginning with a dot) |
+| `ls -l`        | List contents with more info including permissions (long listing) |
+| `ls -lh`       | List file sizes in human-readable format                          |
+| `cd`           | Go to home                                                        |
+| `cd ~`         | Go to home                                                        |
+| `cd [dirname]` | Go to specified directory                                         |
+| `cd ..`        | Change to parent directory                                        |
 
 ## 🧪 Exercise 2: Creating, copying, moving, and removing files + directories
 > [!WARNING]
