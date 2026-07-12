@@ -10,7 +10,7 @@ By the end of this computer lab, you should be able to:
 - Navigate the file system using `cd`, `ls` and `pwd`
 - Create, move, copy, name and delete files and directories
 - Use redirectors and wildcards
-- Explore files using `head`, `tail`, `less`, `nano` and `cat`.
+- Explore files using `head`, `tail`, `less`, `nano` and `cat`
 - Edit text files directly from the shell
 
 ---
@@ -27,7 +27,7 @@ Different shells provide unique features and syntax: on macOS, the default is Zs
 
 In summary, think of it this way: terminal is the TV and shell is the program running the TV. 
 
-Computers organize file locations in a hierarchical structure. Even though we might not notice, we are typically used to navigating through this stucture by clicking on various folders (also known as directories) in a Mac Finder or Windows Explorer window. Just like we need to select the right files in the appropriate locations in a Graphical User-Interface (GUI), we need to do the same when working at a command-line interface. What this means in practice is that each file and directory has its own “address”, and that address is called a “path”.
+Computers organize file locations in a hierarchical structure. Even though we might not notice, we are typically used to navigating through this stucture by clicking on various folders (also known as directories) in a Mac Finder or Windows Explorer window. Just like we need to select the right files in the appropriate locations in a Graphical User-Interface (GUI), we need to do the same when working at a command-line interface. What this means in practice is that each file and directory has its own “address”, and that address is called “path”.
 
 Additionally, there are two special locations in all file systems: 🫜"root” and the user’s 🏠“home”. *Root* is where the file system of a computer starts, whereas *home* is where a user’s file system starts (this is where you should be now 📍). An *absolute* path is the one that indicates location based on root; whereas a *relative* path is based on the user's home.
 
@@ -51,13 +51,13 @@ Before we look at other common commands, note a few keyboard commands that are v
 - `Tab`: auto-completes your command
 - `Ctrl + L`: clears the screen
 - `Ctrl + C`: cancels a command
-- `Ctrl + R`: searches for a command
+- `Ctrl + R`: stats a search for a command
 - `Ctrl + D`: exits the terminal
 - `history`: shows your command history
 
-Let's explore the other basics!
+Let's explore other basics!
 
-Let's check your current location by <ins>p</ins>rinting your <ins>w</ins>orking <ins>d</ins>irectory (i.e., where you currently are in the system).
+Check your current location by <ins>p</ins>rinting your <ins>w</ins>orking <ins>d</ins>irectory (i.e., where you currently are in the system).
 
 ```bash
 pwd
@@ -71,7 +71,7 @@ Now <ins>l</ins>i<ins>s</ins>t the contents of your current directory using the 
 ls
 ```
 
-You should see the directory we just cloned from GitHub called "TXST_Microbial-Genomics_2026", we will explore this in a minute. 
+You should see the directory we just cloned from GitHub called "TXST_Microbial-Genomics_2026"; we will explore this in a minute. 
 
 Often, there are *hidden* files, typically configuration files, which begin with a dot (`.`). E.g., your Bash profile is configured by the file ~/.bash_profile. Configuration files do things like store settings and preferences for programs, determine what programs are "turned on" when you log in, and customize how your shell behaves. 
 
@@ -83,7 +83,7 @@ ls -a
 
 You should see file names like these `.  ..  .bash_history  .bash_logout  .bash_profile  .bashrc  .emacs  example.txt  .kshrc  MicrobialGenomics-TXST-2025  .mozilla  .ssh`. 
 
-We can also use `ls` to see the size (in bytes) of the files in our directories with the argument `-l`.
+You can also use `ls` to see the size (in bytes) of the files in your directories with the argument `-l`.
 
 ```bash
 ls -l
@@ -96,7 +96,7 @@ ls -lh
 ```
 
 > [!TIP]
-> On Linux and Mac, the `man` command is used to show the **manual** of any command that you can run in the terminal. So if you wanted to know more about the `ls` command, you could run:
+> On Linux and Mac, the `man` command is used to show the **manual** of any command that you can run in the terminal. So, if you wanted to know more about the `ls` command, you could run:
 
 ```bash
   man ls
@@ -118,7 +118,7 @@ pwd
 ls
 ```
 
-To move back one directory to *home*, simply use `..`:
+To move back one directory, simply use `..`:
 
 ```bash
 cd ..
@@ -156,7 +156,7 @@ cd ../../
 pwd
 ```
 
-Where are you now? (Hint: should be `/home/[name]/TXST_Microbial-Genomics_2026`)
+Where are you now? (Hint: you should be at `/home/[name]/TXST_Microbial-Genomics_2026`)
 
 > [!TIP]
 > When trying to specify a file or path, we can begin typing its name and then press the <ins>tab</ins> key to autocomplete it (try it out below). If there is only one possible way to finish what we started typing, it will complete it entirely for us. If there is more than one possible way to finish what we started typing, it will complete as far as it can, and then hitting tab twice quickly will show all the possible options. If tab-complete does not do either of those things, then we are either confused about where we are or what is where, or we may have misspelled the file name.
@@ -184,19 +184,21 @@ Summary of commands used:
 | `cd [dirname]` | Go to specified directory                                         |
 | `cd ..`        | Change to parent directory                                        |
 
-## 🧪 Exercise 2: Creating, copying, moving, and removing files + directories
+## Creating, Copying, Moving, Renaming and Removing Files & Directories
 > [!WARNING]
-> Using commands that do things like create, copy, and move files at the command line will <ins>**overwrite**</ins> files if they have the same name. And using commands that delete things will do so <ins>**permanently**</ins>. Use caution using these commands.
+> Using commands that create, copy or move files will <ins>**overwrite**</ins> them if there are other files with the same name. More importantly, using commands to delete files/directories will do so <ins>**permanently**</ins>. Use caution when using these commands!
 
-So we should still be in the `01_intro/` directory. Let's make a new directory in this one. 
-Start with <ins>m</ins>a<ins>k</ins>ing a new <ins>dir</ins>ectory, using the `mkdir` command, then move into it.
+We should still be in the `01_intro/` directory. Let's make a new directory inside this one. 
+Start with <ins>m</ins>a<ins>k</ins>ing a new <ins>dir</ins>ectory using the `mkdir` command, then move into it:
+
 ```bash
 mkdir practice
 ls
 cd practice
 ```
 
-Now create files in this directory, we will use the command `touch`. Then use `ls` to check that the files are there.
+To create files in this directory, we will use the command `touch`. Then, use `ls` to check that the files were created:
+
 ```bash
 touch sample1.txt
 touch sample2.txt
@@ -204,13 +206,15 @@ touch sample3.txt
 ls
 ```
 
-Lets <ins>c</ins>o<ins>p</ins>y the second file and rename it. The first file called is the file you want to copy, the second is what you want to name the copy.
+Let's <ins>c</ins>o<ins>p</ins>y the second file and rename it. The first file called is the file you want to copy, the second is what you want to name the copy; you can think of it in a "from-to" manner:
+
 ```bash
-cp sample2.txt copy_sample2.txt
+cp sample2.txt sample2_copy.txt
 ls
 ```
 
-To make a copy and put it somewhere else, like in new subdirectory, we can change the second positional argument using a relative path (“relative” because it starts from where we currently are). Make a new directory called "copies" then copy "Sample 3" there.
+To make a copy and put it somewhere else, like in new subdirectory, we can change the second positional argument using a relative path. Make a new directory called "copies" then copy "Sample 3" there:
+
 ```bash
 mkdir copies
 cp sample3.txt copies/copy_sample3.txt
@@ -218,49 +222,52 @@ cd copies/
 ls
 ```
 
-Ok, now we want to move the copy_sample2.txt file here in the copies/ directory. To do that we will use the <ins>m</ins>o<ins>v</ins>e command `mv`), but remember the file is in the previous directory (hint: ".."). 
+Now we want to move the sample2_copy.txt file into the `copies/` directory. To do that, we will use the <ins>m</ins>o<ins>v</ins>e command `mv`), but remember the file is in the previous directory (hint: `..`). You can use a single `.` to specify that you want `mv` to move the file to your current location:
+
 ```bash
-mv ../copy_sample2.txt .
+mv ../sample2_copy.txt .
 ls
 ```
 
-Here, I am also introducing the use of a single `.`, which is telling `mv` that I want to move the file to where I currently am. 
+The `mv` command can also be used to rename files:
 
-The `mv` command can also be used to rename files like so:
 ```bash
-mv copy_sample2.txt renamed_copy_sample2.txt
+mv sample2_copy.txt renamed_sample2_copy.txt
 ls
 ```
 
-Lets get rid of the renamed file. To <ins>r</ins>e<ins>m</ins>ove files, use the `rm` command. 
+Let's get rid of the renamed file. To <ins>r</ins>e<ins>m</ins>ove files, use the `rm` command:
+
 ```bash
 rm renamed_copy_sample2.txt
 ls
 ```
-> [!TIP]
-> When starting out, especially, it might be a better practice to use the -i flag with `rm`. This will prompt the terminal to first ask permission before you delete something.
 
-You can also remove entire directories. Let's remove the copies/ directory using -r. 
+> [!TIP]
+> As a command-line beginne, it might be a good practice to use the `-i` flag with `rm`. This will prompt the terminal to ask for permission before deleting something.
+
+You can also remove entire directories by adding the `-r` flag. The command does this <ins>r</ins>ecursively, i.e., by going into each of the deepest directories, removing their content, moving to the previous directory, removing its content, and so on:
+
 ```bash
 cd ..
 rm -r copies/
 ls
 ```
-Commands used and other flags
+
+Summary of useful commands:
+
 | Command                     | Description                                         |
-| --------------------------- | --------------------------------------------------- |
+|-----------------------------|-----------------------------------------------------|
 | mkdir [dirname]             | Make directory                                      |
 | touch [filename]            | Create file                                         |
 | rm [filename]               | Remove file                                         |
-| rm -i [filename]            | Remove directory, but ask before                    |
+| rm -i [filename]            | Remove file, but ask before                         |
 | rm -r [dirname]             | Remove directory                                    |
-| rm -rf [dirname]            | Remove directory with contents                      |
-| rm ./\*                     | Remove everything in the current folder             |
-| cp [filename] [dirname]     | Copy file                                           |
-| mv [filename] [dirname]     | Move file                                           |
-| mv [dirname] [dirname]      | Move directory                                      |
-| mv [filename] [filename]    | Rename file or folder                               |
-| mv [filename] [filename] -v | Rename Verbose - print source/destination directory |
+| rm *                        | Remove everything in the current folder             |
+| cp [filename] [dirname]     | Copy file to another directory                      |
+| mv [filename] [dirname]     | Move file to another directory                      |
+| mv [dirname1] [dirname2]/   | Move directory to another directory                 |
+| mv [filename1] [filename2]  | Rename file                                         |
 
 ## 🧪 Exercise 3: Editing/creating file contents
 
