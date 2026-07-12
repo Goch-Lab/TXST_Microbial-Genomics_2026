@@ -33,7 +33,7 @@ Additionally, there are two special locations in all file systems: 🫜"root” 
 
 <img width="1511" height="1799" alt="image" src="https://github.com/user-attachments/assets/d051f1d5-91ee-44b7-b175-9471422c174b" />
 
-## Navigating the File System
+## 🧭 Navigating the File System
 
 Before we begin exploring the command, let's get the tutorial files:
 
@@ -184,7 +184,7 @@ Summary of commands used:
 | `cd [dirname]` | Go to specified directory                                         |
 | `cd ..`        | Change to parent directory                                        |
 
-## Creating, Copying, Moving, Renaming and Removing Files & Directories
+## 📁 Creating, Copying, Moving, Renaming and Removing Files & Directories
 > [!WARNING]
 > Using commands that create, copy or move files will <ins>**overwrite**</ins> them if there are other files with the same name. More importantly, using commands to delete files/directories will do so <ins>**permanently**</ins>. Use caution when using these commands!
 
@@ -217,7 +217,7 @@ To make a copy and put it somewhere else, like in new subdirectory, we can chang
 
 ```bash
 mkdir copies
-cp sample3.txt copies/copy_sample3.txt
+cp sample3.txt copies/sample3_copy.txt
 cd copies/
 ls
 ```
@@ -239,7 +239,7 @@ ls
 Let's get rid of the renamed file. To <ins>r</ins>e<ins>m</ins>ove files, use the `rm` command:
 
 ```bash
-rm renamed_copy_sample2.txt
+rm renamed_sample2_copy.txt
 ls
 ```
 
@@ -269,65 +269,77 @@ Summary of useful commands:
 | mv [dirname1] [dirname2]/   | Move directory to another directory                 |
 | mv [filename1] [filename2]  | Rename file                                         |
 
-## 🧪 Exercise 3: Editing/creating file contents
+## 📑 Editing Files
 
-It is often very useful to be able to generate new plain-text files quickly at the command line, or make some changes to an existing one. One way to do this is using a text editor that operates at the command line. Here we’re going to look at one program that does this called `nano`. Let's test it with a file that already exists.
+It is often useful to generate new plain-text files quickly using the command line, or make some changes to an existing one. One way to do this is by using a text editor that operates at the command line. Here we will be looking at such a program called `vim`. Let's test it with a file that already exists:
+
 ```bash
-nano sample1.txt
+vim sample1.txt
 ```
 
-This will open up an interface and allow you to add text. Add two sample names, A and B.
+This will open up the vim interface in the viewing mode. To edit a file, you need to change into the <ins>i</ins>nsert mode by pressing the key `i`. Add two sample names:
+
 ```bash
 sample_A
 sample_B
 ```
 
-To save the file and exit, we need to use some of the keyboard shortcuts listed on the bottom. Type "ctrl" + "x". It will ask if you want to save, type "y" and then press "enter". Alternatively, if you wanted to change the file name, you can before pressing enter. 
+To save the file and exit, you need to run a vim command. To do this, first you need to go back to the viewing mode by pressing `esc`. Vim commands always start with `:`. As soon as you press that key, you will see it appearing at the bottom of the screen. You then keep on typing the command you want to run. In this case, you want to <ins>w</ins>rite your edits and <ins>q</ins>uit, so you need to type `:wq` and press `enter`. This should bring you back to the shell interface.
 
 Now try adding "sample_C" and "sample_D" to sample2.txt file.
 
+You can also use vim to create new files. Simply type `vim`, followed by the file name you want and its extension:
 
-I also use nano to create new files, you just simply type `nano`, followed by the file name you want and its extension. E.g.:
 ```bash
-nano mynewfile.txt
+vim mynewfile.txt
 ```
 
 >[!NOTE]
-> The second part of a file name is called the filename extension, and indicates what type of data the file holds. Here are some common examples:
->* .txt is a plain text file.
->* .csv is a text file with tabular data where each column is separated by a comma.
->* .tsv is like a CSV but values are separated by a tab.
->* .log is a text file containing messages produced by a software while it runs.
->* .pdf indicates a PDF document.
->* .png is a PNG image.
->* .sh indicates a shell script file.
+> The second part of a file name is called *extension*. The extension indicates what type of data the file holds. Here are some common examples:
+>
+>* `.txt` is a plain text file.
+>* `.csv` is a text file with tabular data where each column is separated by a comma.
+>* `.tsv` is like a CSV but columns are separated by a tab.
+>* `.log` is a text file containing messages produced by a software while it runs.
+>* `.pdf` indicates a PDF document.
+>* `.png` is a PNG image.
+>* `.sh` indicates a shell script.
 >  
->This is just a convention, albeit an important one. Files contain bytes: it’s up to us and our programs to interpret those bytes according to the rules for plain text files, PDF documents, configuration files, images, and so on.
->Naming a PNG image of a whale as whale.mp3 doesn’t somehow magically turn it into a recording of whalesong, though it might cause the operating system to try to open it with a music player when someone double-clicks it.
+>While this is a convention, it is a very important one. Files contain bytes: it is up to us and our programs to interpret those bytes according to the rules for plain text files, PDF documents, configuration files, images, and so on.
+>Naming a PNG image of a whale as whale.mp3 will not magically convert it into a recording of whalesong, though it might cause the operating system to try to open it with a music player when someone double-clicks it.
 
-Ok, back to viewing files.
+To explore the content of a file, we can use the con<ins>cat</ins>enate command `cat`.
 
-To get a "sneak-peak" at what we added in the sample1.txt file, we can either use the `head` command to show the top of the file contents. There is also `tail`, which prints the last 10 lines of a file by default:
 ```bash
-head sample1.txt
+cat sample1.txt
 ```
-There are a few other options to view files.
-For example, the command `less` lets you scroll through a file but not edit it. Try it out on `sample1.txt`. (To exit the `less` command, just press `q`. 
 
-The command `cat` will display the whole file at once, so it is better to use for shorter files.
-Try it out too `sample1.txt` file.
+Notice that `cat` prints the content of a file to the shell screen. This can be incovenient when we have very large files. To get "sneak-peaks" we can use commands that print smaller chunks instead. For example, we can either use the `head` or the `tail` commands to print the first or last 10 lines (by default), respectively:
 
-If we wanted to count the number of lines, words, or characters a file has, we can use the `wc` or (<ins>w</ins>ord <ins>c</ins>ount) command. 
+```bash
+head ../../../../TXST_Microbial-Genomics_2026/exercises/CL1.md
+tail ../../../../TXST_Microbial-Genomics_2026/exercises/CL1.md
+```
+
+There are a few other options to view files. For example, the command `less` lets you scroll through a file without editing it in a separate interface. Try it:
+
+```bash
+less ../../../../TXST_Microbial-Genomics_2026/exercises/CL1.md
+```
+
+To exit just press `q`. 
+
+If we wanted to count the number of lines, words, or characters in a file, we can use the <ins>w</ins>ord <ins>c</ins>ount command `wc`:
+
 ```bash
 wc sample1.txt
 ```
 
-To *only* get the number of lines in the file, use the argument -l.
+To *only* get the number of lines, use the argument `-l`:
+
 ```bash
 wc -l sample1.txt
 ```
-How many lines are there? 
-
 
 ## 🧪 Exercise 5: Redirectors and Wildcards
 
