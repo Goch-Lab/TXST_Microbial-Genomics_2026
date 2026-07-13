@@ -1,4 +1,25 @@
-## 🧪 Exercise 1: Accessing LEAP2 - TXST's high-performance computer (HPC)
+# CL2: HPC Access & Environment Setup
+
+This session, you will get acquainted with working on The TXST High-Performance Computing (HPC) cluster: [LEAP2](https://doit.txst.edu/hpc.html).
+
+---
+## 🧠 Learning Objectives
+
+By the end of this computer lab, you should be able to:
+
+- Access remote HPC platforms
+- Get familiar with file transfers from and to HPC clusters
+
+---
+
+An HPC cluster, like the name suggests, is a group of interconnected computers that work together as a single system with enhanced resources needed to process large datasets or resolve complex computational problems; you can think of them as "supercomputers". Each of the computers being part of a cluster is called a *node*, and there are different types, as you will see below. Because clusters consist of multiple nodes, large jobs can be split into smaller tasks to be run in parallel. 
+
+There are a few key components in an HPC cluster:
+- Login nodes: whenever you login into a cluster, you are taken to an login node, aka *head* node. These nodes are not meant to run jobs or tasks. Instead, they are to
+- 
+- The entry point where users connect to submit, monitor, and manage their tasks.Compute Nodes: The heavy lifters. These servers are packed with high-core-count CPUs or specialized GPUs (like NVIDIA H200s) optimized for intense workloads.Interconnect Network: A dedicated, ultra-low latency, high-bandwidth network fabric (such as InfiniBand) connecting all nodes.Parallel Shared Storage: Distributed storage systems (e.g., AWS FSx for Lustre) that allow all nodes to read and write huge datasets simultaneously.
+
+## Accessing LEAP2
 Connecting to an HPC system is typically done with a program known as “SSH” (Secure SHell) which is accessed through a Terminal.
 
 Linux and Mac users will find a Terminal program already installed on their computers. Windows users will need to install a Terminal emulator. I suggest using MobaXterm. If you do not already have it installed, please install the free version now: https://mobaxterm.mobatek.net/download.html. 
