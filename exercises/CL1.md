@@ -341,50 +341,31 @@ To *only* get the number of lines, use the argument `-l`:
 wc -l sample1.txt
 ```
 
-## 🧪 Exercise 5: Redirectors and Wildcards
+## 🃏 Redirectors and Wildcards
+Redirectors change where the output of a command is going. The pipe redirector (`|`), for example, turns the output of a command into the input of another one. If we “pipe” the `ls` command into the `wc -l` command, instead of printing the output from `ls` to the screen as usual, it will go into `wc -l` which will then print out how many items there are in your current working directory:
 
-Redirectors change where the output of a command is going. Lets look at an example using a "pipe" (`|`).
-Remember our commands `ls` and `wc -l`? If we “pipe” (`|`) the `ls` command into the `wc -l` command, instead of printing the output from `ls` to the screen as usual, it will go into `wc -l` which will print out how many items there are in your current working directory:
 ```bash
 ls | wc -l
 ```
 
-Another important character is the greater than sign, `>`. This tells the command line to redirect the output to a file, rather than just printing it to the screen as we’ve seen so far. For an example of this we will write the output of ls to a new file called “directory_contents.txt”:
+Another important redirector is the greater than sign `>`. This character stores the output of a command into a file, rather than just printing it to the screen:
+
 ```bash
 ls > directory_contents.txt
-head directory_contents.txt
+cat directory_contents.txt
 ```
-**It’s important to remember that the `>` redirector will overwrite the file we are pointing to if it already exists.**
-If we want to append output to a file, rather than overwrite it, we can use two signs, `>>` instead.
 
-Now the `cat` command, which we used above to view a file, also serves the purpose of combining (conCATenate) the content of files together. Let's see what happens when we concatenate sample1.txt and sample2.txt. 
+**It is important to remember that the `>` redirector will overwrite any pre-existing file with the name being used.** To append an output to a pre-existing file, rather than overwrite it, we can use `>>` instead.
+
+The concatenate command `cat`, which we have being using to view files, can also be used to concatenate files, as its name suggests:
+
 ```bash
-cat sample1.txt sample2.txt >combined_1and2.txt
-head combined_1and2.txt
+cat sample1.txt sample2.txt > combined_1and2.txt
+cat combined_1and2.txt
 ```
 
-Now, wildcards are special characters that enable us to specify multiple items very easily. Let’s say we only want to look for files, in our current working directory, that end with the extension “.txt”. The * wildcard can help us with that.
+Wildcards are special characters that enable us to specify multiple items easily. Let’s say we want to look for files that end with the extension “.txt” in our current working directory. The `*` wildcard can help:
+
 ```bash
 ls *.txt
 ```
-What this is saying is that no matter what comes before, if it ends with “.txt” we want it.
-
-
-## 🧪 Exercise 4: Terminus game
-
-Practice navigating the command line by making your way through the world of Terminus. The locations you can go to are directories, which you `cd` to move back and forth, and `ls` to look around and see what is in the area. Items in each area are files, so you use `less` to open them (interact with them), or `cp` to make copies of an "item," `touch` to create an item you need, `rm` to remove an obstacle, etc. If you need help with a command, type `man` and the command you want help with. 
-
-Follow this link to access Terminus: https://web.mit.edu/mprat/Public/web/Terminus/Web/main.html 
-When it loads, follow the instructions. Have fun!
-
-📝 ## Assignment Due before
-Turn in the answers to the questions below on Canvas before next Thursday's class (1:59 pm 09/04). 
-
-Send me three screenshots:
-1. When you had to use the command `mv`. 
-2. When you had to use the command `rm`. 
-3. When you had to use the command `cp`. 
-
-
-
-
