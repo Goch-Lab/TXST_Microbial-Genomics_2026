@@ -3,7 +3,7 @@
 This repo contains course materials, tutorials, and example scripts for [Texas State University](https://www.txst.edu/)'s Microbial Genomics course.
 
 ## Computer Labs:
-- 🧑🏻‍💻 [CL1: Introduction to Command Line](exercises/CL1)
+- 🧑🏻‍💻 [CL1: Introduction to Command Line](exercises/CL1.md)
 - 💻 [CL2: HPC Access & Environment Setup](exercises/CL2)
 - 🔍 [CL3: Sequence Data QC](exercises/CL3)
 - 🧹 [CL4: Sequence Data Processing](exercises/CL4)
