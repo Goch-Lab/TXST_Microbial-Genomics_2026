@@ -88,7 +88,7 @@ ssh <netID>@leap2.txstate.edu
 ```
 
 ## Using SLURM
-## Differentiating Login from Compute Notes
+## Differentiating Login from Compute Nodes
 ## Transferring Data
 
 
