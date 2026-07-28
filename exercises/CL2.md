@@ -197,9 +197,9 @@ By default, error messages and statements printed by your commands will be store
 ls
 ```
 
-You should see a file that loos something like `slurm-XXXX.out`. Examine the content of the file using one or more of the commands you have learned before and make sure that you understand the content of the file.
+You should see a file that loos something like `slurm-XXXX.out`. Examine the content of the file using one or more of the commands you have learned before and make sure that it all makes sense.
 
-It is also possible to cancel a running job by simply running:
+It is also possible to cancel a running job:
 
 ```bash
 scancel <XXXX>
