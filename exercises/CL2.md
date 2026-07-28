@@ -17,7 +17,7 @@ An HPC cluster, as the name suggests, is a group of interconnected computers tha
 Each computer within a cluster is called a *node*, and, as you will see below, different types of nodes serve different purposes. Because an HPC cluster consists of multiple nodes, large computational jobs can be divided into smaller tasks to be run in parallel, dramatically reducing the time required to complete them. 
 
 An HPC cluster consists of several key components:
-- **Login nodes:** Whenever you login into a cluster, you are taken to a login node, aka a *head* node. These nodes are not intended for running jobs. Instead, they are used to navigate your files, inspect and manage data, prepare and submit jobs, monitor their progress, and verify that they completed successfuly.
+- **Login nodes:** Whenever you login into a cluster, you are taken to a login node, aka a *head node*. These nodes are not intended for running jobs. Instead, they are used to navigate your files, inspect and manage data, prepare and submit jobs, monitor their progress, and verify that they completed successfuly.
 - **Compute nodes:** These are the heavy lifters. Compute nodes are equipped with high-core-count CPUs and/or GPUs designed to handle intense workloads. This is where the jobs you submit are executed.
 - **Interconnect network:** A dedicated, high-bandwidth (fast), low-latency (with little delay) network that connects all nodes, allowing them to communicate efficiently during parallel computations.
 - **Shared storage:** A distributed storage system that enables all nodes to access the same files simultaneously, allowing them to read from and write to large datasets as jobs are running.
@@ -50,7 +50,7 @@ You should now be prompted to input your password. Your first password can be fo
 If you entered your password appropriately, congratulations! You are now connected to the HPC! 🎉
 
 Now, if it is your first time accessing LEAP2, we will change your password as per Shane's request.
-Type `passwd' and press ENTER to start. You should get a message like this one:
+Type `passwd` and press ENTER to start. You should get a message like this one:
 
 ```bash
 Changing password for user <netID>.
