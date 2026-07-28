@@ -191,7 +191,15 @@ squeue --job <XXXX>
 
 At this point, your job has probably completed, so you most likely will see an empty table.
 
-To cancel a running job, simply run:
+By default, error messages and statements printed by your commands will be stored into a SLURM output file. Once the job has finished, check the content of your working directory:
+
+```bash
+ls
+```
+
+You should see a file that loos something like `slurm-XXXX.out`. Examine the content of the file using one or more of the commands you have learned before and make sure that you understand the content of the file.
+
+It is also possible to cancel a running job by simply running:
 
 ```bash
 scancel <XXXX>
