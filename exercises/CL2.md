@@ -168,6 +168,8 @@ You can also keep track of the submitted jobs:
 squeue 
 ```
 
+> [!Fun fact]
+> You might have noticed a pattern: all SLURM commands start with S!
 
 ## Differentiating Login from Compute Nodes
 ## Transferring Data
