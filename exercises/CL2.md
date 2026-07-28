@@ -94,7 +94,7 @@ Remember that to run "stuff", you need to do it on the compute nodes. For users 
 
 The job scheduler implemented on LEAP2 is SLURM (<ins>S</ins>imple <ins>L</ins>inux <ins>U</ins>tility for <ins>R</ins>esource <ins>M</ins>anagement).
 
-<img width="575" height="431" alt="image" src="https://static.wikia.nocookie.net/enfuturama/images/8/80/Slurm-1-.jpg/revision/latest?cb=20060626052801"/>
+<img width="575" height="431" alt="image" src="https://static.wikia.nocookie.net/enfuturama/images/8/80/Slurm-1-.jpg/revision/latest?cb=20060626052801" />
 
 ## Differentiating Login from Compute Nodes
 ## Transferring Data
