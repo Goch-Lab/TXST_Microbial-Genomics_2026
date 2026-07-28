@@ -87,6 +87,8 @@ Notice that you are now out of the cluster and back in your local computer. Log 
 ssh <netID>@leap2.txstate.edu
 ```
 
+Now, if you are not in campus, you will need to connect to TXST [VPN](https://services.txst.edu/TDClient/39/ITAC/Requests/Service/86/Virtual-Private-Network-VPN) (<ins>V</ins>irtual <ins>P</ins>rivate <ins>N</ins>etwork) first.
+
 ## Using SLURM
 Now that you are becoming familiar with HPC systems, you might be wondering: how do I run things on here?
 
@@ -106,7 +108,44 @@ To tell SLURM to run a job, you need to write a *job submission script* in which
 
 For example, the directive `#SBATCH --job-name=blast` will tell SLURM that you have named this job "blast", which can help make it easier for you to monitor your job and its outputs. Some `#SBATCH` directives also have a shorthand notation, e.g., `#SBATCH -J blast` is the same as the prior directive since -J and --job-name are interchangeable.
 
-If you look at the SLURM documentation you will notice that there are A LOT of directives you can use. But fortunately, there are only a few key directives you need to get your job running. We will cover some of the more common SLURM directives below, and you can also find some of the most useful directives in the [LEAP2 user guide](https://itrcstats2.itrc.txstate.edu/wiki/index.php/LEAP2_Cluster_User_Guide#SLURM_batch_directives).
+If you look at the SLURM documentation you will notice that there are A LOT of directives you can use. But fortunately, there are only a few key directives you need to get your job running. We will cover some of the more common SLURM directives below. You can also find some of the most useful directives in the [LEAP2 user guide](https://itrcstats2.itrc.txstate.edu/wiki/index.php/LEAP2_Cluster_User_Guide#SLURM_batch_directives).
+
+The best way to understand how to use the SLURM directives to allocate the required resources for your job is to provide try some examples. Single-CPU (non-parallel) jobs are often simple commands that can be run on a single CPU:
+
+```bash
+vim single_cpu_job.sh 
+```
+
+Change to the insert mode and copy-paste the following script:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=singlecpu
+#SBATCH --partition=shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --time=48:00:00
+#SBATCH --mem=125G
+
+# Get started
+echo "Job started on $(hostname) at $(date)"
+
+#Variables
+export LD_LIBRARY_PATH=/cm/local/apps/gcc/11.2.0/lib64:$LD_LIBRARY_PATH
+export DB=k2train8gb
+export OUT=kraken_default_output.txt
+export REP=kraken_report.txt
+export IN=MEGAHIT_default_contigs.fasta
+
+#Commands
+../programs/kraken2-2.17.1/kraken2 --db $DB --threads $SLURM_NTASKS --report $REP $IN > $OUT
+
+# Finish up
+echo "Job Ended at $(date)"
+```
+
+
+
 
 ## Differentiating Login from Compute Nodes
 ## Transferring Data
