@@ -162,14 +162,40 @@ To execute your job just submit your script to SLURM:
 sbatch single_cpu_job.sh 
 ```
 
-You can also keep track of the submitted jobs:
+You will then be given a message with the ID for that job:
+
+```bash
+Submitted batch job XXXX
+```
+
+In this example, the job ID is represented by XXXX; keep record of it. You can also keep track of the submitted jobs:
 
 ```bash
 squeue 
 ```
 
-> [!Fun fact]
+> [!Tip]
 > You might have noticed a pattern: all SLURM commands start with S!
+
+The last command will print the jobs submitted by all LEAP2 users. That is probably not what you want. To monitor your jobs, specify your user name:
+
+```bash
+squeue -u <netID>
+```
+
+You can also check the status of a specific job:
+
+```bash
+squeue --job <XXXX>
+```
+
+At this point, your job has probably completed, so you most likely will see an empty table.
+
+To cancel a running job, simply run:
+
+```bash
+scancel <XXXX>
+```
 
 ## Differentiating Login from Compute Nodes
 ## Transferring Data
