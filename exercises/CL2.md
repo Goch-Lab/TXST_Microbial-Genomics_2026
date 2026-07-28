@@ -88,6 +88,14 @@ ssh <netID>@leap2.txstate.edu
 ```
 
 ## Using SLURM
+Now that you are becoming familiar with HPC systems, you might be wondering: how do I run things on here?
+
+Remember that to run "stuff", you need to do it on the compute nodes. For users to access compute nodes to execute jobs, HPC clusters typically rely on *job scheduling systems*. A job scheduling system, or simply job scheduler, is a software that automatically runs, stops, and manages computer tasks at set times or when specific events happen. This way, all users can run their jobs in an organized manner and with a fair allocation of computational resources.
+
+The job scheduler implemented on LEAP2 is SLURM (<ins>S</ins>imple <ins>L</ins>inux <ins>U</ins>tility for <ins>R</ins>esource <ins>M</ins>anagement).
+
+<img width="575" height="431" alt="image" src="https://futurama.fandom.com/wiki/Slurm"/>
+
 ## Differentiating Login from Compute Nodes
 ## Transferring Data
 
