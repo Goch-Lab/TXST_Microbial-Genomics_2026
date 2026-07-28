@@ -156,6 +156,19 @@ This script might look like a lot, but it really consists of four main sections.
 - Commands section. This section is destined for the commands you want to run. In this case, the job will sleep for 30 s (`sleep 30`) before printing "Hello world!" (`echo "Hello World!"`).
 - "Finish up" section. This section prints (`echo`) a statement that records the node (`$(hostname)`) on which your job ran and the finish date and time (`$(date)`). Along with the "get started" section, this section allows you to determine how long your job ran for.
 
+To execute your job just submit your script to SLURM:
+
+```bash
+sbatch single_cpu_job.sh 
+```
+
+You can also keep track of the submitted jobs:
+
+```bash
+squeue 
+```
+
+
 ## Differentiating Login from Compute Nodes
 ## Transferring Data
 
