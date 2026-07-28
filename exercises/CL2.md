@@ -124,28 +124,37 @@ Change to the insert mode and copy-paste the following script:
 #SBATCH --partition=shared
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --time=48:00:00
-#SBATCH --mem=125G
+#SBATCH --time=1:00:00
+#SBATCH --mem=5G
 
 # Get started
 echo "Job started on $(hostname) at $(date)"
 
 #Variables
-export LD_LIBRARY_PATH=/cm/local/apps/gcc/11.2.0/lib64:$LD_LIBRARY_PATH
-export DB=k2train8gb
-export OUT=kraken_default_output.txt
-export REP=kraken_report.txt
-export IN=MEGAHIT_default_contigs.fasta
 
 #Commands
-../programs/kraken2-2.17.1/kraken2 --db $DB --threads $SLURM_NTASKS --report $REP $IN > $OUT
+sleep 30
+echo "Hello World!"
 
 # Finish up
 echo "Job Ended at $(date)"
 ```
 
+Escape from the insert mode, write and quit from vim as we learned before.
 
+This script might look like a lot, but it really consists of four main sections. Let's break it down:
 
+- Header. This section includes the first line and the `#SBATCH` directives. The firs line (`#!/bin/bash`) is specifying that this is a Bash script (hence *.sh). The `#SBATCH` directives are specifying the resources you are requesting for this job:
+  - `--job-name=singlecpu`: assigns the name "singlecpu" to your job.
+  - `--partition=shared`: determines the queue of the cluster your submitting your job too. "Shared" is the default partition. You might request for a different partition based on your computational needs. Read more [here](https://itrcstats2.itrc.txstate.edu/wiki/index.php/LEAP2_Cluster_User_Guide#Partitions).
+  - `--nodes=1`: requests to run your job on a single compute node.
+  - `--ntasks-per-node=1`: requests one CPU per requested node.
+  - `--time=1:00:00`: sets the maximum running time to 1 h.
+  - `--mem=5G`: sets the maximum memory (RAM) to 5 Gb.
+- "Get started" section. This section prints (`echo`) a statement that records the node (`$(hostname)`) on which your job runs and the start date and time (`$(date)`).
+- Variables section. Empty in this example, but that we will use later on.
+- Commands section. This section is destined for the commands you want to run. In this case, the job will sleep for 30 s (`sleep 30`) before printing "Hello world!" (`echo "Hello World!"`).
+- "Finish up" section. This section prints (`echo`) a statement that records the node (`$(hostname)`) on which your job ran and the finish date and time (`$(date)`). Along with the "get started" section, this section allows you to determine how long your job ran for.
 
 ## Differentiating Login from Compute Nodes
 ## Transferring Data
