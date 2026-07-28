@@ -96,6 +96,18 @@ The job scheduler implemented on LEAP2 is SLURM (<ins>S</ins>imple <ins>L</ins>i
 
 <img width="575" height="431" alt="image" src="https://static.wikia.nocookie.net/enfuturama/images/8/80/Slurm-1-.jpg/revision/latest?cb=20060626052801" />
 
+A job scheduler like SLURM is responsible for a few key tasks:
+
+- Understanding what resources are available on the cluster. This includes the number of available compute nodes, the size of those compute nodes and the jobs currently running on them.
+- Queuing and allocating jobs. Jobs are allocated to compute nodes to run based on the requested resources and the resources available.
+- Monitoring and reporting the status of jobs. So that the user can know what jobs are in the queue, which jobs are running, which jobs have failed, which jobs completed successfully, etc.
+
+To tell SLURM to run a job, you need to write a *job submission script* in which you specify the computational resources (number of CPUs, RAM, time) needed to complete the tasks successfully. These resources are specify at the top of your job script through some SLURM directives. These directives are indicated by lines starting with `#SBATCH`.
+
+For example, the directive `#SBATCH --job-name=blast` will tell SLURM that you have named this job "blast", which can help make it easier for you to monitor your job and its outputs. Some `#SBATCH` directives also have a shorthand notation, e.g., `#SBATCH -J blast` is the same as the prior directive since -J and --job-name are interchangeable.
+
+If you look at the SLURM documentation you will notice that there are A LOT of directives you can use. But fortunately, there are only a few key directives you need to get your job running. We will cover some of the more common SLURM directives below, and you can also find some of the most useful directives in the [LEAP2 user guide](https://itrcstats2.itrc.txstate.edu/wiki/index.php/LEAP2_Cluster_User_Guide#SLURM_batch_directives).
+
 ## Differentiating Login from Compute Nodes
 ## Transferring Data
 
