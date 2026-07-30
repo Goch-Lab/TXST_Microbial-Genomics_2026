@@ -206,6 +206,32 @@ scancel <XXXX>
 ```
 
 ## Differentiating Login from Compute Nodes
+It is important to remember not to run jobs on the login nodes. How can we distinguish them from compute nodes then?
+
+Pay attention to your LEAP2 session. The line where your cursor currently is should look something like this:
+
+```bash
+[netID@login1 ~]$
+```
+
+This is telling you that the user (`netID`) is currently at login node 1 (`login1`); you might be in a different login node. Keep in mind that different HPC platforms name their login and compute nodes differently. Now try this:
+
+```bash
+top
+```
+
+This command lets you explore all the jobs/tasks running on the login node you are currently at. Can you find yourself? If you can, great! That means other people on the same node can also find you. If you happen to run some computational-demanding task on the login node, you may slow down things for other uses on the same node. Even worse: they can track you down! Press `q` to quit.
+
+If there are some jobs or tasks that demand some resources but only for a short time, and if you want to visually keep track of what's happening, you can run them interactively on the compute nodes. To do this, we ask SLURM to start an interactive shell:
+
+
+```bash
+sinteractive -p shared -n 2 --mem-per-cpu=5G --time=1:00:00
+```
+
+Looks familiar? This command is making use of the SLURM directives we learn about before, in this case we are using the 1-letter notations. `-p shared`
+-n 2 --mem-per-cpu=5G --time=1:00:00
+
 ## Transferring Data
 
 
