@@ -8,6 +8,7 @@ This session, you will get acquainted with working on the TXST High-Performance 
 By the end of this computer lab, you should be able to:
 
 - Access remote HPC platforms
+- Learn good practices to work on HPC clusters
 - Get familiar with file transfers from and to HPC clusters
 
 ---
