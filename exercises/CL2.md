@@ -247,5 +247,33 @@ Here you are able to run any tasks without bothering other users and without dis
 
 
 ## Transferring Data
+It is possible to transfer files (e.g., data, scripts, outputs) from LEAP2 to your computer and the other way around. Let's explore how.
+
+Start by creating a file:
+
+```bash
+vim some_file_name.txt
+```
+
+You are now familiar with vim, so feel free to add any text to it. Get the path to your current location (where you created the file):
+
+```bash
+pwd
+```
+
+Open another Terminal tab or window. In the new tab, without logging into LEAP2, run the following command:
+
+```bash
+scp <netID>@leap2.txstate.edu:/path/to/some_file_name.txt /path/to/desired/location
+```
+
+Make sure to replace some of the values above for the right ones. If done correctly, you will be asked for your LEAP2 password. Enter it and the download will start. Once completed, look for the dowloaded file, open it either from the Terminal using vim or with another text editor installed on your computer (e.g., TextEdit). Save it with a different file name.
 
 
+Go back to the Terminal window, the one not signed on LEAP2. Upload the file to LEAP2:
+
+```bash
+scp /path/to/another_file_name.txt <netID>@leap2.txstate.edu:/path/to/desired/location
+```
+
+Go back to the LEAP2 window and go to the location where you uploaded the new file. Inspect its content to ensure the transfer was successful.
