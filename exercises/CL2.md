@@ -229,8 +229,22 @@ If there are some jobs or tasks that demand some resources but only for a short 
 sinteractive -p shared -n 2 --mem-per-cpu=5G --time=1:00:00
 ```
 
-Looks familiar? This command is making use of the SLURM directives we learn about before, in this case we are using the 1-letter notations. `-p shared`
--n 2 --mem-per-cpu=5G --time=1:00:00
+Looks familiar? This command is making use of the SLURM directives we learn about before, in this case we are using the 1-letter notations. `-p shared` is asking to start the shell in the partition "shared", `-n 2` is requesting to use 2 CPUs and 5 Gb of RAM in each of them (`--mem-per-cpu=5G`) for 10 Gb of memory in total, and `--time=1:00:00` is setting the maximum running time of the interactive session for 1 h.
+
+Once you run the command, SLURM sends your request to the queue:
+
+```bash
+Waiting for JOBID XXXX to start
+```
+
+Once your interactive session starts, you will notice a change in your session:
+
+```bash
+[netID@compute-108 ~]$
+```
+
+Here you are able to run any tasks without bothering other users and without disruptions (as long as you stay within the requested computational resources).
+
 
 ## Transferring Data
 
