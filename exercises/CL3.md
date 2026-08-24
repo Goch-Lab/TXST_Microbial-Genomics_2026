@@ -1,4 +1,4 @@
-# CL 3: Sequence Data QC
+# CL3: Sequence Data QC
 
 This session, we will continue to get used to the command line while learning how to quality control (QC) raw read sequence data and process them for subsequent analyses. 
 
@@ -30,20 +30,20 @@ Quality score is a measure of how confident the software was when it called that
 
 <img width="3436" height="656" alt="image" src="https://training.galaxyproject.org/training-material/topics/sequence-analysis/faqs/images/fastq-quality-encoding.png" />
 
+It is important to know that this is not a perfect system, as there are still confounding factors like polymerase error and other systematic errors that will not show up in the quality score information, but performing some quality-based filtering after sequencing is essential.
 
-It's important to know that this isn’t a perfect system, as there are still confounding factors like polymerase error and other systematic errors that won’t show up in the quality score information, but performing some quality-based filtering after sequencing is essential.
+Demultiplexing refers to the step in processing where we use barcode information to know what sequences came from which samples after being sequenced together. Barcodes are unique sequences attached to each sample's DNA fragments before the samples got all pooled together. Demultiplexing is typically done by sequencing facilities nowadays. It is important for you to know that this step takes place before QC. We will *not* go over demultiplexing. 
 
-We will *not* go over Demultiplexing. Demultiplexing refers to the step in processing where you’d use the barcode information in order to know which sequences came from which samples after they had all been sequenced together. Barcodes are the unique sequences that were attached to each of your invidivual samples’ genetic material before the samples got all mixed together. Demultiplexing is something that most sequence facilities will do for you nowadays. Just know that this process happens before fastq read QC. 
+---
+### The Sequence Data
 
-Now, let's learn a bit of where the sequences we have been working on come from:
-
-Mike and his team were exploring an underwater mountain ~3 km down at the bottom of the Pacific Ocean that serves as a low-temperature (~5-10°C) hydrothermal venting site. This amplicon dataset was generated from DNA extracted from crushed basalts collected from across the mountain with the goal to begin to characterize the microbial communities of these deep-sea rocks. No one had ever been here before, so as is often the purpose of marker-gene sequencing, this was just a broad-level community survey. The sequencing was done on the Illumina MiSeq platform with 2x300 paired-end sequencing using primers targeting the V4 region (~291 bp) of the 16S rRNA gene. There are 20 samples total: 4 extraction “blanks” (nothing added to DNA extraction kit), 2 bottom-water samples, 13 rocks, and one biofilm scraped off a rock. 
+Mike and his team were exploring an underwater mountain ~3 km down at the bottom of the Pacific Ocean that serves as a low-temperature (~5-10°C) hydrothermal venting site. This amplicon dataset was generated from DNA extracted from crushed basalts collected from across the mountain with the goal to begin to characterize the microbial communities of these deep-sea rocks. No one had ever been there before, so as is often the purpose of marker-gene sequencing, this was just a broad-level community survey. The sequencing was done on an Illumina MiSeq platform with 2 x 300 bp paired-end sequencing, using primers targeting the V4 region (~291 bp) of the 16S rRNA gene. There are 20 samples total: 4 extraction “blanks” (nothing added to DNA extraction kit), 2 bottom-water samples, 13 rocks, and one biofilm scraped off a rock. 
 
 In the following figure, overlain on the map are the rock sample collection locations, and the panes on the right show examples of the 3 distinct types of rocks collected: 1) basalts with highly altered, thick outer rinds (>1 cm); 2) basalts that were smooth, glassy, thin exteriors (~1-2 mm); and 3) one calcified carbonate.
 
 <img width="800" height="436" alt="image" src="https://github.com/user-attachments/assets/aa197211-0392-4b63-998a-6e32de69efb5" />
 
-This work was published, so I encourage you to check it out: https://www.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2015.01470/full 
+This work was published and you can read more about it [here](https://www.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2015.01470/full).
 
 ---
 
