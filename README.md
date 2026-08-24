@@ -5,7 +5,7 @@ This repo contains course materials, tutorials, and example scripts for [Texas S
 ## Computer Labs:
 - 🧑🏻‍💻 [CL1: Introduction to Command Line](exercises/CL1.md)
 - 💻 [CL2: HPC Access & Environment Setup](exercises/CL2.md)
-- 🔍 [CL3: Sequence Data QC](exercises/CL3)
+- 🔍 [CL3: Sequence Data QC](exercises/CL3.md)
 - 🧹 [CL4: Sequence Data Processing](exercises/CL4)
 - 🧩 [CL5: Whole-Genome Assembly](exercises/CL5)
 - 📝 [CL6: Genome Annotation](exercises/CL6)
