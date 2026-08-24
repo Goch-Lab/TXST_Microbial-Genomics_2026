@@ -1,30 +1,35 @@
-# Week 2: Sequence QC
+# CL 3: Sequence Data QC
 
-Welcome to Week 2! 
-This week, you'll continue to get used to using the command line while learning how to process raw sequences and quality control (QC) them for further analysis. 
+This session, we will continue to get used to the command line while learning how to quality control (QC) raw read sequence data and process them for subsequent analyses. 
 
 ---
 ## 🧠 Learning Objectives
 
-By the end of this exercise, you should be able to:
+By the end of this computer lab, you should be able to:
 
-- Understand the fastq sequence format.
-- Evaluate raw sequencing data quality and explain how filtering/trimming decisions affect read retention.
-- Learn the importance of read QC for downstream analyses. 
+- Understand the fastq format
+- Evaluate raw sequence data quality
+- Explain how filtering/trimming decisions affect data retention
+- Learn the importance of QC sequence data for downstream analyses
+
+---
   
-Preparing your raw reads from the sequencer is typically the 1st step in any genomics pipeline. Most likely you will get your raw reads back from the sequencing facility in fastq formatted files.
+The first step in any genomics workflow is to prepare raw sequence data for our downstream analyses. In most case, we will get our raw reads back from the sequencing facility in fastq formatted files.
+
 ### What is a fastq file?
 
 The fastq format has 4 lines per sequence: 
-* the sequence identifier (header), preceded by a “@” character;
-* the nucleic acid sequence itself;
-* a “+” character and possibly the header information repeated;
-* and the quality score information for each individual basecall, which must contain the same number of characters as letters in the sequence. 
+* The sequence identifier (header), preceded by an “@” character
+* The nucleic acid sequence itself
+* A “+” character and possibly the header information repeated or other notes
+* The quality score for the basecalling of each individual nucleotide, which must be the same number of characters as nucleotides in the sequence
 
-![Breakdown of a fastq file](https://github.com/user-attachments/assets/e7a64482-ccae-4ee4-99a8-4bb83141b448)
+![Fastq file format](https://github.com/user-attachments/assets/e7a64482-ccae-4ee4-99a8-4bb83141b448)
 
-With Illumina sequencing, the quality score information is a measure of how confident the software was when it called that particular base position. Different characters represent a specific score, i.e. here are the quality value characters in left-to-right increasing order of quality (ASCII encoding):
-> !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+Quality score is a measure of how confident the software was when it called that particular base position during sequencing. Different sequencing technologies employ different sets of [ASCII characters](https://www.ascii-code.com/) to represent their quality scores, with each character representing a quality score. Current Illumina sequencing technologies, for example, use the offset starting at character number 33 (Phred+33), which is "!".
+
+<img width="3436" height="656" alt="image" src="https://training.galaxyproject.org/training-material/topics/sequence-analysis/faqs/images/fastq-quality-encoding.png" />
+
 
 It's important to know that this isn’t a perfect system, as there are still confounding factors like polymerase error and other systematic errors that won’t show up in the quality score information, but performing some quality-based filtering after sequencing is essential.
 
