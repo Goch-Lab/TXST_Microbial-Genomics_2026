@@ -81,7 +81,7 @@ To see these *hidden* files use the `ls` command with the argument `-a`, to see 
 ls -a
 ```
 
-You should see file names like these `.  ..  .bash_history  .bash_logout  .bash_profile  .bashrc  .emacs  example.txt  .kshrc  MicrobialGenomics-TXST-2025  .mozilla  .ssh`. 
+You should see file names like these `.  ..  .bash_history  .bash_logout  .bash_profile  .bashrc  .emacs  example.txt  .kshrc  MicrobialGenomics-TXST-2026  .mozilla  .ssh`. 
 
 You can also use `ls` to see the size (in bytes) of the files in your directories with the argument `-l`.
 
@@ -164,7 +164,7 @@ Where are you now? (Hint: you should be at `/home/[name]/TXST_Microbial-Genomics
 Let's try this out. Go back to your home with `cd`. Now, let's go back to the `01_intro/` directory, but this time we will use tab to fill out our path, not type it out:
 
 ```bash
-cd MicrobialGenomics-TXST-2025/data/01_intro/
+cd MicrobialGenomics-TXST-2026/data/01_intro/
 pwd
 ```
 
