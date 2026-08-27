@@ -57,13 +57,13 @@ cd microbial_genomics
 Download the data we will be working with:
 
 ```bash
-wget https://raw.githubusercontent.com/morgansobol/MicrobialGenomics-TXST-2025/main/data/02_sequenceQC/data_dir.tar.gz
+wget https://raw.githubusercontent.com/Goch-Lab/TXST_Microbial-Genomics_2026/main/data/02_sequenceQC/data_dir.tar.gz
 ```
 
 If `wget` does not work, try curl instead:
 
 ```bash
-curl -L -O https://raw.githubusercontent.com/morgansobol/MicrobialGenomics-TXST-2025/main/data/02_sequenceQC/data_dir.tar.gz
+curl -L -O https://raw.githubusercontent.com/Goch-Lab/TXST_Microbial-Genomics_2026/main/data/02_sequenceQC/data_dir.tar.gz
 ```
 
 Now this is a compressed file, also called a "tarball". To unpack it, like opening a zip file, we run:
@@ -244,23 +244,30 @@ You should see a bunch of files if the job completed successfully. The outputs a
 scp '<netID>@leap2.txstate.edu:/home/<netID>/microbial_genomics/fastqc/*.html' /path/to/desired/location
 ```
 
-Open one of the files and try to make sense of it. It should be a file similar to [this one](https://htmlpreview.github.io/?https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/02_sequenceQC/B1_sub_R1_fastqc.html).
+Open one of the files and try to make sense of it. It should be a file similar to [this one](https://htmlpreview.github.io/?https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/02_sequenceQC/B1_sub_R1_fastqc.html). The instructor will walk you through it at some point.
 
 
-However, instead of checking each file individually, we can instead use the tool `multiqc` which will aggregate all of our results together.
+Instead of checking each file individually, we can instead use the tool `multiqc` to produce a report of all the combined outputs. Go back to your LEAP2 window and let's run multiqc interactively
+
 ```bash
+cd </path/to>/fastqc
+sinteractive -p shared -n 1 --mem-per-cpu=5G --time=2:00:00
+conda activate seqQC
 multiqc .
-open multiqc_report.html
+conda deactivate
+exit
 ```
-Or like so if on mobaXterm
+
+Again, we will need to download the HTML file from another terminal tab/window to the local computer:
+
 ```bash
-explorer.exe multiqc_report.html
+scp <netID>@leap2.txstate.edu:/home/<netID>/microbial_genomics/fastqc/multiqc_report.html /path/to/desired/location
 ```
 
-Now we need to trim the primers off the reads and low-quality bases, both from read 1 and read 2, to improve their quality.
+The file should look like [this one](https://htmlpreview.github.io/?https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/02_sequenceQC/multiqc_report.html). Explore it with detail and make sure you understand what you see. The instructor will explain at some point.
 
 
-## 🧪 Exercise 2: Removing primers with Cutadapt 
+## 🧪 Exercise 2: Trimming Adapters with Cutadapt 
 
 Let's go back one directory, into the working_dir, and create a new directory called cutadapt.
 ```bash
