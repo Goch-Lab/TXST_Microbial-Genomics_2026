@@ -238,14 +238,13 @@ Quit by pressing "q". Explore the content of your working directory:
 ls
 ```
 
-You should see a bunch of file if the job completed successfully. The outputs are HTML files (*.html) that you can view on a web browser.. You can look at them individually like so if mac user:
+You should see a bunch of files if the job completed successfully. The outputs are HTML files (*.html) that you can view on a web browser. However, you will need to download the HTML files from another terminal tab/window (not on LEAP2) to the local computer to do so:
+
 ```bash
-open B1_sub_R1_fastqc.html
+scp '<netID>@leap2.txstate.edu:/home/<netID>/microbial_genomics/fastqc/*.html' /path/to/desired/location
 ```
-Or like so if on mobaXterm
-```bash
-explorer.exe B1_sub_R1_fastqc.html
-```
+
+Open one of the files and try to make sense of it. It should be a file similar to [this one](../data/02_sequenceQC/B1_sub_R1_fastqc.html).
 
 
 However, instead of checking each file individually, we can instead use the tool `multiqc` which will aggregate all of our results together.
