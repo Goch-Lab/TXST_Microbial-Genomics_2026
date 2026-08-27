@@ -197,8 +197,10 @@ Copy-paste the following into the script:
 #SBATCH --mem=20G
 
 # Get started
-source ~/.bashrc
 echo "Job started on $(hostname) at $(date)"
+
+source ~/.bashrc
+conda activate seqQC
 
 #Variables
 export READS_DIR=../data
@@ -207,16 +209,36 @@ export READS_DIR=../data
 fastqc ${READS_DIR}/*.fq -o .
 
 # Finish up
+conda deactivate
+
 echo "Job Ended at $(date)"
 ```
 
-Take your time in going through the script and understanding what every line is doing. You might notice a few differences compared to the last SLURM script we ran. For example `source ~/.bashrc` is making sure that your environment configuration in the login nodes is carried over to the computing nodes, including your conda environments. The variables section now defines a variable, `$READS_DIR`, that is being called by the command. Go ahead and submit the script:
+Take your time to go through the script and to understand what every line is doing. You might notice a few differences compared to the last SLURM script we ran. For example, `source ~/.bashrc` is making sure that your environment configuration in the login nodes is carried over to the computing nodes, including your Conda environments. The variables section now defines a variable, `$READS_DIR`, that is being called by the command. Go ahead and submit the script:
 
 ```bash
 sbatch fastqc.sh
 ```
 
-The output is an .html file that you can view. You can look at them individually like so if mac user:
+Keep track of the job until it finishes:
+
+```bash
+squeue -u <netID>
+```
+
+Verify there were no errors by exploring the content of the SLURM output file:
+
+```bash
+less slurm-XXXXXXX.out
+```
+
+Quit by pressing "q". Explore the content of your working directory:
+
+```bash
+ls
+```
+
+You should see a bunch of file if the job completed successfully. The outputs are HTML files (*.html) that you can view on a web browser.. You can look at them individually like so if mac user:
 ```bash
 open B1_sub_R1_fastqc.html
 ```
