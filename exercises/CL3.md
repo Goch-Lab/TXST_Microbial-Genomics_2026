@@ -244,7 +244,7 @@ You should see a bunch of files if the job completed successfully. The outputs a
 scp '<netID>@leap2.txstate.edu:/home/<netID>/microbial_genomics/fastqc/*.html' /path/to/desired/location
 ```
 
-Open one of the files and try to make sense of it. It should be a file similar to [this one](../data/02_sequenceQC/B1_sub_R1_fastqc.html).
+Open one of the files and try to make sense of it. It should be a file similar to [this one]((https://htmlpreview.github.io/?https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/02_sequenceQC/B1_sub_R1_fastqc.html)).
 
 
 However, instead of checking each file individually, we can instead use the tool `multiqc` which will aggregate all of our results together.
