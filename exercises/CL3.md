@@ -78,6 +78,12 @@ This command combines multiple flags: `x` stands for "extract", `z` for "gzipped
 mv data_dir data
 ```
 
+Remove the tarball to free space:
+
+```bash
+rm data_dir.tar.gz
+```
+
 Let's set up the rest of our environment to process the data. To install the required programs, we will use Conda. Conda is an open-source tool that manages software packages and virtual environments for multiple programming languages. We will download and install a comprehensive distribution of Conda called Anaconda. This should make easier the installation of programs throughout the course:
 
 ```bash
@@ -119,29 +125,89 @@ Anaconda3 will now be installed into this location:
 [/home/netID/anaconda3] >>> 
 ```
 
-Press enter. It will then run for a while printing several messages to the prompt. 
+Press enter. It will then run for a while printing a bunch of messages to the prompt. These are all packages Anaconda is installing in your environment.  It will then print the following:
 
-
-prefer to have a directory for each software we use. So let's make one for fastQC.
 ```bash
-mkdir working_dir/
-cd working_dir/
-mkdir fastqc
-cd fastqc
+Downloading and Extracting Packages:
+
+Preparing transaction: done
+Executing transaction: done
+installation finished.
+Do you wish to update your shell profile to automatically initialize conda?
+This will activate conda on startup and change the command prompt when activated.
+If you'd prefer that conda's base environment not be activated on startup,
+   run the following command when conda is activated:
+
+conda config --set auto_activate_base false
+
+Note: You can undo this later by running `conda init --reverse $SHELL`
+
+Proceed with initialization? [yes|no]
+[no] >>>
+```
+Type "yes" and press enter. This will add Conda to your default environment.
+Log out and back in onto LEAP2:
+
+```bash
+exit
+ssh <netID>@leap2.txstate.edu
 ```
 
-Before we run FastQC, we need to install the programs and activate the Conda environment that contains the program.
+We now need to install the programs the programs we will be using using Conda:
+
 ```bash
 conda create -y -n seqQC -c conda-forge -c bioconda -c defaults cutadapt fastqc trimmomatic multiqc
 ```
-Now activate your environment.
+
+This will also take a while. It will create an environment named "seqQC" containing the programs cutadapt, fastqc, trimmomatic, and multiqc. These programs will be installed from the conda-forge, bioconda, and default channels. We can now activate the environment:
+
 ```bash
 conda activate seqQC
 ```
 
-Now to run the program we do the following, calling the sequence reads from the rawseq/16s directory like so but having the output placed in our current working directory:
+Move back to your working directory, and create a directory for the first step:
+
 ```bash
-fastqc ../../data_dir/*.fq -o .
+cd microbial_genomics
+mkdir fastqc
+cd fastqc
+```
+
+To run fastqc, we need to create a SLURM script:
+
+```bash
+vim fastqc.sh
+```
+
+Copy-paste the following into the script:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=fastqc
+#SBATCH --partition=shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --time=1:00:00
+#SBATCH --mem=20G
+
+# Get started
+source ~/.bashrc
+echo "Job started on $(hostname) at $(date)"
+
+#Variables
+export READS_DIR=../data
+
+#Commands
+fastqc ${READS_DIR}/*.fq -o .
+
+# Finish up
+echo "Job Ended at $(date)"
+```
+
+Take your time in going through the script and understanding what every line is doing. You might notice a few differences compared to the last SLURM script we ran. For example `source ~/.bashrc` is making sure that your environment configuration in the login nodes is carried over to the computing nodes, including your conda environments. The variables section now defines a variable, `$READS_DIR`, that is being called by the command. Go ahead and submit the script:
+
+```bash
+sbatch fastqc.sh
 ```
 
 The output is an .html file that you can view. You can look at them individually like so if mac user:
