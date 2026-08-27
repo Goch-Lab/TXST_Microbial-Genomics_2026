@@ -14,7 +14,7 @@ By the end of this computer lab, you should be able to:
 
 ---
   
-The first step in any genomics workflow is to prepare raw sequence data for our downstream analyses. In most case, we will get our raw reads back from the sequencing facility in fastq formatted files.
+The first step in any genomics workflow is to prepare raw sequence data for our downstream analyses. In most cases, we will get our raw reads back from the sequencing facility in fastq-formatted files.
 
 ## What is a fastq file?
 
@@ -35,9 +35,10 @@ It is important to know that this is not a perfect system, as there are still co
 Demultiplexing refers to the step in processing where we use barcode information to know what sequences came from which samples after being sequenced together. Barcodes are unique sequences attached to each sample's DNA fragments before the samples got all pooled together. Demultiplexing is typically done by sequencing facilities nowadays. It is important for you to know that this step takes place before QC. We will *not* go over demultiplexing. 
 
 ---
+
 ## The Sequence Data
 
-Mike and his team were exploring an underwater mountain ~3 km down at the bottom of the Pacific Ocean that serves as a low-temperature (~5-10°C) hydrothermal venting site. This amplicon dataset was generated from DNA extracted from crushed basalts collected from across the mountain with the goal to begin to characterize the microbial communities of these deep-sea rocks. No one had ever been there before, so as is often the purpose of marker-gene sequencing, this was just a broad-level community survey. The sequencing was done on an Illumina MiSeq platform with 2 x 300 bp paired-end sequencing, using primers targeting the V4 region (~291 bp) of the 16S rRNA gene. There are 20 samples total: 4 extraction “blanks” (nothing added to DNA extraction kit), 2 bottom-water samples, 13 rocks, and one biofilm scraped off a rock. 
+Mike and his team were exploring an underwater mountain ~3 km down at the bottom of the Pacific Ocean that serves as a low-temperature (~5-10°C) hydrothermal venting site. This amplicon dataset was generated from DNA extracted from crushed basalts collected from across the mountain with the goal of characterize the microbial communities of these deep-sea rocks. No one had ever been there before, so as is often the purpose of marker-gene sequencing, this was just a broad-level community survey. The sequencing was done on an Illumina MiSeq platform with 2 x 300 bp paired-end sequencing, using primers targeting the V4 region (~291 bp) of the 16S rRNA gene. There are 20 samples total: 4 extraction “blanks” (nothing added to DNA extraction kit), 2 bottom-water samples, 13 rocks, and one biofilm scraped off a rock. 
 
 In the following figure, overlain on the map are the rock sample collection locations, and the panes on the right show examples of the 3 distinct types of rocks collected: 1) basalts with highly altered, thick outer rinds (>1 cm); 2) basalts that were smooth, glassy, thin exteriors (~1-2 mm); and 3) one calcified carbonate.
 
@@ -46,7 +47,7 @@ In the following figure, overlain on the map are the rock sample collection loca
 This work was published and you can read more about it [here](https://www.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2015.01470/full).
 
 ## Checking Read Sequence Data Quality
-First, we need to set up our working directory. Log in to LEAP2 as you learned in the previous lab. Created a directory called "microbial_genomics" and move to that directory:
+First, we need to set up our working directory. Log in to LEAP2 as you learned in the previous lab. Create a directory called "microbial_genomics" and move to that directory:
 
 ```bash
 mkdir microbial_genomics
@@ -60,7 +61,7 @@ wget https://raw.githubusercontent.com/morgansobol/MicrobialGenomics-TXST-2025/m
 ```
 
 If `wget` does not work, try curl instead:
-t
+
 ```bash
 curl -L -O https://raw.githubusercontent.com/morgansobol/MicrobialGenomics-TXST-2025/main/data/02_sequenceQC/data_dir.tar.gz
 ```
@@ -71,15 +72,57 @@ Now this is a compressed file, also called a "tarball". To unpack it, like openi
 tar -xzvf data_dir.tar.gz
 ```
 
-This command combines multiple flags: 'x' stands for "extract", 'z' for "gzipped", 'v' for "verbose" (print details of what is happening to the prompt), and 'f' for "file". This should have unpacked a new directory called `data_dir`. Change the directory name to "data":
+This command combines multiple flags: `x` stands for "extract", `z` for "gzipped", `v` for "verbose" (print details of what is happening to the prompt), and `f` for "file". This should have unpacked a new directory called `data_dir`. Change the directory name to "data":
 
 ```bash
 mv data_dir data
 ```
 
-Let's set up the rest of our environment to process the data.
+Let's set up the rest of our environment to process the data. To install the required programs, we will use Conda. Conda is an open-source tool that manages software packages and virtual environments for multiple programming languages. We will download and install a comprehensive distribution of Conda called Anaconda. This should make easier the installation of programs throughout the course:
 
-I personally prefer to have a directory for each software we use. So let's make one for fastQC.
+```bash
+curl -O https://repo.anaconda.com/archive/Anaconda3-2026.07-1-Linux-x86_64.sh
+bash Anaconda3-2026.07-1-Linux-x86_64.sh
+```
+
+This will start a prompt that should look something like this:
+
+```bash
+Welcome to Anaconda3 2026.07-1
+
+In order to continue the installation process, please review the license
+agreement.
+Please, press ENTER to continue
+>>> 
+```
+
+Go ahead and press enter. It will then show something like this: 
+
+```bash
+By continuing installation, you hereby consent to the Anaconda Terms of Service available at https://anaconda.com/legal.
+
+
+Do you accept the license terms? [yes|no]
+>>>
+```
+
+Type "yes" and press enter. It will show something like the following:
+
+```bash
+Anaconda3 will now be installed into this location:
+/home/netID/anaconda3
+
+  - Press ENTER to confirm the location
+  - Press CTRL-C to abort the installation
+  - Or specify a different location below
+
+[/home/netID/anaconda3] >>> 
+```
+
+Press enter. It will then run for a while printing several messages to the prompt. 
+
+
+prefer to have a directory for each software we use. So let's make one for fastQC.
 ```bash
 mkdir working_dir/
 cd working_dir/
