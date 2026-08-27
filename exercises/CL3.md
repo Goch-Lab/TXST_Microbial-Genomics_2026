@@ -165,7 +165,13 @@ This will also take a while. It will create an environment named "seqQC" contain
 conda activate seqQC
 ```
 
-Move back to your working directory, and create a directory for the first step:
+You now should be able to run the programs you installed in that environment. Have a look at the help of fastqc:
+
+```bash
+fastqc -h
+```
+
+Quit by pressing "q". Move back to your working directory, and create a directory for the first step:
 
 ```bash
 cd microbial_genomics
