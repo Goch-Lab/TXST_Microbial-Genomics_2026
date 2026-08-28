@@ -60,7 +60,7 @@ Download the data we will be working with:
 wget https://raw.githubusercontent.com/Goch-Lab/TXST_Microbial-Genomics_2026/main/data/02_sequenceQC/data_dir.tar.gz
 ```
 
-If `wget` does not work, try curl instead:
+If `wget` does not work, try `curl` instead:
 
 ```bash
 curl -L -O https://raw.githubusercontent.com/Goch-Lab/TXST_Microbial-Genomics_2026/main/data/02_sequenceQC/data_dir.tar.gz
@@ -153,7 +153,7 @@ exit
 ssh <netID>@leap2.txstate.edu
 ```
 
-We now need to install the programs the programs we will be using using Conda:
+We now need to installthe programs we will be using with Conda:
 
 ```bash
 conda create -y -n seqQC -c conda-forge -c bioconda -c defaults cutadapt fastqc trimmomatic multiqc
@@ -214,7 +214,7 @@ conda deactivate
 echo "Job Ended at $(date)"
 ```
 
-Take your time to go through the script and to understand what every line is doing. You might notice a few differences compared to the last SLURM script we ran. For example, `source ~/.bashrc` is making sure that your environment configuration in the login nodes is carried over to the computing nodes, including your Conda environments. The variables section now defines a variable, `$READS_DIR`, that is being called by the command. Go ahead and submit the script:
+Take your time to go through the script and to understand what every line is doing. You might notice a few differences compared to the last SLURM script we ran. For example, `source ~/.bashrc` is making sure that your environment configuration in the login nodes is carried over to the computing nodes, including your Conda environments. The variables section now defines a variable, `$READS_DIR`, that is being called by the command below. Go ahead and submit the script:
 
 ```bash
 sbatch fastqc.sh
@@ -246,12 +246,11 @@ scp '<netID>@leap2.txstate.edu:/home/<netID>/microbial_genomics/fastqc/*.html' /
 
 Open one of the files and try to make sense of it. It should be a file similar to [this one](https://htmlpreview.github.io/?https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/02_sequenceQC/B1_sub_R1_fastqc.html). The instructor will walk you through it at some point.
 
-
-Instead of checking each file individually, we can instead use the tool `multiqc` to produce a report of all the combined outputs. Go back to your LEAP2 window and let's run multiqc interactively
+Instead of checking each file individually, we can use the tool `multiqc` to produce a report of all the combined outputs. Go back to your LEAP2 window and let's run multiqc interactively:
 
 ```bash
 cd </path/to>/fastqc
-sinteractive -p shared -n 1 --mem-per-cpu=5G --time=2:00:00
+sinteractive -p shared -n 1 --mem-per-cpu=5G --time=1:00:00
 conda activate seqQC
 multiqc .
 conda deactivate
@@ -261,22 +260,23 @@ exit
 Again, we will need to download the HTML file from another terminal tab/window to the local computer:
 
 ```bash
-scp <netID>@leap2.txstate.edu:/home/<netID>/microbial_genomics/fastqc/multiqc_report.html /path/to/desired/location
+scp <netID>@leap2.txstate.edu:/home/<netID>/microbial_genomics/fastqc/multiqc_report.html </path/to/desired/location>
 ```
 
 The file should look like [this one](https://htmlpreview.github.io/?https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/02_sequenceQC/multiqc_report.html). Explore it with detail and make sure you understand what you see. The instructor will explain at some point.
 
 
-## 🧪 Exercise 2: Trimming Adapters with Cutadapt 
+## Trimming Adapters with Cutadapt 
 
-Let's go back one directory, into the working_dir, and create a new directory called cutadapt.
+Let's go back one directory, into microbial_genomics, and create a new directory called cutadapt:
+
 ```bash
 cd ..
 mkdir cutadapt
 cd cutadapt/
 ```
 
-Now we will run cutadapt on paired-end mode, because, remember from lecture, most cases reads are sequenced in the forward and reverse direction, meaning each forward read should have a paired read. We will try with one sample first before running as a loop to process all samples at once. 
+We will now run cutadapt on paired-end mode because, as you might remember from the lecture, in most cases reads are sequenced in both forward and reverse directions, meaning each forward read should have a paired read. We will try with one sample first before running as a loop to process all samples at once. 
 
 ```bash
 cutadapt -a ^GTGCCAGCMGCCGCGGTAA...ATTAGAWACCCBDGTAGTCC \
