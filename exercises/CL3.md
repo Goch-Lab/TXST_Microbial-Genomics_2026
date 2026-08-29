@@ -159,13 +159,13 @@ We now need to installthe programs we will be using with Conda:
 conda create -y -n seqQC -c conda-forge -c bioconda -c defaults cutadapt fastqc trimmomatic multiqc
 ```
 
-This will also take a while. It will create an environment named "seqQC" containing the programs cutadapt, fastqc, trimmomatic, and multiqc. These programs will be installed from the conda-forge, bioconda, and default channels. We can now activate the environment:
+This will also take a while. It will create an environment named "seqQC" containing the programs utadapt, FastQC, Trimmomatic, and MultiQC. These programs will be installed from the conda-forge, bioconda, and default channels. We can now activate the environment:
 
 ```bash
 conda activate seqQC
 ```
 
-You now should be able to run the programs you installed in that environment. Have a look at the help of fastqc:
+You now should be able to run the programs you installed in that environment. Have a look at the help of FastQC:
 
 ```bash
 fastqc -h
@@ -179,7 +179,7 @@ mkdir fastqc
 cd fastqc
 ```
 
-To run fastqc, we need to create a SLURM script:
+To run FastQC, we need to create a SLURM script:
 
 ```bash
 vim fastqc.sh
@@ -246,7 +246,7 @@ scp '<netID>@leap2.txstate.edu:/home/<netID>/microbial_genomics/fastqc/*.html' <
 
 Open one of the files and try to make sense of it. It should be a file similar to [this one](https://htmlpreview.github.io/?https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/02_sequenceQC/B1_sub_R1_fastqc.html). The instructor will walk you through it at some point.
 
-Instead of checking each file individually, we can use the tool `multiqc` to produce a report of all the combined outputs. Go back to your LEAP2 window and let's run multiqc interactively:
+Instead of checking each file individually, we can use the tool `multiqc` to produce a report of all the combined outputs. Go back to your LEAP2 window and let's run MultiQC interactively:
 
 ```bash
 cd </path/to>/fastqc
@@ -276,7 +276,7 @@ mkdir cutadapt
 cd cutadapt/
 ```
 
-We will now run cutadapt on paired-end mode because, as you might remember from the lecture, in most cases reads are sequenced in both forward and reverse directions, meaning each forward read should have a paired read. We will use the following SLURM script to process all read pairs at the same time:
+We will now run Cutadapt on paired-end mode because, as you might remember from the lecture, in most cases reads are sequenced in both forward and reverse directions, meaning each forward read should have a paired read. We will use the following SLURM script to process all read pairs at the same time:
 
 ```bash
 vim cutadapt.sh
@@ -325,7 +325,7 @@ echo "Job Ended at $(date)"
 
 This script is running a job array. A job array is just a set of jobs for which the same task is run for different variables (e.g., a file). Every job in the array is assigned an index, based on the number of jobs running in the array. In this case, the array has 20 jobs (0-19), one for each pair of read files. Each value from 0 to 19 is assigned for each of the jobs being run. The index can be accessed through a SLURM variable (`$SLURM_ARRAY_TASK_ID`). To assign each pair of reads, we use Bash to first define an empty list `prefixes`. We then use a `for` loop to go through each of the R1 files. In that loop, we use a command to store a prefix from each R1 file (`p=$(echo $f | cut -f3 -d'/' | cut -f1 -d'_')`) in the variable `$p`. We then add the variable `$p` to our prefixes list in each iteration.
 
-The cutadapt command specifies the primers for the forward reads with the `-a` flag, giving it the forward primer (in normal orientation), followed by three dots (required by cutadapt to know they are “linked”, with bases in between them, rather than right next to each other), then the reverse complement of the reverse primer. For the reverse reads, specified with the `-A` flag, we give it the reverse primer (in normal 5’-3’ orientation), three dots, and then the reverse complement of the forward primer. Both of those have a ^ symbol in front at the 5’ end, indicating they should be found at the start of the reads (which is the case with this particular setup). 
+The Cutadapt command specifies the primers for the forward reads with the `-a` flag, giving it the forward primer (in normal orientation), followed by three dots (required by Cutadapt to know they are “linked”, with bases in between them, rather than right next to each other), then the reverse complement of the reverse primer. For the reverse reads, specified with the `-A` flag, we give it the reverse primer (in normal 5’-3’ orientation), three dots, and then the reverse complement of the forward primer. Both of those have a ^ symbol in front at the 5’ end, indicating they should be found at the start of the reads (which is the case with this particular setup). 
 
 The minimum read length (set with `-m`) and max (set with `-M`) were based roughly on 10% smaller and bigger than would be expected after trimming the primers. The flag `--discard-untrimmed` states to throw away reads that don’t have these primers in the expected locations. Finally, `-o` specifies the output of the forward reads, `-p` specifies the output of the reverse reads, and the input forward and reverse are provided as positional arguments in that order.
 
