@@ -299,6 +299,7 @@ source ~/.bashrc
 conda activate seqQC
 
 #Variables
+prefixes()
 for f in ../data/*_R1.fq; do
         p=$(echo $f | cut -f3 -d'/' | cut -f1 -d'_')
         prefixes+=("$p")
@@ -322,23 +323,38 @@ conda deactivate
 echo "Job Ended at $(date)"
 ```
 
-We are specifying the primers for the forward read with the -a flag, giving it the forward primer (in normal orientation), followed by three dots (required by cutadapt to know they are “linked”, with bases in between them, rather than right next to each other), then the reverse complement of the reverse primer. 
+This script is running a job array. A job array is just a set of jobs for which the same task is run for different variables (e.g., a file). Every job in the array is assigned an index, based on the number of jobs running in the array. In this case, the array has 20 jobs (0-19), one for each pair of read files. Each value from 0 to 19 is assigned for each of the jobs being run. The index can be accessed through a SLURM variable (`$SLURM_ARRAY_TASK_ID`). To assign each pair of reads, we use Bash to first define an empty list `prefixes`. We then use a `for` loop to go through each of the R1 files. In that loop, we use a command to store a prefix from each R1 file (`p=$(echo $f | cut -f3 -d'/' | cut -f1 -d'_')`) in the variable `$p`. We then add the variable `$p` to our prefixes list in each iteration.
 
-Then for the reverse reads, specified with the -A flag, we give it the reverse primer (in normal 5’-3’ orientation), three dots, and then the reverse complement of the forward primer. Both of those have a ^ symbol in front at the 5’ end, indicating they should be found at the start of the reads (which is the case with this particular setup). 
+The cutadapt command specifies the primers for the forward reads with the `-a` flag, giving it the forward primer (in normal orientation), followed by three dots (required by cutadapt to know they are “linked”, with bases in between them, rather than right next to each other), then the reverse complement of the reverse primer. For the reverse reads, specified with the `-A` flag, we give it the reverse primer (in normal 5’-3’ orientation), three dots, and then the reverse complement of the forward primer. Both of those have a ^ symbol in front at the 5’ end, indicating they should be found at the start of the reads (which is the case with this particular setup). 
 
-The minimum read length (set with -m) and max (set with -M) were based roughly on 10% smaller and bigger than would be expected after trimming the primers. 
-
---discard-untrimmed states to throw away reads that don’t have these primers in them in the expected locations. 
-
-Then -o specifies the output of the forward reads, -p specifies the output of the reverse reads, and the input forward and reverse are provided as positional arguments in that order.
+The minimum read length (set with `-m`) and max (set with `-M`) were based roughly on 10% smaller and bigger than would be expected after trimming the primers. The flag `--discard-untrimmed` states to throw away reads that don’t have these primers in the expected locations. Finally, `-o` specifies the output of the forward reads, `-p` specifies the output of the reverse reads, and the input forward and reverse are provided as positional arguments in that order.
 
 >[!NOTE]
-> These types of settings will be different for data generated with different sequencing, i.e. not 2x300, and different primers sets. 
+> These types of settings will be different for data generated with different sequencing, i.e., not 2x300, and different primers sets. 
 
-Ok, let's take a quick look to see that the primers were trimmed off. 
+Run the script:
+
+```bash
+sbatch cutadapt.sh
+```
+
+Keep track of the job until it finishes:
+
+```bash
+squeue -u <netID>
+```
+
+Once it finishes, you should see all trimmed files and the SLURM output files. Explore one of the SLURM files:
+
+```bash
+less slurm-XXXXXXX_X.out
+```
+
+Press "q" to quit. Let's take a quick look to see that the primers were trimmed off:
+
 ```bash
 ### R1 BEFORE TRIMMING PRIMERS
-head -n 2 ../../data_dir/B1_sub_R1.fq
+head -n 2 ../data/B1_sub_R1.fq
 # @M02542:42:000000000-ABVHU:1:1101:8823:2303 1:N:0:3
 # GTGCCAGCAGCCGCGGTAATACGTAGGGTGCGAGCGTTAATCGGAATTACTGGGCGTAAAGCGTGCGCAGGCGGTCTTGT
 # AAGACAGAGGTGAAATCCCTGGGCTCAACCTAGGAATGGCCTTTGTGACTGCAAGGCTGGAGTGCGGCAGAGGGGGATGG
@@ -353,9 +369,8 @@ head -n 2 B1_sub_R1_trimmed.fq
 # AAATGCGTAGATATGCGGAGGAACACCGATGGCGAAGGCAGTCCCCTGGGCCTGCACTGACGCTCATGCACGAAAGCGTG
 # GGGAGCAAACAGG
 
-
 ### R2 BEFORE TRIMMING PRIMERS
-head -n 2 ../../data_dir/B1_sub_R2.fq
+head -n 2 ../data/B1_sub_R2.fq
 # @M02542:42:000000000-ABVHU:1:1101:8823:2303 2:N:0:3
 # GGACTACCCGGGTATCTAATCCTGTTTGCTCCCCACGCTTTCGTGCATGAGCGTCAGTGCAGGCCCAGGGGACTGCCTTC
 # GCCATCGGTGTTCCTCCGCATATCTACGCATTTCACTGCTACACGCGGAATTCCATCCCCCTCTGCCGCACTCCAGCCTT
@@ -371,57 +386,6 @@ head -n 2 B1_sub_R2_trimmed.fq
 # CGCACCCTACGTA
 ```
 
-We are going to trim those again in the loop, so let's delete these trimmed files so as not to have duplicates.
-```bash
-rm *.fq
-ls
-```
-
-Now, on to doing them all with a loop, here is how we can run it on all our samples at once. Since we have a lot of samples here, I’m redirecting the “stdout” (what’s printing the stats for each sample) to a file called *cutadapt_primer_trimming_stats.txt* so we can more easily view and keep track of if we’re losing a ton of sequences or not by having that information stored somewhere – instead of just plastered to the terminal window. We’re also going to take advantage of another convenience of cutadapt – by adding the extension .gz to the output file names, it will compress the files for us.
-
-```bash
-nano cutadapt.sh
-```
-
-Add this to the bash file you just created.
-```bash
-#!/usr/bin/env bash
-
-DIR="../../data_dir/"
-
-for R1 in ${DIR}/*_R1.fq; do
-    # derive sample name by stripping path and suffix
-    sample=$(basename "$R1" _R1.fq)
-    R2="${DIR}/${sample}_R2.fq"
-
-    echo "On sample: $sample"
-
-    cutadapt \
-        -a ^GTGCCAGCMGCCGCGGTAA...ATTAGAWACCCBDGTAGTCC \
-        -A ^GGACTACHVGGGTWTCTAAT...TTACCGCGGCKGCTGGCAC \
-        -m 215 -M 285 --discard-untrimmed \
-        -o ${sample}_R1_trimmed.fq.gz \
-        -p ${sample}_R2_trimmed.fq.gz \
-        "$R1" "$R2" \
-        >> cutadapt_primer_trimming_stats.txt 2>&1
-done
-```
-
-- a = forward adapter
-- A = reverse adapter
-- m 215 = will discard all reads below 215 bp 
-- M 285 = will discard all reads larger than 285 bp
-- discard-untrimmed = discards reads in which no adapter match was found.
-- o = output R1 
-- p = output R2
-
-Now run it
-```bash
-bash cutadapt.sh
-ls
-```
-
-You should see all trimmed files here and the output stats file.
 I typically like to have a file with all the sample names to use for various things throughout, so here’s making that file based on how these sample names are formatted. 
 ```bash
 ls *_R1_trimmed.fq.gz | cut -f1 -d "_" > samples.txt
