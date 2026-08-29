@@ -344,13 +344,27 @@ Keep track of the job until it finishes:
 squeue -u <netID>
 ```
 
-Once it finishes, you should see all trimmed files and the SLURM output files. Explore one of the SLURM files:
+Once it finishes, you should see all trimmed files and the SLURM output files. Explore one of the SLURM files to get an idea of how things went.:
 
 ```bash
 less slurm-XXXXXXX_X.out
 ```
 
-Press "q" to quit. Let's take a quick look to see that the primers were trimmed off:
+Press "q" to quit. Use `grep` to look at what fraction of reads were retained in each sample:
+
+```bash
+grep "passing" *.out
+```
+
+Now look at what fraction of bp were retained in each sample:
+
+```bash
+grep "filtered" *.out
+```
+
+Would you say we lost little or a lot of data?
+
+Let's take a quick look to see that the primers were trimmed off:
 
 ```bash
 ### R1 BEFORE TRIMMING PRIMERS
@@ -386,43 +400,15 @@ head -n 2 B1_sub_R2_trimmed.fq
 # CGCACCCTACGTA
 ```
 
-I typically like to have a file with all the sample names to use for various things throughout, so here’s making that file based on how these sample names are formatted. 
-```bash
-ls *_R1_trimmed.fq.gz | cut -f1 -d "_" > samples.txt
-```
+Let's use FastQC and MultiQC again to see the improvement in the outputs:
 
-Now you can look through the output of the cutadapt stats file we made (“cutadapt_primer_trimming_stats.txt”) to get an idea of how things went. Here’s a little one-liner to look at what fraction of reads were retained in each sample (column 2) and what fraction of bps were retained in each sample (column 3):
-```bash
-paste samples.txt <(grep "passing" cutadapt_primer_trimming_stats.txt | cut -f3 -d "(" | tr -d ")") <(grep "filtered" cutadapt_primer_trimming_stats.txt | cut -f3 -d "(" | tr -d ")")
-```
-
-Great, so in all cases >90% of reads were kept. 
-
-Let's also check again with FastQC/MultiQC to see how that improved the output
 ```bash
 cd ../fastqc/
 mkdir trimmed
 cd trimmed/
-fastqc ../../cutadapt/*.fq.gz -o .
-multiqc .
-open multiqc_report.html
+cp ../fastqc.sh .
 ```
-With primers removed, we’re now ready to switch to R Studio and start using DADA2!
 
-But, before we do that, let's prepare a new directory to work in with everything we need.
-```bash
-cd ../../
-mkdir dada2
-cd dada2
-cp ../cutadapt/samples.txt .
-ln -s ../cutadapt/*.fq.gz .
-ls
-```
-I am introducing a new command here `ln`. This command creates a symbolic (hence -s) link, also known as a symlink or soft link. This is a special type of file that points to another file or directory. Symbolic links are commonly used to create shortcuts or aliases for files or directories located in the file system. This allows us to use those files in this directory, without having to make a duplicate, hard copy. 
+You should now work independently to edit the script so you can run it with the trimmed reads. Submit it, make sure it ran successfully to completion and run MultiQC in an interactive shell. Once finished, you may want to rename the MultiQC, download it to the local computer and open it in a web browser for comparison with the report from the raw data.
 
-Ok, now we can switch to R and process these reads (: 
-
-```bash
-pwd
-```
-We will need this path for R. 
+This is the end of CL3!
