@@ -241,7 +241,7 @@ ls
 You should see a bunch of files if the job completed successfully. The outputs are HTML files (*.html) that you can view on a web browser. However, you will need to download the HTML files from another terminal tab/window (not on LEAP2) to the local computer to do so:
 
 ```bash
-scp '<netID>@leap2.txstate.edu:/home/<netID>/microbial_genomics/fastqc/*.html' /path/to/desired/location
+scp '<netID>@leap2.txstate.edu:/home/<netID>/microbial_genomics/fastqc/*.html' </path/to/desired/location>
 ```
 
 Open one of the files and try to make sense of it. It should be a file similar to [this one](https://htmlpreview.github.io/?https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/02_sequenceQC/B1_sub_R1_fastqc.html). The instructor will walk you through it at some point.
@@ -268,7 +268,7 @@ The file should look like [this one](https://htmlpreview.github.io/?https://gith
 
 ## Trimming Adapters with Cutadapt 
 
-Let's go back one directory, into microbial_genomics, and create a new directory called cutadapt:
+Let's go back one directory, into `microbial_genomics`, and create a new directory called `cutadapt`:
 
 ```bash
 cd ..
@@ -276,14 +276,50 @@ mkdir cutadapt
 cd cutadapt/
 ```
 
-We will now run cutadapt on paired-end mode because, as you might remember from the lecture, in most cases reads are sequenced in both forward and reverse directions, meaning each forward read should have a paired read. We will try with one sample first before running as a loop to process all samples at once. 
+We will now run cutadapt on paired-end mode because, as you might remember from the lecture, in most cases reads are sequenced in both forward and reverse directions, meaning each forward read should have a paired read. We will use the following SLURM script to process all read pairs at the same time:
 
 ```bash
-cutadapt -a ^GTGCCAGCMGCCGCGGTAA...ATTAGAWACCCBDGTAGTCC \
-         -A ^GGACTACHVGGGTWTCTAAT...TTACCGCGGCKGCTGGCAC \
-         -m 215 -M 285 --discard-untrimmed \
-         -o B1_sub_R1_trimmed.fq -p B1_sub_R2_trimmed.fq \
-         ../../data_dir/B1_sub_R1.fq ../../data_dir/B1_sub_R2.fq 
+vim cutadapt.sh
+```
+
+Copy-paste the following:
+
+```bash
+#SBATCH --partition=shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --time=1:00:00
+#SBATCH --mem=20G
+#SBATCH --array=0-19
+
+# Get started
+echo "Job started on $(hostname) at $(date)"
+
+source ~/.bashrc
+conda activate seqQC
+
+#Variables
+for f in ../data/*_R1.fq; do
+        p=$(echo $f | cut -f3 -d'/' | cut -f1 -d'_')
+        prefixes+=("$p")
+done
+
+export R1=../data/${prefixes[$SLURM_ARRAY_TASK_ID]}_sub_R1.fq
+export R2=../data/${prefixes[$SLURM_ARRAY_TASK_ID]}_sub_R2.fq
+export R1_AD=^GTGCCAGCMGCCGCGGTAA...ATTAGAWACCCBDGTAGTCC
+export R2_AD=^GGACTACHVGGGTWTCTAAT...TTACCGCGGCKGCTGGCAC
+export MINL=215
+export MAXL=285
+export OUT1=${prefixes[$SLURM_ARRAY_TASK_ID]}_sub_R1_trimmed.fq
+export OUT2=${prefixes[$SLURM_ARRAY_TASK_ID]}_sub_R2_trimmed.fq
+
+#Commands
+cutadapt -a $R1_AD -A $R2_AD -m $MINL -M $MAXL --discard-untrimmed -o $OUT1 -p $OUT2 $R1 $R2
+
+# Finish up
+conda deactivate
+
+echo "Job Ended at $(date)"
 ```
 
 We are specifying the primers for the forward read with the -a flag, giving it the forward primer (in normal orientation), followed by three dots (required by cutadapt to know they are “linked”, with bases in between them, rather than right next to each other), then the reverse complement of the reverse primer. 
