@@ -21,7 +21,7 @@ The first step in any genomics workflow is to prepare raw sequence data for our 
 The fastq format has 4 lines per sequence: 
 * The sequence identifier (header), preceded by an “@” character
 * The nucleic acid sequence itself
-* A “+” character and possibly the header information repeated or other notes
+* A “+” character sometimes followe by notes
 * The quality score for the basecalling of each individual nucleotide, which must be the same number of characters as nucleotides in the sequence
 
 ![Fastq file format](https://github.com/user-attachments/assets/e7a64482-ccae-4ee4-99a8-4bb83141b448)
