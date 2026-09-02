@@ -10,7 +10,7 @@ By the end of this computer lab, you should be able to:
 - Understand the fastq format
 - Organize files in a working directory
 - Install bioinformatic tools using Conda
-- Evaluate quality of raw sequence data quality
+- Evaluate quality of raw sequence data
 
 ---
   
