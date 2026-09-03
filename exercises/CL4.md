@@ -32,6 +32,7 @@ vim cutadapt.sh
 Copy-paste the following:
 
 ```bash
+#!/bin/bash
 #SBATCH --partition=shared
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
