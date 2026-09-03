@@ -18,7 +18,7 @@ By the end of this computer lab, you should be able to:
 Let's go back into our `microbial_genomics` directory and create a new directory called `cutadapt`:
 
 ```bash
-cd ..
+cd microbial_genomics
 mkdir cutadapt
 cd cutadapt/
 ```
