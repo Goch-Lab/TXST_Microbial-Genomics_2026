@@ -47,7 +47,7 @@ source ~/.bashrc
 conda activate seqQC
 
 #Variables
-prefixes()
+prefixes=()
 for f in ../data/*_R1.fq; do
         p=$(echo $f | cut -f3 -d'/' | cut -f1 -d'_')
         prefixes+=("$p")
