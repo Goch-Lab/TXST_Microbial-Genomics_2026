@@ -54,12 +54,10 @@ mkdir data
 
 Download the two fastq files, `Unknown_R1.trimmed.fastq.gz` and `Unknown_R2.trimmed.fastq.gz` from Canvas to the local computer, and upload them into your data directory above on LEAP2.
 
-Samples were sequenced on an Illumina NextSeq platform, with read pairs of 150 bp eacg, with an insert size of 350 bp. As you can tell from the file names, the data have already been QCed and trimmed.
+Genomic DNA from a bacterial isolate was sequenced on an Illumina NextSeq platform, with read pairs of 150 bp eacg, with an insert size of 350 bp. As you can tell from the file names, the data have already been QCed and trimmed.
 
 >[!NOTE]
 > We are skipping QC and trimming for the sake of time.
-
-<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/ac70010c-774b-41c6-a1d4-8662f8ab2357" />
 
 ## 🧩 Assembly
 
@@ -75,29 +73,32 @@ A symbolic link (aka symlink or soft link) is a special type of file that points
 
 ```bash
 ln -s ../data/Unknown_R*.fastq.gz .
+```
+Activate the Conda environment:
+
+```bash
 conda activate assembly
 ```
 
 The documentation of SPAdes can be found [here](https://ablab.github.io/spades) or by running `spades.py -h`. 
 
-The steps are: 
+These are the steps SPAdes follows: 
 
 <img width="265" height="355" alt="Screenshot 2025-09-18 at 10 42 34 AM" src="https://github.com/user-attachments/assets/9ad8209b-6707-499e-b627-594461cb6f39" />
 <img width="479" height="267" alt="Screenshot 2025-09-18 at 10 43 29 AM" src="https://github.com/user-attachments/assets/f65ab785-ac47-4846-88a5-3ab6be2075f4" />
 
+The SPAdes manual makes a few recommendations:
 
+1. Because we are working with the genome of a bacterial isolate genome (and not a metagenome), the read coverage ais likely pretty high (>50x). We need to run our assembly in the `--isolate` mode.
+2. For 150 bp reads, they recommend *k*-mers of 21, 33, 55, and 77 bp.
 
-On their manual, SPAdes recommends a few things for us:
-1. We are working with an isolate genome (not metagenome), so the read coverage across the genome is probably pretty high (>50x). We need to run our assembly in `--isolate` mode.
-2. For 150bp reads, they recommend kmers of 21,33,55,77.
-
-> Small k → better sensitivity, connects through low-coverage regions but introduces tangles/repeats.
-> Large k → more specificity, helps resolve repeats, but risks breaking contigs in low-coverage areas.
-
-~Rule of thumb: the largest k should be about ½ the read length or a bit more.~
+> Small *k* → better sensitivity, connects through low-coverage regions but more likely to introduce tangles/repeats.
+> Large *k* → more specificity, helps resolve repeats, but risks breaking contigs in low-coverage areas.
+> Rule of thumb 👍🏼: the largest *k* should be about ½ the read length or a bit more.
 
 You may ask, why the odd numbers? 
---> With an even k, you can end up with k-mers that are perfect palindromes, i.e. a sequence that reads the same in forward and reverse in the reverse complement of the sequence. 
+--> With an even *k*, you can end up with *k*-mers that are perfect palindromes, i.e., a sequence that reads the same in the forward strand and in the reverse complement of the sequence.
+
 ```
                 5' - TCGCGA - 3'
                 3' - AGCGCT - 5'
@@ -108,25 +109,88 @@ You may ask, why the odd numbers?
                 5' - CGCGA - 3'
 ```
         
-Ok, I think that covers SPAdes. We can finally assemble. It only requires one command from us:            
->[!WARNING] this step consumes at least 16 GB of RAM/memory. If you have an 8 GB computer, SPAdes will likely fail since you have other things running. 
+Create a script for SPAdes:
 
 ```bash
-spades.py --isolate -1 unknown_R1_paired.fastq.gz -2 unknown_R2_paired.fastq.gz -o output -t 4 -k 21,33,55,77
+vim spades.sh
 ```
-This will take <5 min. 
 
-My favorite assembly stats program, Quast, was not working 😔
-So we use seqkit's `stat` function instead. 
+Copy-paste the following script:
 
 ```bash
-seqkit stats -N 50 output/contigs.fasta
+#!/bin/bash
+#SBATCH --job-name=spades
+#SBATCH --partition=shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=4
+#SBATCH --time=1:00:00
+#SBATCH --mem=20G
+
+# Get started
+echo "Job started on $(hostname) at $(date)"
+
+source ~/.bashrc
+conda activate assembly
+
+#Variables
+export R1=Unknown_R1.trimmed.fastq.gz
+export R2=Unknown_R2.trimmed.fastq.gz
+export OUTDIR=output
+
+#Commands
+spades.py --isolate -1 $R1 -2 $R2 -o $OUTDIR -t $SLURM_NTASKS -k 21,33,55,77
+
+# Finish up
+conda deactivate
+
+echo "Job Ended at $(date)"
 ```
 
-We can also use a bash command `grep` to grab and then count (-c) how many contigs we have by using the `>`. 
+Save the script and run it:
+
 ```bash
-grep -c ">" output/contigs.fasta
+sbatch spades.sh
 ```
+
+This should take <5 min. Keep track of the job using `squeue`. Once it finishes, inspect the SLURM output file and try to make sense of the steps taken:
+
+```bash
+less slurm-<jobID>.out
+```
+
+Deactivate the Conda environment and go back to the `assembly` directory:
+
+```bash
+conda deactivate
+cd ..
+```
+
+## ✅ Assembly QC Assessment
+
+We will use [Quast](https://quast.sourceforge.net/index.html) to asses quality of the resulting genome assembly. Because of incompatibilities with the assembly environment, we will create a separate environment for quast:
+
+```bashz
+conda create -n quast python=3.7
+conda activate quast
+conda install -c bioconda quast
+conda deactivate
+```
+
+Create a symlink to the contigs assembled by SPAdes:
+
+```bash
+ln -s ../spades/output/contigs.fasta
+```
+
+Run Quast on an interactive session:
+
+```bash
+sinteractive -p shared -n 1 --mem-per-cpu=10G --time=1:00:00
+quast.py contigs.fasta
+exit
+```
+
+Once finished, download the HTML report (`quast_results\results_<...>\report.html`) to the local computer. It should be similar to [this one](https://htmlpreview.github.io/?https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/04_assembly/report.html).
 
 Now we’re going to put our genome assembly into the anvi’o framework and begin to look at our assembled genome.
 
