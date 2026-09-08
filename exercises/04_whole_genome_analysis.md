@@ -9,7 +9,8 @@ By the end of this exercise, you should be able to:
 - Assemble a genome
 - Assess the quality of a genome assembly
 
-## Setting Up Working Environment
+## ⛑️ Setting Up Working Environment
+
 Log in on your LEAP2 account. Create a new `conda` environment for genome assembly: 
 
 ```bash
@@ -35,13 +36,15 @@ conda install -y -c conda-forge -c bioconda vmatch
 conda deactivate
 ```
 
-## Setting Up Working Environment
+## 🧑🏻‍💻 Working Directory and Data
+
 Go to your `microbial_genomics` directory and, in there, create a working directory for genome assembly:
 
 ```bash
 cd </path/to/>microbial_genomics
 mkdir assembly
 ```
+
 Create a working directory for your sequence data in there:
 
 ```bash
@@ -49,58 +52,33 @@ cd assembly
 mkdir data
 ```
 
-Now download the two fastq files, `unknown_R1_paired.fastq.gz` and `unknown_R2_paired.fastq.gz` from Canvas to Downloads and move them over to `data_dir`. 
-```bash
-mv ../../../../Downloads/*.fastq.gz .
-ls
-```
+Download the two fastq files, `Unknown_R1.trimmed.fastq.gz` and `Unknown_R2.trimmed.fastq.gz` from Canvas to the local computer, and upload them into your data directory above on LEAP2.
 
-Now let's move ourselves into `work_dir` and start processing our reads there. Don't forget to activate the conda environment.
-```bash
-cd ../work_dir/
-```
+Samples were sequenced on an Illumina NextSeq platform, with read pairs of 150 bp eacg, with an insert size of 350 bp. As you can tell from the file names, the data have already been QCed and trimmed.
 
 >[!NOTE]
-> We are going to skip read QC and trimming for the sake of time. So here is what the authors did.
-
-Sequencing: Illumina Nextseq, 2x150bp, with a 350bp insert. 
+> We are skipping QC and trimming for the sake of time.
 
 <img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/ac70010c-774b-41c6-a1d4-8662f8ab2357" />
 
-The authors of this tutorial used a different program called `Trimmomatic`. It's like cutadapt, but a bit more automatic. It can automatically detect Illumina adapters.
-This was the code they ran:
-```bash
-trimmomatic PE unknown_raw_R1.fastq.gz unknown_raw_R2.fastq.gz \
-            unknown_R1_paired.fastq.gz unknown_R1_unpaired.fastq.gz \
-            unknown_R2_paired.fastq.gz unknown_R2_unpaired.fastq.gz \
-            CROP:140 LEADING:10 TRAILING:10 SLIDINGWINDOW:5:20 \
-            MINLEN:140 -threads 4
-```
-* PE = run in paired-end mode
-* LEADING:10 = cut the bases off the start of the read if their phred quality score is below 10
-* TRAILING:10 = does the same, but on the ends of the reads
-* SLIDINGWINDOW:5:20 = starting at base 1, look at a window of 5 bps and if the average quality score drops before 20, truncate the read at that position and only keep up to that point
-* MINLEN:151 = pretty stringent, any read that gets trimmed will be thrown out
+## 🧩 Assembly
 
-<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/95df4988-d3c8-4e98-aa31-8f61a9bcb354" />
-
-
-## 🧪 Exercise 2: Assembly
-
-Make a directory for SPAdes to work in. 
+[SPAdes](https://ablab.github.io/spades/) is a very versatile genome assembler and easy to use.  We will use it for this session:
 
 ```bash
+cd </path/to/assembly>
 mkdir spades
 cd spades
 ```
-Let's create a symlink to our data from data_dir.
+
+A symbolic link (aka symlink or soft link) is a special type of file that points to another file or directory. They are a common way to create shortcuts to easily access files at other locations in a same file system. Create a symlinks to the data:
 
 ```bash
-ln -s ../../data_dir/*.fastq.gz .
+ln -s ../data/Unknown_R*.fastq.gz .
+conda activate assembly
 ```
-Now we are ready to assemble!
-The manual for SPAdes can be found here: https://ablab.github.io/spades/
-We can also view it on our command line, run `spades.py -h`. 
+
+The documentation of SPAdes can be found [here](https://ablab.github.io/spades) or by running `spades.py -h`. 
 
 The steps are: 
 
