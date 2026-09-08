@@ -1,4 +1,4 @@
-# CL 4: Whole-Genome Assembly
+# CL5: Whole-Genome Assembly
 
 In this tutorial, we are going to assemble an unknown genome.
 
@@ -16,31 +16,37 @@ Log in on your LEAP2 account. Create a new `conda` environment for genome assemb
 conda create -n assembly -c bioconda -c conda-forge spades seqkit
 ```
 
-Now let's make an environment for Anvio. 
+[Anvi'o](https://anvio.org/) is a comprehensive open-source analysis and visualization platform for microbial omics. We will be using it throughout the course. Create a `conda` environment for Anvi'o:
 
-1. Open this link: https://anvio.org/install/macos/stable/
-2. Start at Step 3. Yes, your Mac has an Apple Silicon processor, so you need to run `conda config --env --set subdir osx-64` before creating the conda environment.
-3. Stop after Step 4. If you receive no errors, proceed to Step 6 and run `anvi-self-test --suite mini` to check your installation.
-4. After running the self-test, stop.
-
-Now exit out of the conda environment
-```
+```bash
+conda deactivate
+conda remove -n anvio-9 --all -y
+conda create -y --name anvio-9 python=3.10
+conda activate anvio-9
+conda install -y -c conda-forge -c bioconda python=3.10 \
+        sqlite=3.46 prodigal idba mcl muscle=3.8.1551 famsa hmmer diamond \
+        blast megahit bowtie2 bwa graphviz "samtools>=1.9" \
+        trimal iqtree trnascan-se fasttree r-base r-tidyverse \
+        r-optparse r-stringi r-magrittr bioconductor-qvalue meme ghostscript \
+        nodejs=20.12.2 llvmlite numba
+conda install -y -c bioconda fastani
+conda install -y -c conda-forge -c bioconda spades
+conda install -y -c conda-forge -c bioconda vmatch
 conda deactivate
 ```
 
-Ok, hopefully that all worked. We will now create our directories and download the data. 
+## Setting Up Working Environment
+Go to your `microbial_genomics` directory and, in there, create a working directory for genome assembly:
 
-Let's start with a fresh directory. Make sure you are in your ~home directory, run `cd` if not.
-
-Run these lines one at a time. 
 ```bash
-cd Desktop
-mkdir microgenomics-2025
-cd microgenomics-2025
-mkdir week4
-cd week4
-mkdir data_dir work_dir
-cd data_dir
+cd </path/to/>microbial_genomics
+mkdir assembly
+```
+Create a working directory for your sequence data in there:
+
+```bash
+cd assembly
+mkdir data
 ```
 
 Now download the two fastq files, `unknown_R1_paired.fastq.gz` and `unknown_R2_paired.fastq.gz` from Canvas to Downloads and move them over to `data_dir`. 
