@@ -1,26 +1,20 @@
-# Week 4: Isolate/Whole genome assembly & annotation
+# CL 4: Whole-Genome Assembly
 
-In this tutorial, we are going to assemble an unknown genome and analyze it to find out what it is and what it does.
-We will be back working in the command line, not in R.
-
+In this tutorial, we are going to assemble an unknown genome.
 
 ---
 ## 🧠 Learning Objectives
 
 By the end of this exercise, you should be able to:
-- Assemble 
-- Annotate
-- Analyze your genome
+- Assemble a genome
+- Assess the quality of a genome assembly
 
-## 🧪 Step 1: Setting up the working environment and reading in the data
-
-Let's make a new `conda` environment for assembly. Open `Terminal` and run. 
+## Setting Up Working Environment
+Log in on your LEAP2 account. Create a new `conda` environment for genome assembly: 
 
 ```bash
 conda create -n assembly -c bioconda -c conda-forge spades seqkit
 ```
-If `conda` is not installed: you need to install following these instructions: https://github.com/morgansobol/MicrobialGenomics-TXST-2025/blob/main/exercises/install_conda.md 
-
 
 Now let's make an environment for Anvio. 
 
