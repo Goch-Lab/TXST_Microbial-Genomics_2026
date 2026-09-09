@@ -125,8 +125,8 @@ SAM files are a type of text file format that contains the alignment information
 bowtie2-build contigs.fasta contigs.btindex
 
 bowtie2 -q -x contigs.btindex \
-        -1 Unknown_R1_paired.fastq.gz \
-        -2 Unknown_R2_paired.fastq.gz \
+        -1 Unknown_R1.trimmed.fastq.gz \
+        -2 Unknown_R2.trimmed.fastq.gz \
         -p 4 -S unknown_assembly.sam
 
 samtools view -bS unknown_assembly.sam > unknown_assembly.bam
