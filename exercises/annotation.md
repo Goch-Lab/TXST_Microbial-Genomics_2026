@@ -75,7 +75,7 @@ conda activate anvio-9
 anvi-gen-contigs-database -f contigs.fasta -o contigs.db -n unknown_genome
 ```
 
-Search for open reading frames (ORFs) using a set of 71 single-copy genes that are core to all bacteria:
+Search for open reading frames (ORFs) using a set of 71 single-copy genes (SCGs) that are core to all bacteria:
 
 ```bash
 anvi-run-hmms -c contigs.db -I Bacteria_71 -T 4
@@ -87,44 +87,46 @@ Search for the *16S* rDNA gene:
 anvi-run-hmms -c contigs.db -I Ribosomal_RNA_16S -T 4
 ```
 
-Anvio will determine our genome completeness and contamination with single-copy genes (SCGs) by running this:
+Anvi'o determines genome completeness and contamination with SCGs by running this:
+
 ```
 anvi-estimate-genome-completeness -c contigs.db
 ```
 
-So you can see, our genome is 100% complete based on the presence of expected SCGs. The redundancy is ~4%, so just below the 5% threshold for high-quality genomes. 
+As you can see, our genome is 100% complete based on the presence of expected SCGs. The redundancy is ~4%, so just below the 5% threshold for high-quality genomes. 
 
-Now, let's assign functions to our ORFS!
-First, we will do so with the NCBI COG database. We have to run `anvi-setup-ncbi-cogs` to download and set up the database. You only have to do this once. 
+Let's assign functions to our ORFs. First, we will do so with the NCBI COG database. Download and set up the database: 
 
 ```bash
 anvi-setup-ncbi-cogs -T 4 
 anvi-run-ncbi-cogs -c contigs.db -T 4
 ```
 
-Next, we will also assign function using the KEGG database. 
+Next, assign functions using the KEGG database:
+
 ```bash
+anvi-setup-kegg-data -T 4
 anvi-run-kegg-kofams -c contigs.db -T 4
 ```
-This will take ~8-10 min.
 
-When this next program runs, it will look at the KOfam annotations (for KEGG Orthologs, or KOs) within each genome, match them up to the KEGG module definitions to estimate the completeness of each module/pathway. 
-A module is considered ‘complete’ or ‘present’ in a genome if its completeness score is above a certain threshold, which can be set with the --module-completion-threshold parameter. A static threshold such as this is not the most ideal metric, especially since metabolic modules have variable numbers of genes - for example, with the default threshold of 0.75 (75%), a module with 3 KOs in it would only be considered complete if all 3 of those KOs were found in a genome, while a module with 5 KOs could be considered complete if only 4 of its KOs were found. But it is what it is without diving deeper and doing additional checks (: 
-```
+This will take ~8-10 min. Next, let's estimate KEGG pathways completeness:
+
+```bash
 anvi-estimate-metabolism -c contigs.db
 ```
 
-We can then integrate mapping information from recruiting our reads to the assembly. This mapping information is placed into anvi’o with the anvi-profile program, which generates another type of database anvi’o calls a “profile database”. In contrast to the contigs-db, an anvi’o single-profile-db stores sample-specific information about contigs. Profiling a BAM file with anvi’o using anvi-profile creates a single profile that reports properties for each contig in a single sample based on mapping results. 
+This program looks at the KOfam annotations (for KEGG Orthologs, or KOs) within each genome, and matches them up to the KEGG module definitions to estimate the completeness of each module/pathway. A module is considered ‘complete’ or ‘present’ in a genome if its completeness score is above a certain threshold, which can be set with the `--module-completion-threshold` parameter. A static threshold such as this is not the most ideal metric, especially since metabolic modules have variable numbers of genes. For example, with the default threshold of 0.75 (75%), a module with 3 KOs in it would only be considered complete if all 3 of those KOs were found in a genome, while a module with 5 KOs could be considered complete if only 4 of its KOs were found.
 
-SAM files are a type of text file format that contains the alignment information of various sequences that are mapped against reference sequences. BAM files contain the same information as SAM files, except they are in binary file format which is not readable by humans. On the other hand, BAM files are smaller and more efficient for software to work with than SAM files, saving time and reducing costs of computation and storage. 
+We can then integrate mapping information from aligning our reads to the assembly. This mapping information is placed into Anvi’o with the `anvi-profile` program, which generates another type of database Anvi’o calls a “profile database”. In contrast to the contigs-db, an Anvi’o single-profile-db stores sample-specific information about contigs. Profiling a BAM file using `anvi-profile` creates a single profile that reports properties for each contig in a single sample based on mapping results. 
 
-Run these line by line. 
+SAM files are a type of text file format that contains the alignment information of various sequences that are mapped against reference sequences. BAM files contain the same information as SAM files, except they are in binary file format which is not readable by humans. On the other hand, BAM files are smaller and more efficient for software to work with than SAM files, saving time and reducing costs of computation and storage. Run these line by line:
+
 ```bash
 bowtie2-build contigs.fasta contigs.btindex
 
 bowtie2 -q -x contigs.btindex \
-        -1 unknown_R1_paired.fastq.gz \
-        -2 unknown_R2_paired.fastq.gz \
+        -1 Unknown_R1_paired.fastq.gz \
+        -2 Unknown_R2_paired.fastq.gz \
         -p 4 -S unknown_assembly.sam
 
 samtools view -bS unknown_assembly.sam > unknown_assembly.bam
