@@ -166,8 +166,10 @@ ln -s ../spades/output/contigs.fasta
 Run Quast on an interactive session:
 
 ```bash
+conda activate quast
 sinteractive -p shared -n 1 --mem-per-cpu=10G --time=1:00:00
 quast.py contigs.fasta
+conda deactivate
 exit
 ```
 
