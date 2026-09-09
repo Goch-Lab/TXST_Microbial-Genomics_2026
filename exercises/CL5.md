@@ -148,7 +148,14 @@ cd ..
 
 ## ✅ Assembly QC Assessment
 
-We will use [Quast](https://quast.sourceforge.net/index.html) to asses quality of the resulting genome assembly. Create a Conda environment for Quast:
+We will use [Quast](https://quast.sourceforge.net/index.html) to asses quality of the resulting genome assembly. Create a directory for Quast:
+
+```bash
+mkdir quast
+cd quast
+```
+
+Create a Conda environment for Quast:
 
 ```bash
 conda create -n quast python=3.7
