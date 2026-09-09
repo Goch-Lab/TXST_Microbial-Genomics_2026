@@ -62,15 +62,27 @@ In short, this command:
    - You have used the flag `--skip-gene-calling` (no gene calls will be made), or
    - You have provided `external-gene-calls`.
 
+Let's run the annotation with Anvi'o on an interactive shell:
+
+```bash
+sinteractive -p shared -n 4 --mem-per-cpu=5G --time=2:00:00
+```
+
 Create the contig database:
 
 ```bash
+conda activate anvio-9
 anvi-gen-contigs-database -f contigs.fasta -o contigs.db -n unknown_genome
 ```
+
+Search for open reading frames (ORFs) using a set of 71 single-copy genes that are core to all bacteria:
 
 ```bash
 anvi-run-hmms -c contigs.db -I Bacteria_71 -T 4
 ```
+
+Search for the *16S* rDNA gene:
+
 ```bash
 anvi-run-hmms -c contigs.db -I Ribosomal_RNA_16S -T 4
 ```
