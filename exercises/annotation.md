@@ -9,7 +9,15 @@ By the end of this exercise, you should be able to:
 - Predict genes in a genome
 - Annotate functions of different type of genetic elements
 
-## ⛑️ Setting Up Working Environment
+## ⛑️ Setting Up Working Directory and Environment
+
+Go to your `microbial_genomics` directory and, in there, create a working directory for genome annotation:
+
+```bash
+cd </path/to/>microbial_genomics
+mkdir annotation
+cd annotation
+```
 
 [Anvi'o](https://anvio.org/) is a comprehensive open-source analysis and visualization platform for microbial omics. We will be using it throughout the course. Create a Conda environment for Anvi'o:
 
@@ -27,44 +35,35 @@ conda install -y -c conda-forge -c bioconda python=3.10 \
 conda install -y -c bioconda fastani
 conda install -y -c conda-forge -c bioconda spades
 conda install -y -c conda-forge -c bioconda vmatch
+curl -L https://github.com/merenlab/anvio/releases/download/v9/anvio-9.tar.gz --output anvio-9.tar.gz
+pip install anvio-9.tar.gz
 conda deactivate
-```
-
-## 🧑🏻‍💻 Working Directory and Data
-
-Go to your `microbial_genomics` directory and, in there, create a working directory for genome annotation:
-
-```bash
-cd </path/to/>microbial_genomics
-mkdir annotation
-cd annotation
 ```
 
 Create symlinks to the sequence data and the genome assembly:
 
-```
+```bash
 ln -s ../assembly/data/*.fastq.gz .
 ln -s ../assembly/spades/output/contigs.fasta .
 ```
 
-## 🧪 Exercise 3: Anvi'o
+## 🧪 Exercise 3: Annotation
 
+To make our contigs "more easily accessible" for Anvi'o, we can generate a contig database using the command `anvi-gen-contigs-database`. Look  at the command usage:
 
-
-Activate the conda environment.
+```bash
+anvi-gen-contigs-database -h
 ```
-conda activate anvio-8
-```
 
-For us to get our assembly into anvi’o, first we need to generate what it calls a contigs database using the `anvi-gen-contigs-database ` command. This will organize our contigs in an anvi’o-friendly way, and provide information about them. 
+In short, this command:
 
-When run on `contigs.fasta` this program will:
+1. Computes *k*-mer frequencies for each contig (the default is 4, but you can change it using the `--kmer-size` parameter).
+2. Soft-splits contigs longer than 20,000 bp into smaller ones (you can change the split size using the `--split-length` flag). When the gene-calling step is not skipped, the process of splitting contigs will take into account the location of genes and avoid cutting genes in the middle. For large assemblies, this process can take a while and you can skip it with the `--skip-mindful-splitting` flag.
+3. Identifies open reading frames using Prodigal, UNLESS:
+   - You have used the flag `--skip-gene-calling` (no gene calls will be made), or
+   - You have provided `external-gene-calls`.
 
-1. Compute k-mer frequencies for each contig (the default is 4, but you can change it using --kmer-size parameter if you feel adventurous).
-2. Soft-split contigs longer than 20,000 bp into smaller ones (you can change the split size using the --split-length flag). When the gene calling step is not skipped, the process of splitting contigs will consider where genes are and avoid cutting genes in the middle. For very, very large assemblies this process can take a while, and you can skip it with --skip-mindful-splitting flag.
-3. Identify open reading frames using Prodigal, UNLESS, (1) you have used the flag --skip-gene-calling (no gene calls will be made) or (2) you have provided external-gene-calls.
 
-You can see what the command needs and options you want to set by `anvi-gen-contigs-database -h `.
 
 ```bash
 anvi-gen-contigs-database -f contigs.fasta -o contigs.db -n unknown_genome
