@@ -37,7 +37,6 @@ conda install -y -c conda-forge -c bioconda spades
 conda install -y -c conda-forge -c bioconda vmatch
 curl -L https://github.com/merenlab/anvio/releases/download/v9/anvio-9.tar.gz --output anvio-9.tar.gz
 pip install anvio-9.tar.gz
-conda deactivate
 ```
 
 Create symlinks to the sequence data and the genome assembly:
@@ -63,7 +62,7 @@ In short, this command:
    - You have used the flag `--skip-gene-calling` (no gene calls will be made), or
    - You have provided `external-gene-calls`.
 
-
+Create the contig database:
 
 ```bash
 anvi-gen-contigs-database -f contigs.fasta -o contigs.db -n unknown_genome
