@@ -46,7 +46,7 @@ ln -s ../assembly/data/*.fastq.gz .
 ln -s ../assembly/spades/output/contigs.fasta .
 ```
 
-## 🧪 Exercise 3: Annotation
+## 🧬 Annotation
 
 To make our contigs "more easily accessible" for Anvi'o, we can generate a contig database using the command `anvi-gen-contigs-database`. Look  at the command usage:
 
@@ -172,19 +172,19 @@ anvi-script-add-default-collection -p unknown_profiled/PROFILE.db
 anvi-summarize -c contigs.db -p unknown_profiled/PROFILE.db -C DEFAULT -o unknown_assembly_summary/
 ```
 
-The visualizations produced by Anvi'o are geared towards metagenomics/comparative genomics:
+Download the `unknown_assembly_summary` to your local computer>
+
+```bash
+scp -r <netID>@leap2.txstate.edu:</path/to>/microbial_genomics/annotation/unknown_assembly_summary </some/location/in/local/computer>
+```
+
+Open the `index.html` file. The visualizations produced by Anvi'o are geared towards metagenomics/comparative genomics (none generated for our example):
 
 <img width="1062" height="1066" alt="image" src="https://github.com/user-attachments/assets/5f4be3be-55ab-4d8f-a502-7467763054b6" />
 
 
-## 📝 Figuring Out the Unknown Microbe
+## 🦠 Figuring Out the Unknown Microbe
 
 Part of the annotation exercise consisted of recovering the 16S gene. This is a common marker use as a taxonomic barcode. To determine what potential species we have been working with, copy the content of the `rRNAs.fa`, paste it on the nucleotide [BLAST](https://blast.ncbi.nlm.nih.gov) portal, and execute the search.
 
-
-
-
-
-
-
-
+This is the end of CL6!
