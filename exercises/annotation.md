@@ -137,36 +137,49 @@ anvi-profile -i unknown_anvio.bam -c contigs.db -T 4 --cluster-contigs -o unknow
 
 ```
 
-Let's export a fasta file of Prodigal-identified open-reading frames. 
+Let's export a fasta file of Prodigal-identified open-reading frames:
+
 ```bash
 anvi-get-sequences-for-gene-calls -c contigs.db -o gene_calls.fa
 ```
 
-And do the same for our 16S rRNAs, SCGs, COGs, and KEGGs. Run each one line by line. 
+Explore the generated fasta file:
+
 ```bash
-anvi-get-sequences-for-hmm-hits -c contigs.db --hmm-source Ribosomal_RNA_16S -o rRNAs.fa
-anvi-get-sequences-for-hmm-hits -c contigs.db --hmm-sources Bacteria_71 --get-aa-sequences -o bacterial_SCGs.faa --no-wrap
-anvi-export-functions -c contigs.db -o cog_functions.txt --annotation-sources COG20_CATEGORY
-anvi-export-functions -c contigs.db -o kegg_functions.txt --annotation-sources KEGG_Class,KOfam
+less gene_calls.fa
 ```
 
-Now we are going
+Do the same for our 16S rRNAs, SCGs, COGs, and KEGGs; run each command at a time:
+
+```bash
+anvi-get-sequences-for-hmm-hits -c contigs.db --hmm-source Ribosomal_RNA_16S -o rRNAs.fa
+less rRNAs.fa
+
+anvi-get-sequences-for-hmm-hits -c contigs.db --hmm-sources Bacteria_71 --get-aa-sequences -o bacterial_SCGs.faa --no-wrap
+less bacterial_SCGs.faa
+
+anvi-export-functions -c contigs.db -o cog_functions.txt --annotation-sources COG24_CATEGORY
+less cog_functions.txt
+
+anvi-export-functions -c contigs.db -o kegg_functions.txt --annotation-sources KEGG_Class,KOfam
+less kegg_functions.txt
+```
+
+Generate an annotation summary:
+
 ```bash
 anvi-script-add-default-collection -p unknown_profiled/PROFILE.db
 anvi-summarize -c contigs.db -p unknown_profiled/PROFILE.db -C DEFAULT -o unknown_assembly_summary/
-anvi-interactive -c contigs.db -p unknown_profiled/PROFILE.db --title "Unknown assembly"
 ```
-Anvi'o visualization is really geared towards metagenomics/comparative genomics like so:
+
+The visualizations produced by Anvi'o are geared towards metagenomics/comparative genomics:
 
 <img width="1062" height="1066" alt="image" src="https://github.com/user-attachments/assets/5f4be3be-55ab-4d8f-a502-7467763054b6" />
 
 
-## 📝 Assignment due next class on Canvas
-1. Who does your genome belong to? (Hint: what can you do with the information in rRNAs.fa file)
-2. Tell me about the organism (environments it's found in, metabolisms, etc). Provide literature references. 
-3. Using the provided cog_functions.txt, make a bar chart of COG functional categories. Count the number of genes per COG category letter (A, C, E, …). If a gene is annotated to multiple categories (entries separated by !!!), count it once for each category it belongs to. Label axes and add category names. Feel free to use Excel (easy) or R (advanced). If you use ChatGPT, provide a screenshot of the solution you used. 
-Example:
-<img width="1000" height="500" alt="image" src="https://github.com/user-attachments/assets/8f0804d9-c542-45f6-9c4b-780c4f335de7" />
+## 📝 Figuring Out the Unknown Microbe
+
+Part of the annotation exercise consisted of recovering the 16S gene. This is a common marker use as a taxonomic barcode. To determine what potential species we have been working with, copy the content of the `rRNAs.fa`, paste it on the nucleotide [BLAST](https://blast.ncbi.nlm.nih.gov) portal, and execute the search.
 
 
 
