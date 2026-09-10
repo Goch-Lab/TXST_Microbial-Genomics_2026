@@ -8,7 +8,7 @@ This repo contains course materials, tutorials, and example scripts for [Texas S
 - 🔍 [CL3: Sequence Data QC](exercises/CL3.md)
 - 🧹 [CL4: Sequence Data Processing](exercises/CL4.md)
 - 🧩 [CL5: Whole-Genome Assembly](exercises/CL5.md)
-- 📝 [CL6: Genome Annotation](exercises/CL6)
+- 📝 [CL6: Genome Annotation](exercises/CL6.md)
 - 🧬 [CL7: Ortholog Analysis](exercises/CL7)
 - ⭕️ [CL8: Pangenomes](exercises/CL8)
 - 🦠 [CL9: *16S* Amplicon Sequencing](exercises/CL9)
