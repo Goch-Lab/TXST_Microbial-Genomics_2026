@@ -85,9 +85,9 @@ Submit the following SLURM script for OrthoFinder (**TIP**: open a text editor a
 #SBATCH --job-name=<job name>
 #SBATCH --partition=shared
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=4
+#SBATCH --ntasks-per-node=16
 #SBATCH --time=5:00:00
-#SBATCH --mem=40G
+#SBATCH --mem=80G
 
 # Get started
 echo "Job started on $(hostname) at $(date)"
@@ -107,7 +107,7 @@ conda deactivate
 echo "Job Ended at $(date)"
 ```
 
-Keep track of the job and ensure it completes successfully as we have done in previous sessions. This will take a while.
+Keep track of the job and ensure it completes successfully as we have done in previous sessions. This should take 15-20 min.
 
 ## 🧑🏻‍💻 Exploring OrthoFinder' results
 
