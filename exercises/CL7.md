@@ -37,17 +37,26 @@ orthofinder -h
 
 ## 📈 Protein data
 
-We are going to run a phylogenomic analysis across a set of model species: mouse, human, frog, zebrafish, Japanese puffer (Takifugu rubripes) and fruit fly (Drosophila melanogaster). Keep in mind that, while these organisms are not microbes, this type of analysis can easily be transferred to any kind of organism.
+We are going to run a phylogenomic analysis across a set of model species: human (*Homo sapiens*), mouse (*Mus musculus*), tropical clawed frog (*Xenopus tropicalis*), zebrafish (*Danio rerio*), Japanese pufferfish (*Takifugu rubripes*), and fruit fly (*Drosophila melanogaster*). Keep in mind that, while these organisms are not microbes, this type of analysis can easily be transferred to any kind of organism.
 
-Inside your `orthofinder` directory, create a directory called “data”, go in there and obtain the path to that directory:
+Download the `data.tar.gz` from Canvas to your local computer. Upload the same file to your `orthofinder` directory on LEAP2 as we have done in previous sessions. Inside your `orthofinder` directory, extract the content of the compressed directory:
 
 ```bash
-mkdir data
-cd data/
-pwd
+tar -xvzf data.tar.gz
+rm data.tar.gz
 ```
 
-Go to https://www.ensembl.org/, this is generally the first place to look for proteomes. Click on “Human” under “Favourite genomes”. (If you’re downloading data from other websites you might find this post useful: Getting OrthoFinder input data)
+Unzip the fasta files and explore their content:
 
-OrthoFinder requires as input the amino acid sequences for all the protein coding genes in your species of interest. The sequences for each species should be in a separate file with filename extension “.fa”, “.faa”, “.fasta”, “.fas” or “.pep”. When a genome of a species is sequenced and made available, two major steps are performed, assembly and annotation. Assembly is the piecing together of the individual reads into the genome sequence. Annotation is the identification of features of interest in the genome assembly, such as protein coding genes. Therefore, the files we need will often be in a section called ‘annotation’. On Ensembl, on the right hand side, under “Gene annotation” click “Download FASTA”.
+```bash
+cd data
+gunzip *.faa.gz
+head *.faa
+```
+
+What type of sequences contain these fasta files? Why do they have a ".faa" extension?
+
+>[!NOTE]
+> Fasta files containing proteins can have different extensions, including ".fa", ".faa", ".fasta", or ".pep". Always make sure the type of sequences you are dealing with, and that it is the right type for the tools you are using.
+
 
