@@ -165,8 +165,8 @@ This file is in the Newick format. The Newick format is a text-based way to repr
 
 <img width="3847" height="3466" alt="image" src="https://josephcrispell.github.io/assets/img/blog/newick/thumbnail.svg" />
 
+There are several programs and online tools that can be used to visualize trees in the Newick format. Download the species tree file to your local computer and upload it to the [ETE Toolkit tree viewer](https://etetoolkit.org/treeview).
 
-Dendroscope is a tree viewer you can download and run locally and is the best option if you’re going to look at more than a few trees. Alternatively, there are also a number of options you can run from you’re web browser, e.g. the ETE Toolkit tree viewer. Using one of these, open the file Species_Tree/SpeciesTree_rooted.txt. As this file has bootstrap values Dendroscope will need you to select the option “Interpret as edge labels” to view them correctly. The species tree looks like this:
+This tree has been inferred by OrthoFinder using the [STAG](https://doi.org/10.1101/267914) algorithm and rooted using the [STRIDE](https://doi.org/10.1093/molbev/msx259) algorithm, so it is ready to interpret (ordinarily you would have to root a tree yourself first). You can see here that *Drosophila* is on longer branches than the other species, as mentioned above. If you know what the species tree should look like, you should check that the tree matches what you expect. The tree OrthoFinder inferred here is correct. If the species tree is not correct then this will not impact the orthogroup inference, but it might affect the other inferences, such as some gene duplication events.
 
-
-
+This is the end of CL7!
