@@ -61,4 +61,48 @@ What type of sequences contain these fasta files? Why do they have a ".faa" exte
 >[!NOTE]
 > Fasta files containing proteins can have different extensions, including ".fa", ".faa", ".fasta", or ".pep". Always make sure the type of sequences you are dealing with, and that it is the right type for the tools you are using.
 
+The fasta files were downloaded from [ENSEMBL](https://www.ensembl.org) and may contain multiple isoforms per gene. If we ran OrthoFinder on these raw files it would take ~10x longer than necessary and could lower the accuracy. Use a script provided with OrthoFinder to extract the longest variant per gene on an interactive shell:
+
+```bash
+sinteractive -p shared -n 1 --mem-per-cpu=10G --time=1:00:00
+conda activate orthofinder
+for f in *.faa ; do primary_transcript $f ; done
+```
+
+## 🖥️ Running OrthoFinder
+
+Go back to the `orthofinder` directory:
+
+```bash
+cd ..
+```
+
+Submit the following SLURM script for OrthoFinder (**TIP**: open a text editor as per usual, decide on a file name, *edit* the script and submit it:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=<job name>
+#SBATCH --partition=shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=4
+#SBATCH --time=5:00:00
+#SBATCH --mem=40G
+
+# Get started
+echo "Job started on $(hostname) at $(date)"
+
+source ~/.bashrc
+conda activate orthofinder
+
+#Variables
+export PROT=</path/to/primary_transcripts>
+
+#Commands
+orthofinder -t $SLURM_NTASKS -f $PROTS
+
+# Finish up
+conda deactivate
+
+echo "Job Ended at $(date)"
+```
 
