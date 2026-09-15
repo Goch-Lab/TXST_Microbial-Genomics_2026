@@ -125,7 +125,7 @@ ls
 The first thing to check is how many genes were assigned to orthogroups. OrthoFinder should have printed a text like this in the SLURM output:
 
 ```bash
-OrthoFinder assigned 121743 genes (92.9% of total) to 17981 orthogroups.
+OrthoFinder assigned 120012 genes (92.% of total) to 14872 orthogroups.
 ```
 
 Otherwise, you can also find this information in the `Comparative_Genomics_Statistics/Statistics_Overall.tsv.` file.
@@ -138,7 +138,7 @@ less Comparative_Genomics_Statistics/Statistics_PerSpecies.tsv
 
 This is a tab-separated file (“.tsv”), in which columns are delimited by tabs. TSV files like one are best visualized in a spreadsheet (like in Excel). It is up to you if you would like to download it to your local computer to explore it more easily.
 
-You may notice that all vertebrates have >90% of their genes assigned to orthogroups, whereas *Drosophila* has about 76% of its genes assigned. This is probably due to species sampling. The four vertebrate species are relatively closely related, whereas the species sampling around both *Drosophila* was poor.
+You may notice that all vertebrates have >90% of their genes assigned to orthogroups, whereas *Drosophila* has about 78% of its genes assigned. This is probably due to species sampling. The four vertebrate species are relatively closely related, whereas the species sampling around both *Drosophila* was poor.
 
 <ins>Orthogroups</ins>
 
@@ -155,7 +155,7 @@ This table has one orthogroup per line and one spcies per column and is ordered 
 Let’s look at the species tree next:
 
 ```bash
-less Species_Tree/SpeciesTree_rooted.txt
+cat Species_Tree/SpeciesTree_rooted.txt
 ```
 
 This file is in the Newick format. The Newick format is a text-based way to represent phylogenetic trees using parentheses and commas:
