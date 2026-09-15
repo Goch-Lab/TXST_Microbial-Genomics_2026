@@ -67,6 +67,7 @@ The fasta files were downloaded from [ENSEMBL](https://www.ensembl.org) and may 
 sinteractive -p shared -n 1 --mem-per-cpu=10G --time=1:00:00
 conda activate orthofinder
 for f in *.faa ; do primary_transcript $f ; done
+conda deactivate
 ```
 
 ## 🖥️ Running OrthoFinder
@@ -98,11 +99,74 @@ conda activate orthofinder
 export PROT=</path/to/primary_transcripts>
 
 #Commands
-orthofinder -t $SLURM_NTASKS -f $PROTS
+orthofinder -t $SLURM_NTASKS -f $PROT
 
 # Finish up
 conda deactivate
 
 echo "Job Ended at $(date)"
 ```
+
+Keep track of the job and ensure it completes successfully as we have done in previous sessions. This will take a while.
+
+## 🧑🏻‍💻 Exploring OrthoFinder' results
+
+The analysis OrthoFinder performs is pretty extensive so we will start with the key OrthoFinder results files and explore them as you would explore your own results. You can also see a complete listing of the OrthoFinder results files on their [GitHub page](https://github.com/OrthoFinder/OrthoFinder#output-files).
+
+By default OrthoFinder creates a results directory called `OrthoFinder`. Explore the contents of the results directory: 
+
+```bash
+cd data/primary_transcripts/OrthoFinder/Results_<Date>/
+ls
+```
+
+<ins>General Statistics</ins>
+The first thing to check is how many genes were assigned to orthogroups. OrthoFinder should have printed a text like this in the SLURM output:
+
+```bash
+OrthoFinder assigned 121743 genes (92.9% of total) to 17981 orthogroups.
+```
+
+Otherwise, you can also find this information in the `Comparative_Genomics_Statistics/Statistics_Overall.tsv.` file.
+
+This is pretty good, in general it is nice to see >80% of your genes assigned to orthogroups. Fewer than this means that you are probably missing orthology relationships that actually exist for some of the remaining genes, poor species sampling is the most likely cause for this, although this will depend on the organisms you are studying. Let’s also check the percentages on a per species basis:
+
+```bash
+less Comparative_Genomics_Statistics/Statistics_PerSpecies.tsv
+```
+
+This is a tab-separated file (“.tsv”), in which columns are delimited by tabs. TSV files like one are best visualized in a spreadsheet (like in Excel). It is up to you if you would like to download it to your local computer to explore it more easily.
+
+You may notice that all vertebrates have >90% of their genes assigned to orthogroups, whereas *Drosophila* has about 76% of its genes assigned. This is probably due to species sampling. The four vertebrate species are relatively closely related, whereas the species sampling around both *Drosophila* was poor.
+
+<ins>Orthogroups</ins>
+Often we are interested in group-wise species comparisons, that is comparisons across a clade of species rather than between a pair of species. The generalization of orthology to multiple species is the orthogroup. Just like orthologs are the genes descended from a single gene in the last common ancestor of a pair of species, **an orthogroup is the set of genes descended from a single gene in a group of species**. So, if we want to do a comparison of the "equivalent" genes in a set of species, we need to do the comparison across the genes in an othogroup. The orthogroups are in the file `Orthogroups.tsv`:
+
+```bash
+less Orthogroups/Orthogroups.tsv
+```
+
+This table has one orthogroup per line and one spcies per column and is ordered from the largest orthogroup to the smallest.
+
+<ins>Species Tree</ins>
+Let’s look at the species tree next:
+
+```bash
+less Species_Tree/SpeciesTree_rooted.txt
+```
+
+This file is in the Newick format. The Newick format is a text-based way to represent phylogenetic trees using parentheses and commas:
+
+ - Parentheses group related nodes or sister taxa together.
+ - Commas separate items within the same group.
+ - Names identify individual leaf nodes (like species).
+ - Colons optionally add branch lengths or node support values.
+ - Semicolons mark the end of the entire tree string.
+
+<img width="3847" height="3466" alt="image" src="https://josephcrispell.github.io/assets/img/blog/newick/thumbnail.svg" />
+
+
+Dendroscope is a tree viewer you can download and run locally and is the best option if you’re going to look at more than a few trees. Alternatively, there are also a number of options you can run from you’re web browser, e.g. the ETE Toolkit tree viewer. Using one of these, open the file Species_Tree/SpeciesTree_rooted.txt. As this file has bootstrap values Dendroscope will need you to select the option “Interpret as edge labels” to view them correctly. The species tree looks like this:
+
+
 
