@@ -121,6 +121,7 @@ ls
 ```
 
 <ins>General Statistics</ins>
+
 The first thing to check is how many genes were assigned to orthogroups. OrthoFinder should have printed a text like this in the SLURM output:
 
 ```bash
@@ -140,6 +141,7 @@ This is a tab-separated file (“.tsv”), in which columns are delimited by tab
 You may notice that all vertebrates have >90% of their genes assigned to orthogroups, whereas *Drosophila* has about 76% of its genes assigned. This is probably due to species sampling. The four vertebrate species are relatively closely related, whereas the species sampling around both *Drosophila* was poor.
 
 <ins>Orthogroups</ins>
+
 Often we are interested in group-wise species comparisons, that is comparisons across a clade of species rather than between a pair of species. The generalization of orthology to multiple species is the orthogroup. Just like orthologs are the genes descended from a single gene in the last common ancestor of a pair of species, **an orthogroup is the set of genes descended from a single gene in a group of species**. So, if we want to do a comparison of the "equivalent" genes in a set of species, we need to do the comparison across the genes in an othogroup. The orthogroups are in the file `Orthogroups.tsv`:
 
 ```bash
@@ -149,6 +151,7 @@ less Orthogroups/Orthogroups.tsv
 This table has one orthogroup per line and one spcies per column and is ordered from the largest orthogroup to the smallest.
 
 <ins>Species Tree</ins>
+
 Let’s look at the species tree next:
 
 ```bash
