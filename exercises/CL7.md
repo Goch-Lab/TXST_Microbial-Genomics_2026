@@ -13,6 +13,8 @@ By the end of this exercise, you should be able to:
 
 [OrthoFinder](https://github.com/davidemms/OrthoFinder) is an easy-to-use, quick and comprehensive tool for comparative genomics. It detects orthologs based on sequence similarity, creates orthogroups (proxies of gene families) based on a clustering algorithm, infers rooted gene trees for all orthogroups, and identifies putative gene duplication events. It also infers a rooted species tree for the organisms being analyzed and maps the gene duplication events to branches in the species tree. The only input OrthoFinder needs is a set of protein sequence files (one per species) in FASTA format.
 
+<img width="7201" height="3022" alt="image" src="https://upload.wikimedia.org/wikipedia/commons/a/ad/OrthoFinderWorkflow.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original" />
+
 Log into LEAP2 and create a working directory:
 
 ```bash
