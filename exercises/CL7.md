@@ -150,7 +150,7 @@ less Orthogroups/Orthogroups.tsv
 
 This table has one orthogroup per line and one spcies per column and is ordered from the largest orthogroup to the smallest.
 
-<ins>Species Tree</ins>
+<ins>Species and Gene Trees</ins>
 
 Let’s look at the species tree next:
 
@@ -168,8 +168,24 @@ This file is in the Newick format. The Newick format is a text-based way to repr
 
 <img width="3847" height="3466" alt="image" src="https://josephcrispell.github.io/assets/img/blog/newick/thumbnail.svg" />
 
-There are several programs and online tools that can be used to visualize trees in the Newick format. Download the species tree file to your local computer and upload it to the [ETE Toolkit tree viewer](https://etetoolkit.org/treeview).
+There are several programs and online tools that can be used to visualize trees in the Newick format. Either copy the species tree in Newick format and paste it on the [ETE Toolkit tree viewer](https://etetoolkit.org/treeview) or download its file to your local computer and then upload it to the ETE Toolkit tree viewer.
 
 This tree has been inferred by OrthoFinder using the [STAG](https://doi.org/10.1101/267914) algorithm and rooted using the [STRIDE](https://doi.org/10.1093/molbev/msx259) algorithm, so it is ready to interpret (ordinarily you would have to root a tree yourself first). You can see here that *Drosophila* is on longer branches than the other species, as mentioned above. If you know what the species tree should look like, you should check that the tree matches what you expect. The tree OrthoFinder inferred here is correct. If the species tree is not correct then this will not impact the orthogroup inference, but it might affect the other inferences, such as some gene duplication events.
+
+Have a look at the file containing all gene trees:
+
+```bash
+less Resolved_Gene_Trees/Resolved_Gene_Trees.txt
+```
+
+Can you tell how many trees are in the file? Try to apply commands you have learned thus far to figure out the number.
+
+Print the tree for the thousandth orthogroup:
+
+```bash
+head -n 1000 Resolved_Gene_Trees/Resolved_Gene_Trees.txt | tail -n 1
+```
+
+Copy-paste in on the [ETE Toolkit tree viewer](https://etetoolkit.org/treeview). Compare it to the species tree. Do they look similar? Can you explain the differences?
 
 This is the end of CL7!
