@@ -26,9 +26,8 @@ cd orthofinder
 Install OrthoFinder using Conda:
 
 ```bash
-conda create -n orthofinder python=3.12
+conda create -n orthofinder -c bioconda -c conda-forge orthofinder>=3
 conda activate orthofinder
-conda install bioconda::orthofinder
 ```
 
 Check installation by printing the help message:
@@ -109,7 +108,7 @@ echo "Job Ended at $(date)"
 
 Keep track of the job and ensure it completes successfully as we have done in previous sessions. This should take 15-20 min.
 
-## 🧑🏻‍💻 Exploring OrthoFinder' results
+## 🧑🏻‍💻 Exploring OrthoFinder's results
 
 The analysis OrthoFinder performs is pretty extensive so we will start with the key OrthoFinder results files and explore them as you would explore your own results. You can also see a complete listing of the OrthoFinder results files on their [GitHub page](https://github.com/OrthoFinder/OrthoFinder#output-files).
 
