@@ -28,7 +28,7 @@ Install OrthoFinder using Conda:
 ```bash
 conda create -n orthofinder python=3.12
 conda activate orthofinder
-conda install orthofinder
+conda install bioconda::orthofinder
 ```
 
 Check installation by printing the help message:
