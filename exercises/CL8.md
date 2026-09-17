@@ -34,8 +34,8 @@ Download and extract the fasta files for the *V. jasicida* genomes:
 ```bash
 curl -L https://cloud.uol.de/public.php/dav/files/LdgMQW6ixzzPKzS -o V_jascida_genomes.tar.gz
 tar -xzvf V_jascida_genomes.tar.gz
-cd V_jascida_genomes
 mv V_jascida_genomes V_jasicida_genomes
+cd V_jasicida_genomes
 ls
 ```
 
