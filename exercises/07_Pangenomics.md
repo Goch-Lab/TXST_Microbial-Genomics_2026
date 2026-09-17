@@ -9,13 +9,30 @@ By the end of this exercise, you should be able to:
 
 ## 🧬 Genome Data
 
-Like the last few weeks, you need to make a new `week7` directory inside your `microgenomics-2025` directory. 
-Move into your `week7` directory, and download the `work_dir` for this week from Canvas under Module Week 7. 
-I did this to ensure we all have the correct bins, especially for those who were not here last week. 
+This tutorial uses genome data generated for seven isolates of *Vibrio jasicida* during the Microbial Diversity course at the Marine Biological Laboratory (MBL) in 2018. The isolates were obtained from various places in Woods Hole, Massachusetts, including: the Eel Pond, the Marine Resources Center, and the Great Harbor:
 
-Last thing, don't forget to activate your anvio conda environment. 
+| Plate Number | Researcher         | Source                         |
+|--------------|--------------------|--------------------------------|
+| 12           | Peggy Lai          | Seawater, Great Harbor         |
+| 13           | Peggy Lai          | Seawater, Great Harbor         |
+| 14           | Peggy Lai          | Seawater, Great Harbor         |
+| 47           | Danielle Campbell  | Seawater, Eel Pond             |
+| 52           | Brittni Bertolet   | Unknown                        |
+| 53           | Sarah Schwenck     | Coral, Marine Resources Center |
+| 55           | Monica E. McCallum | Coral, Marine Resources Center |
 
-## 🧪 Step 2: Initial visualization of pangenome
+Download and extract the fasta files for the *V. jasicida* genomes:
+
+```bash
+curl -L https://cloud.uol.de/public.php/dav/files/LdgMQW6ixzzPKzS -o V_jascida_genomes.tar.gz
+tar -xzvf V_jascida_genomes.tar.gz
+cd V_jascida_genomes
+ls
+```
+
+You might notice that, in addition to the MGL genomes, we have a file for a reference genome. This is a dataset downloaded from the [NCBI RefSeq database](https://www.ncbi.nlm.nih.gov/refseq); it contains the complete genome sequence of *Vibrio jasicida* strain 090810c (accession: GCF_002887615.1).
+
+## Converting Fasta files into an Anvi'o Database
 
 For this example, we will work with 6 external _E. faecalis_, and 5 _E. faecium_ genomes to analyze them together with our _E. faecalis_ bin from last week. For each of these 11 external genomes, anvi’o contigs databases were already created by Meren. 
 
