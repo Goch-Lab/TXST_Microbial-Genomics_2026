@@ -32,44 +32,75 @@ ls
 
 You might notice that, in addition to the MGL genomes, we have a file for a reference genome. This is a dataset downloaded from the [NCBI RefSeq database](https://www.ncbi.nlm.nih.gov/refseq); it contains the complete genome sequence of *Vibrio jasicida* strain 090810c (accession: GCF_002887615.1).
 
-## Converting Fasta files into an Anvi'o Database
+## Converting Fasta files into Anvi'o Contig Databases
 
-For this example, we will work with 6 external _E. faecalis_, and 5 _E. faecium_ genomes to analyze them together with our _E. faecalis_ bin from last week. For each of these 11 external genomes, anvi’o contigs databases were already created by Meren. 
+First, we need to convert the fasta files into an Anvi'o contigs database. Start an interactive shell, activate your Anvi'o environment, and create a file that is easier to loop through:
 
-We can see them here:
-```
-ls additional-files/pangenomics/external-genomes/*db
-```
-
-Import Efaecalis data. 
-```
-anvi-import-collection additional-files/collections/e-faecalis.txt \
-                       --bins-info additional-files/collections/e-faecalis-info.txt \
-                       -p PROFILE.db \
-                       -c CONTIGS.db \
-                       -C E_faecalis
+```bash
+sinteractive -p shared -n 4 --mem-per-cpu=10G --time=2:00:00
+conda activate anvio-9
+ls *fasta | awk 'BEGIN{FS="_"}{print $1}' > genomes.txt
+cat genomes.txt
 ```
 
-Let's double-check we have the collections of bins we need, specifically looking for E_facealis (yes it's a typo, should be E_faecalis).
-```
-anvi-show-collections-and-bins -p PROFILE.db
+The fasta files contain genome assemblies from the isolates, which include many short sequences. Therefore, it is a good idea to remove short sequences since they may be coming from low-abundance contaminants that didn’t assemble well and/or influence how gene clusters are formed. Let's go through each entry in our genomes.txt file and use the program anvi-script-reformat-fasta to create copies of each fasta file only with sequences ≥2,500 bp:
+
+```bash
+for g in `cat genomes.txt`
+do
+    echo
+    echo "Working on $g ..."
+    echo
+    anvi-script-reformat-fasta ${g}_scaffolds.fasta \
+                               --min-len 2500 \
+                               --simplify-names \
+                               -o ${g}_scaffolds_2.5K.fasta
+done
 ```
 
-The first step in the pangenomic workflow is to generate an anvi’o genomes storage, which is a special anvi’o database that stores information about genomes. Easy enough!
-```
-anvi-gen-genomes-storage -i additional-files/pangenomics/internal-genomes.txt \
-                         -e additional-files/pangenomics/external-genomes.txt \
-                         -o Enterococcus-GENOMES.db
+Now we can generate the contig databases:
+
+```bash
+for g in `cat genomes.txt`
+do
+    echo
+    echo "Working on $g ..."
+    echo
+    anvi-gen-contigs-database -f ${g}_scaffolds_2.5K.fasta \
+                              -o V_jascida_${g}.db \
+                              --num-threads 4 \
+                              -n V_jascida_${g}
+done
 ```
 
-Now, we can characterize the pangenome. Conveniently, Anvi'o has a `pan-genome` command for us. This will take a few minutes.
-```
-anvi-pan-genome -g Enterococcus-GENOMES.db \
-                -n Enterococcus \
-                -o PAN \
-                --num-threads 4
+## Annotating Contig Databases
+
+Anvi-o contig databases i, in addition to containing the genome sequences, can hold a lot of additional information per genome, such as gene predictions, *k*-mer frequencies, gene functions, and so on. Like in [CL6: Genome Annotation](../CL6.md), we can use several Anvi'o programs, such as to identify bacterial single-copy core genes, ribosomal RNAs, transfer RNAs, and annotate the genes with functions in each database:
+
+```bash
+for g in *.db
+do
+    anvi-run-hmms -c $g --num-threads 4
+    anvi-run-ncbi-cogs -c $g --num-threads 4
+    anvi-scan-trnas -c $g --num-threads 4
+    anvi-run-scg-taxonomy -c $g --num-threads 4
+done
 ```
 
+Take a look at some features of the isolate genomes:
+
+```bash
+anvi-display-contigs-stats *.db --report-as-text -o contigs_stats.txt
+cat contigs_stats.txt
+```
+
+When working with a bunch of contig databases in Anvi'o, a  file called `external-genomes` is describing the dataset is required for most tools:
+
+```bash
+anvi-script-gen-genomes-file --input-dir . -o external-genomes.txt
+```
+
+The structure of the external-genomes file is simple: it is a two-column TAB-delimited file. One can easily create it using EXCEL or any kind of text editor. But anvi’o comes with a script, anvi-script-gen-genomes-file to create one from all the contigs databases found in a directory. So let’s use that to generate an external genomes file:
 So, this program implements pangenomics and organizes genes found within a genomes-storage-db to create a pan-db.
 It performs three major things for its user:
 
