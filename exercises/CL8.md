@@ -48,7 +48,7 @@ First, we need to convert the fasta files into an Anvi'o contigs database. Start
 ```bash
 sinteractive -p shared -n 4 --mem-per-cpu=10G --time=2:00:00
 conda activate anvio-9
-ls *fasta | awk 'BEGIN{FS="_"}{print $1}' > genomes.txt
+ls *.fasta | awk 'BEGIN{FS="_"}{print $1}' > genomes.txt
 cat genomes.txt
 ```
 
@@ -162,7 +162,7 @@ anvi-compute-genome-similarity --external-genomes external-genomes.txt \
 Summarize the main features of the pangenome:
 
 ```bash
-anvi-script-add-default-collection -p V_jascida/V_jascida-PAN.db 
+anvi-script-add-default-collection -p V_jasicida/V_jasicida-PAN.db 
 anvi-summarize -p V_jasicida/V_jasicida-PAN.db -g V_jasicida-GENOMES.db -C DEFAULT
 ```
 
