@@ -33,7 +33,7 @@ ls
 
 You might notice that, in addition to the MGL genomes, we have a file for a reference genome. This is a dataset downloaded from the [NCBI RefSeq database](https://www.ncbi.nlm.nih.gov/refseq); it contains the complete genome sequence of *Vibrio jasicida* strain 090810c (accession: GCF_002887615.1).
 
-## Converting Fasta files into Anvi'o Contig Databases
+## Preparing Input for Anvi'o
 
 First, we need to convert the fasta files into an Anvi'o contigs database. Start an interactive shell, activate your Anvi'o environment, and create a file that is easier to loop through:
 
