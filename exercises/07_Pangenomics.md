@@ -5,12 +5,9 @@ In this tutorial, we will run a pangenomic analysis using [Anvi'o](https://anvio
 ## 🧠 Learning Objectives
 
 By the end of this exercise, you should be able to:
-* Explain the concept of a pangenome and distinguish between core, accessory, and unique genes across a set of genomes.
-* Use Anvi’o to generate and visualize a pangenome.
-* Interpret patterns in sequence similarity and gene presence/absence matrices.
+* Build a pangenome from multiple genomic datasets.
 
-
-## 🧪 Step 1: Reading in the data and setting up the working environment
+## 🧬 Genome Data
 
 Like the last few weeks, you need to make a new `week7` directory inside your `microgenomics-2025` directory. 
 Move into your `week7` directory, and download the `work_dir` for this week from Canvas under Module Week 7. 
