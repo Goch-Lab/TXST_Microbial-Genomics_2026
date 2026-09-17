@@ -21,6 +21,14 @@ This tutorial uses genome data generated for seven isolates of *Vibrio jasicida*
 | 53           | Sarah Schwenck     | Coral, Marine Resources Center |
 | 55           | Monica E. McCallum | Coral, Marine Resources Center |
 
+Log in on LEAP2, go to your `microbial_genomics` directory and create a working directory:
+
+```bash
+cd </path/to/microbial_genomics>
+mkdir pangenomes
+cd pangenomes
+```
+
 Download and extract the fasta files for the *V. jasicida* genomes:
 
 ```bash
