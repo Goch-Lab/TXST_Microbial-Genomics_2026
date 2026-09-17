@@ -76,7 +76,7 @@ done
 
 ## Annotating Contig Databases
 
-Anvi-o contig databases i, in addition to containing the genome sequences, can hold a lot of additional information per genome, such as gene predictions, *k*-mer frequencies, gene functions, and so on. Like in [CL6: Genome Annotation](../CL6.md), we can use several Anvi'o programs, such as to identify bacterial single-copy core genes, ribosomal RNAs, transfer RNAs, and annotate the genes with functions in each database:
+Anvi-o contig databases i, in addition to containing the genome sequences, can hold a lot of additional information per genome, such as gene predictions, *k*-mer frequencies, gene functions, and so on. Like in [CL6: Genome Annotation](./CL6.md), we can use several Anvi'o programs, such as to identify bacterial single-copy core genes, ribosomal RNAs, transfer RNAs, and annotate the genes with functions in each database:
 
 ```bash
 for g in *.db
