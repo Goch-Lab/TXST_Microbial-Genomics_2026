@@ -1,6 +1,6 @@
-# Week 7: Pangenomics
+# CL8: Pangenomics
 
-In this tutorial, we will be comparing our _E. faecalis_ bin from last week to other closely related organisms. 
+In this tutorial, we will run a pangenomic analysis using [Anvi'o](https://anvio.org/). This tutorial is large based on [a workshop run by the Anvi'o developer](https://merenlab.org/tutorials/vibrio-jasicida-pangenome/).
 
 ## 🧠 Learning Objectives
 
