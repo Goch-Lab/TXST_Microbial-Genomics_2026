@@ -13,7 +13,11 @@ By the end of this tutorial, you should be able to:
 - Assign taxonomy to ASVs while recognizing limitations of reference databases. 
 - Learn the importance of sampling controls for decontamination.
 
-## Setting Up Working Environment
+## Setting Up Working Directory and Environment
+
+Create a working directory at some location in your local computer called `dada2`.
+
+Then, run the following R script:
 
 ```R
 ##### Script for analysis with DADA2 ####
@@ -63,14 +67,12 @@ getwd() # where you are currently
 
 # Let's paste our path from the last exercise. 
 
-setwd("[insert path to directory you want to be in]")
+setwd("<path/to/desired/location>")
 
 # If you don't have that, then open R Terminal and navigate to the dada2 working directory.
 
 list.files() # make sure what we think is here is actually here
 dir() # this works too
-
-rm(list=ls()) # remove any prior objects, start from a clean slate
 
 # Set Up Our Variables ----------------------------------------------------
 
