@@ -93,7 +93,7 @@ filtered_reverse_reads <- paste0(samples, "_sub_R2_filtered.fq.gz")
 ```
 
 ## Additional Quality Trimming & Filtering
-We previously filtered our read sequence data using cutadapt ([CL3](./CL3.md)), where we eliminated reads that were missing primers and those <215 bp or >285. We will now implement an additional step to trim reads based on a quality threshold. 
+We previously filtered our read sequence data using cutadapt ([CL3: Sequence Data QC](./CL3.md)), where we eliminated reads that were missing primers and those <215 bp or >285. We will now implement an additional step to trim reads based on a quality threshold. 
 
 Since we are potentially shortening reads further, we will include another minimum-length cutoff. We wills also use a DADA2 plotting function (`plotQualityProfile()`) to visualize the trimming and filtering results. By running that on our variables that hold all of our forward and reverse read filenames, we can easily generate plots for all samples or for a subset of them. So let’s take a peak at that to help decide our trimming lengths:
 
