@@ -55,11 +55,11 @@ BiocManager::install("vegan")
 # load the packages
 library(dada2); packageVersion("dada2") 
 library(decontam); packageVersion("decontam")
-library(tidyverse) ; packageVersion("tidyverse") 
-library(phyloseq) ; packageVersion("phyloseq") 
-library(vegan) ; packageVersion("vegan") 
-library(dendextend) ; packageVersion("dendextend") 
-library(viridis) ; packageVersion("viridis") 
+library(tidyverse); packageVersion("tidyverse") 
+library(phyloseq); packageVersion("phyloseq") 
+library(vegan); packageVersion("vegan") 
+library(dendextend); packageVersion("dendextend") 
+library(viridis); packageVersion("viridis") 
 
 # Setting Our Path --------------------------------------------------------
 
@@ -79,7 +79,7 @@ dir() # this works too
 # First, we're setting a few variables to hold info we will need
 # Let's make one with all sample names, by scanning our "samples" file we made earlier.
 
-samples <- scan("samples.txt", what="character")
+samples <- scan("samples.txt", what = "character")
 
 # one holding the file names of all the forward reads
 forward_reads <- paste0(samples, "_sub_R1_trimmed.fq.gz")
@@ -111,35 +111,44 @@ On these plots, the bases are along the x-axis and the quality score on the y-ax
 >[!NOTE]
 >The Phred quality score difference between 40 and 20 is an expected error rate of 1 in 10,000 *versus* 1 in 100. In this case, since we have full overlap with the primers used, and the sequencing performed (515f-806r, 2x300 bp), we can be pretty conservative and trim a bit more. But it is important to think about your primers and the overlap you have.
 >
->Here, our primers span 515-806 (291 bp), and we cut off the primers which were 39 bp total, so we are expecting to span, nominally, 252 bases. If we trimmed forward and reverse down to 100 bp each, we would not span those 252 bp and this would cause problems later because we would not be able to merge the forward and reverse reads.
+>Here, our primers span 515-806 (291 bp), and we cut off the primers which were 39 bp total, so we are expecting to span, nominally, 252 bp. If we trimmed forward and reverse down to 100 bp each, we would not span those 252 bp and this would cause problems later because we would not be able to merge the forward and reverse reads.
 >
->Make sure you take the right considerations for on your data. Here, we will cut the forward reads at 250 and the reverse reads at 200–roughly where both sets maintain a median quality of 30 or above. We will also set a minimum length to filter out those that are too short to overlap. This function truncate reads at the first instance of a quality score of 2 by default; this is how we could end up with reads shorter than what we are explicitly trimming them down to.
+>Make sure you take the right considerations for your data. Here, we will cut the forward reads at 250 and the reverse reads at 200–roughly where both sets maintain a median quality of 30 or above. We will also set a minimum length to filter out those that are too short to overlap. This function truncates reads at the first instance of a quality score of 2 by default; this is how we could end up with reads shorter than what we are explicitly trimming them down to.
 
 >[!TIP]
-> Zymo developed a tool called Figaro (I have not used it myself yet) that can help you choose DADA2 trimming parameters: https://github.com/Zymo-Research/figaro#figaro
-> We won't use it here, but just wanted to point it out to test using during your projects if you are uncertain what trimming settings you need.
+> Zymo developed a tool called [Figaro](https://github.com/Zymo-Research/figaro#figaro) that can help you choose DADA2 trimming parameters. We will not use it here, but be aware of it for other projects.
 
 In DADA2, the quality-filtering step is done with the `filterAndTrim()` function:
+
 ```R
+# Quality-filtering -----------------------------------------------------------------
+
 filtered_out <- filterAndTrim(forward_reads, filtered_forward_reads,
-                reverse_reads, filtered_reverse_reads, maxEE=c(2,2),
-                rm.phix=TRUE, minLen=175, truncLen=c(250,200))
+                reverse_reads, filtered_reverse_reads, maxEE = c(2, 2),
+                rm.phix = TRUE, minLen = 175, truncLen = c(250, 200))
 ```
-Here, the first and third arguments (“forward_reads” and “reverse_reads”) are the variables holding our input files, which are our primer-trimmed output fastq files from cutadapt. 
 
-The second and fourth are the variables holding the file names of the output forward and reverse seqs from this function. 
+The first and third arguments (“forward_reads” and “reverse_reads”) are the variables holding our input files, which are our trimmed reads from cutadapt. The second and fourth are the variables holding the output file names. The following arguments are different parameters:
 
-And then we have a few parameters explicitly specified:
-- `maxEE` is the quality filtering threshold being applied based on the expected errors and in this case we are saying we want to throw the read away if it is likely to have more than 2 erroneous base calls (we are specifying for both the forward and reverse reads separately).
+- `maxEE` is the quality filtering threshold being applied based on the expected errors. In this case, reads with more than 2 erroneous base calls (for both forward and reverse) will be discarded.
 - `rm.phix` removes any reads that match the PhiX bacteriophage genome, which is typically added to Illumina sequencing runs for quality monitoring.
-- minLen is setting the minimum length reads we want to keep after trimming.
-- `truncQ`, which is set to 2 unless we specify otherwise, meaning it trims all bases after the first quality score of 2 it comes across in a read.
-- `maxN`= 0 by default (so we don't need to include here. This is also an additional filtering default parameter that is removing any sequences containing any Ns, i.e where no base was called
-- `truncLen` parameter setting the minimum length to trim the forward and reverse reads to in order to keep the quality scores roughly above 30 overall.
+- `minLen` is setting the minimum read length to keep after trimming.
+- `truncLen` is setting the minimum length to trim the forward and reverse reads to in order to keep the quality scores roughly above 30 overall.
 
-As mentioned, the output read files were named in those variables we made above (“filtered_forward_reads” and “filtered_reverse_reads”), so those files were created when we ran the function – we can see them if we run `list.files()` in R, or by checking in our working directory in the terminal. 
+The output read files will be created once the function finishes running we ran the function. 
 
-Let's check the object we generated called `filtered_out`, containing how many reads went in and how many reads made it out. Plot the reads like before using the `plotQualityProfile` function, *but* make sure you do it for the filtered reads this time. Try this yourself by typing the commands in the script and running them. They should look much better now. 
+Check the object we generated called `filtered_out`: 
+
+```R
+View(filtered_out)
+```
+
+Plot the quality of the filtered reads:
+
+```R
+plotQualityProfile(filtered_forward_reads)
+plotQualityProfile(filtered_reverse_reads)
+```
 
 ## 🧪 Step 3: Generating an error model of our data
 Dada2 tool uses a statistical approach that aims to predict if sequences are actually true biological sequences or are partly generated by errors that appear during sequencing, seperate from chimera removal. 
