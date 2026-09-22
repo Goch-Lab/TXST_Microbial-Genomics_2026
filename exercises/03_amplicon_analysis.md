@@ -183,12 +183,13 @@ err_forward_reads <- learnErrors(filtered_forward_reads, multithread=TRUE)
 err_reverse_reads <- learnErrors(filtered_reverse_reads, multithread=TRUE)
 ```
 
-Now we plot these results to see what errors we have (ignore the R warnings). 
+Plot the results to see the error rate distributions:
+
 ```R
 plotErrors(err_forward_reads, nominalQ=TRUE)
 plotErrors(err_reverse_reads, nominalQ=TRUE)
 ```
-The red line is what is expected based on the quality score, the black line represents the estimate, and the black dots represent the observed. Generally speaking, you want the observed (black dots) to track well with the estimated (black line). So things look good and we can move on!
+The red line is what is expected based on the quality score, the black line represents the estimated, and the black dots represent the observed errors. Generally speaking, you want the observed (black dots) to fit the estimated (black line) error rate. So, things look good and we can move on!
 
 ## 🧪 Step 4: Dereplication
 
