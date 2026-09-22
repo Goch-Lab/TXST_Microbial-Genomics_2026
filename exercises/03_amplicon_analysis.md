@@ -92,10 +92,10 @@ filtered_forward_reads <- paste0(samples, "_sub_R1_filtered.fq.gz")
 filtered_reverse_reads <- paste0(samples, "_sub_R2_filtered.fq.gz")
 ```
 
-## 🧪 Step 2: More quality trimming/filtering
-We did a filtering step above with cutadapt (where we eliminated reads that had imperfect or missing primers and those that were shorter than 215 bps or longer than 285), but in DADA2 we’ll implement a trimming step as well (where we trim reads down based on some quality threshold rather than throwing the read away). 
+## Additional Quality Trimming & Filtering
+We previously filtered our read sequence data using cutadapt ([CL3](./CL3.md)), where we eliminated reads that were missing primers and those <215 bp or >285. We will now implement an additional step to trim reads based on a quality threshold. 
 
-Since we’re potentially shortening reads further, we’re again going to include another minimum-length filtering component. We can also take advantage of a handy quality plotting function that DADA2 provides to visualize how your reads are doing, `plotQualityProfile()`. By running that on our variables that hold all of our forward and reverse read filenames, we can easily generate plots for all samples or for a subset of them. So let’s take a peak at that to help decide our trimming lengths:
+Since we are potentially shortening reads further, we will include another minimum-length cutoff. We wills also use a DADA2 plotting function (`plotQualityProfile()`) to visualize the trimming and filtering results. By running that on our variables that hold all of our forward and reverse read filenames, we can easily generate plots for all samples or for a subset of them. So let’s take a peak at that to help decide our trimming lengths:
 
 ```R
 # More QC -----------------------------------------------------------------
