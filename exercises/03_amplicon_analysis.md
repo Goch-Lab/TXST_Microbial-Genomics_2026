@@ -98,7 +98,7 @@ We previously filtered our read sequence data using cutadapt ([CL3: Sequence Dat
 Since we are potentially shortening reads further, we will include another minimum-length cutoff. We wills also use a DADA2 plotting function (`plotQualityProfile()`) to visualize the trimming and filtering results. By running that on our variables that hold all of our forward and reverse read filenames, we can easily generate plots for all samples or for a subset of them. So let’s take a peak at that to help decide our trimming lengths:
 
 ```R
-# More QC -----------------------------------------------------------------
+# QC -----------------------------------------------------------------
 
 plotQualityProfile(forward_reads)
 plotQualityProfile(reverse_reads)
@@ -106,16 +106,14 @@ plotQualityProfile(reverse_reads)
 plotQualityProfile(reverse_reads[17:20])
 ```
 
-On these plots, the bases are along the x-axis, and the quality score on the y-axis. The black underlying heatmap shows the frequency of each score at each base position, the green line is the mean quality score at that base position, the orange is the median, and the dashed orange lines show the quartiles. The red line at the bottom shows what percentage of reads are that length
-
-All forward look pretty similar to each other, and all reverses look worse than the forwards, which is common – chemistry gets tired 😞
+On these plots, the bases are along the x-axis and the quality score on the y-axis. The black underlying heatmap shows the frequency of each score at each base position, the green line is the mean quality score at that base position, the orange is the median, and the dashed orange lines show the quartiles. The red line at the bottom shows what percentage of reads by length.
 
 >[!NOTE]
->In Phred talk the difference between a quality score of 40 and a quality score of 20 is an expected error rate of 1 in 10,000 vs 1 in 100. In this case, since we have full overlap with these primers and the sequencing performed (515f-806r, 2x300), we can be pretty conservative and trim these up a bit more. But it’s important to think about your primers and the overlap you’re going to have.
+>The Phred quality score difference between 40 and 20 is an expected error rate of 1 in 10,000 *versus* 1 in 100. In this case, since we have full overlap with the primers used, and the sequencing performed (515f-806r, 2x300 bp), we can be pretty conservative and trim a bit more. But it is important to think about your primers and the overlap you have.
 >
->Here, our primers span 515-806 (291 bases), and we cut off the primers which were 39 bps total, so we are expecting to span, nominally, 252 bases. If we trimmed forward and reverse here down to 100 bps each, we would not span those 252 bases and this would cause problems later because we won’t be able to merge our forward and reverse reads.
+>Here, our primers span 515-806 (291 bp), and we cut off the primers which were 39 bp total, so we are expecting to span, nominally, 252 bases. If we trimmed forward and reverse down to 100 bp each, we would not span those 252 bp and this would cause problems later because we would not be able to merge the forward and reverse reads.
 >
->Make sure you’re considering this based on your data. Here, I’m going to cut the forward reads at 250 and the reverse reads at 200 – roughly where both sets maintain a median quality of 30 or above – and then see how things look. But we also want to set a minimum length to filter out those that are too short to overlap (by default, this function truncates reads at the first instance of a quality score of 2, this is how we could end up with reads shorter than what we are explicitly trimming them down to).
+>Make sure you take the right considerations for on your data. Here, we will cut the forward reads at 250 and the reverse reads at 200–roughly where both sets maintain a median quality of 30 or above. We will also set a minimum length to filter out those that are too short to overlap. This function truncate reads at the first instance of a quality score of 2 by default; this is how we could end up with reads shorter than what we are explicitly trimming them down to.
 
 >[!TIP]
 > Zymo developed a tool called Figaro (I have not used it myself yet) that can help you choose DADA2 trimming parameters: https://github.com/Zymo-Research/figaro#figaro
