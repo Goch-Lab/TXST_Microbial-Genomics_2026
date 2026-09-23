@@ -22,6 +22,7 @@ install.packages("remotes")
 remotes::install_github("cpauvert/psadd")
 library("psadd")
 library("dada2")
+library("phyloseq")
 
 # Set working directory
 setwd("<path/to/dada2>")
@@ -66,29 +67,29 @@ The `sample_info_tab` data frame containts the 16 samples as rows and four colum
 This table can be made anywhere (e.g., in R, Excel, the command line); we just need to make sure we read it into R properly (which we should always verify).
 
 ## Creating a Phyloseq Object
-Phyloseq is an R package to import, store, analyze, and graphically display complex phylogenetic sequencing data that has already been clustered into OTUs or ASVs. It leverages and builds upon many of the tools available in R for ecology and phylogenetic analysis (vegan, ade, ape), while also using advanced/flexible graphic systems (ggplot2) to easily produce publication-quality graphics. Check out more, including tutorials on what else it can do: https://joey711.github.io/phyloseq/ 
 
-It stores sequencing data as a single, self-consistent, self-describing experiment-level object, making it easier to use. Let's make that "object". 
+Phyloseq is an R package to import, store, analyze, and visualize complex phylogenetic sequencing data that has already been clustered into OTUs or ASVs. It leverages and builds upon many of the tools available in R for ecological and phylogenetic analysis (vegan, ade, ape), while also using advanced/flexible graphic systems (ggplot2) to easily produce publication-quality graphics. It stores sequencing data as a single, self-consistent, self-describing, experiment-level object, making it easier to use:
 
 ```R
-# Make a Phyloseq object --------------------------------------------------
+# Create a phyloseq object --------------------------------------------------
 
-count_tab_phy <- otu_table(count_tab, taxa_are_rows=T)
+count_tab_phy <- otu_table(count_tab, taxa_are_rows = T)
 sample_info_tab_phy <- sample_data(sample_info_tab)
 tax_tab_phy <- tax_table(tax_tab)
 ASV_physeq <- phyloseq(count_tab_phy, tax_tab_phy, sample_info_tab_phy)
 ASV_physeq
 ```
 
-You should see something like this, telling us that all the info we want is in the Phyloseq object:
+You should see something like this:
+
 ```
 phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 2498 taxa and 16 samples ]
+otu_table()   OTU Table:         [ 2457 taxa and 16 samples ]
 sample_data() Sample Data:       [ 16 samples by 4 sample variables ]
-tax_table()   Taxonomy Table:    [ 2498 taxa by 7 taxonomic ranks ]
+tax_table()   Taxonomy Table:    [ 2457 taxa by 7 taxonomic ranks ]
 ```
 
-## 🧪 Step 3: Normalize data
+## Data Normalization
 
 First, let's check the sequence abundance at all our sites and graph it for visualization. Sequence runs don't always go as planned, so we should expect some differences in sampling depths in our samples, which is most likely not truly reflective of that sample's true sequence abundance. 
 
