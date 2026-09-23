@@ -56,7 +56,7 @@ BiocManager::install("dada2")
 .rs.restartR()
 
 install.packages("Rcpp")
-install.packages(c("httpuv","later","promises"))
+install.packages(c("httpuv", "later", "promises"))
 install.packages("tidyverse")
 install.packages("dendextend")
 install.packages("viridis")
@@ -179,15 +179,15 @@ This is one of the more computationally intensive steps of the workflow. We will
 ```R
 # Generate an Error Model -------------------------------------------------
 
-err_forward_reads <- learnErrors(filtered_forward_reads, multithread=TRUE)
-err_reverse_reads <- learnErrors(filtered_reverse_reads, multithread=TRUE)
+err_forward_reads <- learnErrors(filtered_forward_reads, multithread = TRUE)
+err_reverse_reads <- learnErrors(filtered_reverse_reads, multithread = TRUE)
 ```
 
 Plot the results to see the error rate distributions:
 
 ```R
-plotErrors(err_forward_reads, nominalQ=TRUE)
-plotErrors(err_reverse_reads, nominalQ=TRUE)
+plotErrors(err_forward_reads, nominalQ = TRUE)
+plotErrors(err_reverse_reads, nominalQ = TRUE)
 ```
 The red line is what is expected based on the quality score, the black line represents the estimated, and the black dots represent the observed errors. Generally speaking, you want the observed (black dots) to fit the estimated (black line) error rate. So, things look good and we can move on!
 
@@ -200,9 +200,9 @@ The dereplication step is technically no longer listed as part of the standard D
 ```R
 # Dereplication -----------------------------------------------------------
 
-derep_forward <- derepFastq(filtered_forward_reads, verbose=TRUE)
+derep_forward <- derepFastq(filtered_forward_reads, verbose = TRUE)
 names(derep_forward) <- samples # the sample names in these objects are initially the file names of the samples, this sets them to the sample names for the rest of the workflow
-derep_reverse <- derepFastq(filtered_reverse_reads, verbose=TRUE)
+derep_reverse <- derepFastq(filtered_reverse_reads, verbose = TRUE)
 names(derep_reverse) <- samples
 ```
 
@@ -215,23 +215,20 @@ But because running all samples together on large datasets can become impractica
 
 <img width="1319" height="481" alt="image" src="https://github.com/user-attachments/assets/aa256b22-4896-444a-a84a-97abd691fb26" />
 
-
-That is, "pseudo-pooling", a two-step process in which independent sample processing is performed twice: First on the raw data alone, and then on the raw data again but this time informed by priors (i.e. a set of sequences that the user expects might be present in their samples due to some prior knowledge) generated from the first round of processing. Yielding results close to full-pooling of samples but with linear scaling in computation time. 
-
+Pseudo-pooling is a two-step process in which independent sample processing is performed twice: First on the raw data alone, and then on the raw data again but this time informed by priors (i.e., a set of sequences that the user expects might be present in their samples due to some prior knowledge) generated from the first round of processing, yielding results close to full-pooling of samples but with linear scaling in computation time. 
 
 <img width="1344" height="960" alt="image" src="https://github.com/user-attachments/assets/972c3e3b-0a9e-4f93-9c6f-e58337af0856" />
 
+This basically provides a way to tell Sample B that sequence Z is legit. However, this is not always the best way to go. The most appropriate approach will depend on your experimental design. For example, for samples repeatedly drawn from the same source, such as in longitudinal experiments, pseudo-pooling can provide an accurate description of ASVs at very low frequencies (e.g., present in 1-5 reads per sample). Yet, independent sample inference is less prone to reporting certain types of false-positives, such as contaminants, that are present at very low frequencies across many samples and that the pooling mode tends to detect. So use what works for your study.
 
-This basically provides a way to tell Sample B that sequence Z is legit. But it’s noted at the end of the pseudo-pooling page that this is not always the best way to go, and it may depend on your experimental design which is likely more appropriate for your data – as usual. For example, samples repeatedly drawn from the same source such as in longitudinal experiments, pseudo-pooling can provide a more accurate description of ASVs at very low frequencies (e.g. present in 1-5 reads per sample). But, independent sample inference is still very accurate, and is less prone to reporting certain types of false-positives, such as contaminants, that are present at very low frequencies across many samples and that the pooling mode tends to detect. So use what works for your study! There are no one-size-fits-all solutions in bioinformatics! 
-
-Ok, let's run dada now with pseudo-pooling on forward and reverse reads separately. 
+Run `dada()` with pseudo-pooling on forward and reverse reads separately: 
 
 ```R
-dada_forward <- dada(derep_forward, err=err_forward_reads, pool="pseudo", multithread=TRUE)
-dada_reverse <- dada(derep_reverse, err=err_reverse_reads, pool="pseudo", multithread=TRUE)
+dada_forward <- dada(derep_forward, err = err_forward_reads, pool = "pseudo", multithread = TRUE)
+dada_reverse <- dada(derep_reverse, err = err_reverse_reads, pool = "pseudo", multithread = TRUE)
 ```
 
-## 🧪 Step 6: Merging forward and reverse reads
+## Merging Forward and Reverse Reads
 Now DADA2 merges the forward and reverse ASVs to reconstruct our full target amplicon, requiring the overlapping region to be identical between the two. By default, it requires that at least 12 bps overlap, but in our case the overlap should be much greater. If you remember above we trimmed the forward reads to 250 and the reverse to 200, and our primers were 515f–806r (291 bp). After cutting off the primers we’re expecting a typical amplicon size of around 260 bases, so our typical overlap should be up around 190 bp. However, that’s estimated based on E. coli 16S rRNA gene positions and very back-of-the-envelope-esque of course, so to allow for true biological variation and such I’m going to set the `minOverlap` for this dataset to 170 bp. I’m also setting the `trimOverhang` option to TRUE in case any of our reads go past their opposite primers (which I wouldn’t expect based on our trimming, but is possible due to the region and sequencing method).
 
 ```R
