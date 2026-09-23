@@ -102,14 +102,14 @@ dir() # this works too
 samples <- scan("samples.txt", what = "character")
 
 # one holding the file names of all the forward reads
-forward_reads <- paste0(samples, "_sub_R1_trimmed.fq.gz")
+forward_reads <- paste0("data", samples, "_sub_R1_trimmed.fq.gz")
 
 # and one with the reverse reads
-reverse_reads <- paste0(samples, "_sub_R2_trimmed.fq.gz")
+reverse_reads <- paste0("data", samples, "_sub_R2_trimmed.fq.gz")
 
 # and variables holding file names for the forward and reverse filtered reads we're going to generate below
-filtered_forward_reads <- paste0(samples, "_sub_R1_filtered.fq.gz")
-filtered_reverse_reads <- paste0(samples, "_sub_R2_filtered.fq.gz")
+filtered_forward_reads <- paste0("data", samples, "_sub_R1_filtered.fq.gz")
+filtered_reverse_reads <- paste0("data", samples, "_sub_R2_filtered.fq.gz")
 ```
 
 ## Additional Quality Trimming & Filtering
