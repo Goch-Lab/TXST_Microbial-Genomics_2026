@@ -87,7 +87,7 @@ getwd() # where you are currently
 
 # Let's paste our path from the last exercise. 
 
-setwd("<path/to/desired/location>")
+setwd("<path/to/dada2>")
 
 # If you don't have that, then open R Terminal and navigate to the dada2 working directory.
 
