@@ -23,6 +23,7 @@ remotes::install_github("cpauvert/psadd")
 library("psadd")
 library("dada2")
 library("phyloseq")
+library("vegan")
 
 # Set working directory
 setwd("<path/to/dada2>")
@@ -109,64 +110,62 @@ There is almost a whole order of magnitude difference between sequence abundance
 >
 > [McMurdie & Holmes 2014](https://doi.org/10.1371/journal.pcbi.1003531) claim that too much data is lost when using rarefaction, and instead suggest using the Variance Stabilizing Transformation offered by [DESeq2](https://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html). However, many microbial environments are extremely variable in microbial composition, which would *violate* DESeq2 normalization assumptions of a constant abundance of a majority of species and of a balance of increased/decreased abundance for those species that do change.
 >
->Indeed, Dr. Pat Schloss at the University of Michigan, a microbial ecologist who wrote one of the pioneering *16S* amplicon analysis software ([mothur](https://mothur.org)) and very knowledgeable in the field, wrote a couple of rebuttals (papers [1](https://journals.asm.org/doi/10.1128/msphere.00355-23?url_ver=Z39.88-2003&rfr_id=ori:rid:crossref.org&rfr_dat=cr_pub%20%200pubmed) and [2](https://journals.asm.org/doi/full/10.1128/msphere.00354-23)), providing evidence that *true* rarefaction/subsampling is superior in dealing with uneven sequence depth. He has also published a few [Youtube videos](https://www.youtube.com/watch?v=t5qXPIS-ECU&list=PLmNrK_nkqBpJuhS93PYC-Xr5oqur7IIWf&index=2&ab_channel=RiffomonasProject) on this and other topics. Checkthem out if interested!
+>Indeed, Dr. Pat Schloss at the University of Michigan, a microbial ecologist who wrote one of the pioneering *16S* amplicon analysis software ([mothur](https://mothur.org)) and very knowledgeable in the field, wrote a couple of rebuttals (papers [1](https://doi.org/10.1128/msphere.00355-23) and [2](https://doi.org/10.1128/msphere.00354-23)), providing evidence that *true* rarefaction/subsampling is superior in dealing with uneven sequence depth. He has also published a few [YouTube videos](https://www.youtube.com/watch?v=t5qXPIS-ECU&list=PLmNrK_nkqBpJuhS93PYC-Xr5oqur7IIWf&index=2&ab_channel=RiffomonasProject) on this and other topics. Check them out if interested!
 
-Before using rarefaction (with multiple sampling!) to normalize our data, let's look at a rarefaction curve to get a sense of how sequencing depth relates to observed diversity of ASVs.
+Before using rarefaction (with multiple sampling) to normalize our data, let's look at a rarefaction curve to get a sense of how sequencing depth relates to observed diversity of ASVs.
 
 ```R
-# rarefraction curve 
-rarecurve(t(count_tab), step=100, col=sample_info_tab$color, lwd=2, ylab="ASVs", label=T, legend=TRUE)
-abline(v=(min(rowSums(t(count_tab)))))
-
+# Rarefraction curve 
+rarecurve(t(count_tab), step = 100, col = sample_info_tab$color, lwd = 2,
+          ylab = "ASVs", label = T, legend = T)
+abline(v = (min(rowSums(t(count_tab)))))
 ```
-This view suggests that the rock samples have a greater richness (unique number of sequences recovered) than the water samples or the biofilm sample – based on where they all cross the vertical line of lowest sampling depth, which is not necessarily predictive of where they’d end up had they been sampled to greater depth. And again, just focusing on the brown and black lines for the two types of basalts we have, they seem to show similar trends within their respective groups that suggest the more highly altered basalts (brown lines) may host more microbial communities with greater richness than the glassier basalts (black lines).
 
-Note the line we drew with `abline` shows us what would happen if we just subsampled all samples only once at the minimum values of sequences in a sample, i.e. 1897. We would lose some diversity that way, to the point of McMurdie & Holmes. Let's test this out. We will do rarefaction with and without multiple sampling.
+This view suggests that the rock samples have a greater richness (unique number of sequences recovered) than the water or the biofilm samples–based on where they all cross the vertical line of lowest sampling depth, which is not necessarily predictive of where they would end up had they been sampled to greater depth. When focusing on the brown and black lines for the two types of basalts, they seem to show similar trends within their respective groups that suggest the more highly altered basalts (brown lines) may host microbial communities with greater richness than the glassier basalts (black lines).
+
+Note the line we drew with `abline()` shows what would happen if we just subsampled all samples  once at the smallest number of sequences in a sample, i.e., 1897. We would lose some diversity, supporting McMurdie's & Holmes' argument. Let's test this out by doing rarefaction with and without multiple sampling:
 
 ```R
-# set normalization depth as the lowest number of sequences in a sample
-depth_target = min(sample_richness)
+# Set normalization depth as the lowest number of sequences in a sample
+depth_target <- min(sample_richness$Sequences)
 depth_target
 
-# first, without multiple subsampling
-# rngseed = 123, fixes the starting point of the random number generator, ensuring that the subsampling of 1897 sequences will always return the same subset of sequences each time the code is run.
-asv_rarefy <- rarefy_even_depth(ASV_physeq, sample.size=depth_target, rngseed=123)
+# Rarefaction without multiple subsampling
+# "rngseed = 123" sets a seed of 123 (random number), which fixes the starting point of the random number generator, ensuring that the subsampling of 1897 sequences will always return the same subset of sequences each time the code is run
+asv_rarefy <- rarefy_even_depth(ASV_physeq, sample.size = depth_target,
+                                rngseed = 123)
 
-# says we lost 356 ASVs. Let's confirm that another way.
+# We lost 355 ASVs. Let's confirm that another way:
 ntaxa(ASV_physeq) # original dataset before normalization
 ntaxa(asv_rarefy) 
-
 ```
-So, yes, 356 ASVs were lost. Let's see what happens when we average across multiple subsamplings.
-We will need to install the package first called `psadd`, which is an extension to phyloseq. 
+
+Let's see what happens when we average across multiple subsamplings:
 
 ```R
+# Same target depth, but now we want it to repeat the subsampling 1000 times
+asv_multi_rare <- multiple_rrarefy(ASV_physeq, sample.size = depth_target, 1000, 123)
 
-# same target depth, but now we want it to repeat the subsampling 1000 times. We also set a "seed" of 123 (random number), which fixes the starting point of the random number generator, ensuring that the subsampling of 1897 sequences will always return the same subset of sequences each time the code is run.
-
-asv_multi_rare <- multiple_rrarefy(ASV_physeq, sample.size=depth_target, 1000, 123)
-
-# confirm it worked first
+# Confirm it worked
 seqs_per_sample <- sample_sums(asv_multi_rare)
 seqs_per_sample
 
-# Let's check if we lost any taxa. 
+# Let's check if we lost any taxa
 ntaxa(ASV_physeq)
 ntaxa(asv_multi_rare)
 
-# write that to a new file
+# Save results to a file
 asv_norm <- as(otu_table(asv_multi_rare), "matrix")
-write.table(asv_norm, "ASVs_normalized.tsv", sep="\t", quote=F, col.names=NA)
-
+write.table(asv_norm, "ASVs_normalized.tsv", sep = "\t", quote = F, col.names = NA)
 ```
 
-We did not lose any taxa with this type of normalization, so I feel more confident about this approach. 
+We did not lose any taxa with this type of normalization, so we can feel more confident about this approach. A downside of this normalization is that subsampling creates non-integer numbers (i.e., not whole numbers) and this is an issue for some diversity indices. We thus need to round ASVs with counts between 0-1 to 1 instead of 0, otherwise we will lose the rare taxa in the sample. Then, we will round the other numbers. Is this the right thing to do? Depends on your data.
 
-One con to this normalization is that subsampling creates non-integer numbers (i.e., not whole numbers) and this is an issue for some diversity indices (which we will calculate later) that require integers.
-We need to round ASVs with counts between 0-1 to 1 instead of 0, otherwise we will lose the rare taxa in the sample. Then we will round the other numbers as is. Is this the right thing to do? Depends on your data.
-For your sake, I tested dropping counts <0. The diversity results did not significantly change, what did happen is that we would have lost >100 ASVs total. So I feel its right not round <0 counts to 1. All we can do is clearly state what we did to be transparent. 🤷‍♀️
+> [!NOTE]
+>For our sake, I tested dropping counts <0. The diversity results did not change significantly, but we would have lost >100 ASVs. So, it appears to be right not rounding <0 counts to 1. All we can do is clearly state what we did to be transparent.
 
-Let's do that rounding using a function in R:
+Let's round:
+
 ```R
 # Extract ASV matrix
 asv_mat <- as(otu_table(asv_multi_rare), "matrix")
