@@ -336,40 +336,41 @@ Where do we see significant differences? Do the results differ for Shannon and S
 
 ## Calculate Beta Diversity
 
-**Beta diversity**, also called "between-sample diversity", is a measurement of the distance, or difference, between samples. It involves calculating metrics such as distances or dissimilarities based on pairwise comparisons of samples so we can relate samples to each other. What stats do for us is determine the overall variation in the distance matrix and test whether groups of samples differ in community composition. 
+**Beta diversity**, also called "between-sample diversity", is a measurement of the distance, or difference, between samples. It involves calculating metrics such as distances or dissimilarities based on pairwise comparisons of samples so we can relate samples to each other. What stats do for us is determining the overall variation in the distance matrix and testing whether groups of samples differ in community composition. 
 
-Typically, you would generate some exploratory visualizations like ordinations and hierarchical clusterings for an overview of how your samples relate to each other. 
+Typically, we would generate some exploratory visualizations like ordinations and hierarchical clusterings for an overview of how the samples relate to each other. 
 
-Let's look at all the different distance approaches Phyloseq can use:
+Let's look at all the different distance approaches in phyloseq:
+
 ```R
+# Beta diversity ---------------------------------------------------------
+
 dist_methods <- unlist(distanceMethodList)
 print(dist_methods)
 ```
-We’re going to use Bray-Curtis dissimilarity to cluster samples that are similar to one another based on ASV profiles. 
-Bray-curtis looks at shared abundance of ASVs between two samples. 
-> If samples share many taxa with similar abundances → low dissimilarity (close to 0).
-> If they have very different taxa or very different abundances → high dissimilarity (close to 1)
 
-Make the distance matrix
+We are going to use Bray-Curtis dissimilarity to cluster samples that are similar to one another based on ASV profiles. Bray-Curtis dissimilarity looks at shared abundance of ASVs between two samples.
+
+- If samples share many taxa with similar abundances → low dissimilarity (close to 0).
+- If samples have very different taxa or very different abundances → high dissimilarity (close to 1)
+
+Make the distance matrix:
+
 ```R
 asv_dist <- phyloseq::distance(ASV_physeq, method = "bray")
 View(as.matrix(asv_dist))
 ```
 
-**Hierarchical clustering**
-
-Hierarchical clustering is an unsupervised (i.e. not using predefined numbers of groups) method that groups samples based on their similarity by iteratively merging or splitting clusters. The results are typically visualized as a dendrogram, where branch lengths reflect the relative distances between clusters. Here, we use method = "average" to specify that the distance between two clusters is defined as the average of all pairwise distances between the samples in cluster X and cluster Y.
+**Hierarchical clustering** is an unsupervised (i.e., not using predefined numbers of groups) method that groups samples based on their similarity by iteratively merging or splitting clusters. The results are typically visualized as a dendrogram, where branch lengths reflect the relative distances between clusters. Here, we use method = "average" to specify that the distance between two clusters is defined as the average of all pairwise distances between the samples in cluster X and cluster Y.
 
 ```R
-# dendrogram
+# Dendrogram
+asv_hclust <- hclust(asv_dist, method = "average")
+asv_dend <- as.dendrogram(asv_hclust, hang = 0.1)
 
-asv_hclust <- hclust(asv_dist, method="average")
-asv_dend <- as.dendrogram(asv_hclust, hang=0.1)
-
-# plot dendrogram and color by char type
+# Plot dendrogram and color by "char" type
 # Make sure rownames(sample_info_tab) are your sample IDs
-color_map <- setNames(as.character(sample_info_tab$color),
-                      rownames(sample_info_tab))
+color_map <- setNames(as.character(sample_info_tab$color), rownames(sample_info_tab))
 
 # Reorder colors according to the dendrogram labels
 dend_cols <- color_map[labels(asv_dend)]
@@ -377,56 +378,53 @@ dend_cols <- color_map[labels(asv_dend)]
 # Apply colors
 labels_colors(asv_dend) <- dend_cols
 
-plot(asv_dend, ylab="Bray-Curtis Distance")
+plot(asv_dend, ylab = "Bray-Curtis Distance")
 ```
-So, from our first peek, the broadest clusters separate the biofilm, carbonate, glassy, and water samples from the altered basalt rocks, which are the brown labels. R8-R11 (black) were all of the glassier type of basalt with thin (~1-2 mm), smooth exteriors, while the rest (R1-R6, and R12; brown) had more highly altered, thick (>1 cm) outer rinds (excluding the oddball carbonate, which isn’t a basalt, R7). 
 
-**Ordination clustering**
+From a first look, the largest clusters separate the biofilm, carbonate, glassy, and water samples from the altered basalt rocks, which are the brown labels. R8-R11 (black) were all of the glassier type of basalt with thin (~1-2 mm), smooth exteriors, while the rest (R1-R6, and R12; brown) had more highly altered, thick (>1 cm) outer rinds (excluding the oddball carbonate, which is not a basalt, R7). 
 
-Ordination clustering is a multivariate technique that reduces complex data into a few axes that capture the main patterns of variation. Samples are then visualized in this reduced space (2D or 3D), where their distances/clustering reflect dissimilarity/similarity. Often this is done as Principal Coordinates Analysis (PCoA). 
+**Ordination clustering** is a multivariate technique that reduces complex data into a few axes that capture the main patterns of variation. Samples are then visualized in this reduced space (2D or 3D), where their distances/clustering reflect dissimilarity/similarity. Often this is done as a Principal Coordinates Analysis (PCoA). 
 
 ```R
-asv_pcoa <- ordinate(ASV_physeq, method="PCoA", distance="bray")
+# Ordination clustering
+asv_pcoa <- ordinate(ASV_physeq, method = "PCoA", distance = "bray")
 
-plot_ordination(ASV_physeq, asv_pcoa, color="char") + 
-  geom_point(size=1) + labs(col="type") + 
-  geom_text(aes(label=rownames(sample_info_tab), hjust=0.3, vjust=-0.4)) + ggtitle("PCoA") + 
-  scale_color_manual(values=unique(sample_info_tab$color[order(sample_info_tab$char)])) + theme_bw() + theme(legend.position="none")
+plot_ordination(ASV_physeq, asv_pcoa, color = "char") + 
+  geom_point(size = 1) + labs(col = "type") + 
+  geom_text(aes(label = rownames(sample_info_tab), hjust = 0.3, vjust = -0.4)) +
+  ggtitle("PCoA") + scale_color_manual(values = unique(sample_info_tab$color[order(sample_info_tab$char)])) +
+  theme_bw() + theme(legend.position = "none")
 ```
 
-**Further statistical testing**
-
-The permutational multivariate analysis of variance (PERMANOVA) test is frequently used in comparing beta diversity, i.e. whether community composition differs among groups. It is an ANOVA, but for distance matrices. Although nonparametric, it also assumes homogeneity of variability. Like ANOVA, if variability differs strongly within sample groups, significant results between groups could be misleading. 
+The permutational multivariate analysis of variance (PERMANOVA) test is frequently used in comparing beta diversity, i.e., whether community composition differs among groups. It is an ANOVA, but for distance matrices. Although non-parametric, it also assumes homogeneity of variability. Like ANOVA, if variability differs strongly within sample groups, significant results between groups could be misleading. 
 
 <img width="1238" height="1285" alt="image" src="https://github.com/user-attachments/assets/17ba1de6-f1d4-4607-8bdd-0a5f960d1384" />
 
-> Each sample is a point in multivariate space defined by its ASV profile, after computing distances.
-> The group centroid is the average position of all samples in that group.
-> The dispersion (variability) is the spread of those sample points around the centroid.
+- Each sample is a point in a multivariate space defined by the ASV profile, after computing distances.
+- The group centroid is the average position of all samples in that group.
+- The dispersion (variability) is the spread of those sample points around the centroid.
 
 So:
-> Low dispersion = samples in a group have very similar ASV compositions 
-> High dispersion = samples in a group differ widely in ASV composition 
+- Low dispersion = samples in a group have very similar ASV composition
+- High dispersion = samples in a group differ widely in ASV composition 
 
 Differences in within-group scatter can reflect true biological heterogeneity (e.g., unstable or diverse ASV communities) or technical bias (e.g., sequencing depth or batch effects). 
 
-To do this, we will use the `betadisper` and `adonis` functions from the `vegan` package. `adonis` can tell us if there is a statistical difference between groups, but it has an assumption that must be met that we first need to check with `betadisper`, and that is that there is a sufficient level of homogeneity of variability (dispersion) within groups. If there is not, then `adonis` can be unreliable. 
+To do this, we will use the `betadisper()` and `adonis2()` functions from the `vegan` package. `adonis2()` can tell us if there is a statistical difference between groups, but it has an assumption that must be met that we first need to check with `betadisper()`, and that is that there is a sufficient level of homogeneity of variability (dispersion) within groups. If there is not, then `adonis2()` is not reliable. 
 
 ```R
 anova(betadisper(asv_dist, sample_info_tab$type))
-# So at least one type (water vs rock vs biofilm) is more variable than the others.
+# So at least one type (water versus rock versus biofilm) is more variable than the others.
 
-adonis2(asv_dist~sample_info_tab$type)
+adonis2(asv_dist ~ sample_info_tab$type)
 
 anova(betadisper(asv_dist, sample_info_tab$char))
 # Some “char” groups are tightly clustered, others very spread out from one another.
 
-adonis2(asv_dist~sample_info_tab$char)
-
+adonis2(asv_dist ~ sample_info_tab$char)
 ```
 
-Since `adonis` and `betadisper` are both significant, interpret cautiously: some groups may simply be more variable. That itself can be biologically meaningful. If one environment (say, biofilm) has communities that are very inconsistent, that’s an interesting ecological result, not necessarily an “error.” I think the "issue" is _the_ biofilm sample since it is so different from the others and there is only one of them. It is not that the data is wrong, just a statistical concern for comparison. We would just report the results from `betadisper` and `adonis`
-
+Since `adonis2()` and `betadisper()` are both significant, interpret cautiously: some groups may simply be more variable. That itself can be biologically meaningful. If one environment (say, biofilm) has communities that are very inconsistent, that is an interesting ecological result, not necessarily an “error.” An "issue" may be _the_ biofilm sample since it is so different from the others and there is only one of them. It is not that the data is wrong, just a statistical concern for comparison.
 
 ## Finale 
 
