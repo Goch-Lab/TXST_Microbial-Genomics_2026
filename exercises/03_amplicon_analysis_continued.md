@@ -413,6 +413,7 @@ Differences in within-group scatter can reflect true biological heterogeneity (e
 To do this, we will use the `betadisper()` and `adonis2()` functions from the `vegan` package. `adonis2()` can tell us if there is a statistical difference between groups, but it has an assumption that must be met that we first need to check with `betadisper()`, and that is that there is a sufficient level of homogeneity of variability (dispersion) within groups. If there is not, then `adonis2()` is not reliable. 
 
 ```R
+#Statistical testing
 anova(betadisper(asv_dist, sample_info_tab$type))
 # So at least one type (water versus rock versus biofilm) is more variable than the others.
 
@@ -426,25 +427,13 @@ adonis2(asv_dist ~ sample_info_tab$char)
 
 Since `adonis2()` and `betadisper()` are both significant, interpret cautiously: some groups may simply be more variable. That itself can be biologically meaningful. If one environment (say, biofilm) has communities that are very inconsistent, that is an interesting ecological result, not necessarily an “error.” An "issue" may be _the_ biofilm sample since it is so different from the others and there is only one of them. It is not that the data is wrong, just a statistical concern for comparison.
 
-## Finale 
+## Conclusion 
 
-Our data altogether suggests that the level of alteration of the basalt may be correlated with community structure. If we look at the map figure again (below), we can also see that level of alteration also co-varies with whether samples were collected from the northern or southern end of the outcrop as all of the more highly altered basalts were collected from the northern end.
+Our data altogether suggests that the level of alteration of the basalt may be correlated with community structure. If we look at the map figure again (below), we can see that the level of alteration also co-varies with whether samples were collected from the northern or southern end of the outcrop as all of the more highly altered basalts were collected from the northern end.
 
 <img width="800" height="436" alt="image" src="https://github.com/user-attachments/assets/f3aed91d-1f8e-4d12-827f-ed3b5edb9a55" />
 
-
 > [!TIP]
-> After all that is said and done, you should know that Phyloseq offers _Shiny-Phyloseq_, which is a web-browser GUI to where you can point and click instead of write code to do your analysis and make figures. Of course, this does not replace the flexibility of coding your own data in R, but could be useful as a first exploration of your data.
->To try it out, you need to first install in R:
-```R
-install.packages("shiny")
-shiny::runGitHub("shiny-phyloseq","joey711")
-```
-## 
+> After all that is said and done, you should know that phyloseq offers _Shiny-Phyloseq_, which is a web-browser GUI where you can point and click instead of write code to do your analysis and make figures. Of course, this does not replace the flexibility of coding your own data in R, but could be useful as a first exploration of your data.
 
-## 📝 Assignment due next class on Canvas
-Perform a top-level exploration of the sample outputs and answer this question. 
-1. Determine the _prevalence_ of ASVs across all samples. Here we will define as the number of samples in which an ASV appears at least once, i.e. how many samples each ASV is found in. Was there a single ASV that had the highest "prevalence", or were there multiple at equal prevalence? If so, what were they/it? 
-
-
-
+This is the end of CL10!
