@@ -171,36 +171,31 @@ Let's round:
 asv_mat <- as(otu_table(asv_multi_rare), "matrix")
 
 # Custom rounding: bump (0,1) up to 1, round everything else
-asv_mat_round <- apply(asv_mat, c(1,2), function(x) {
-  if (x > 0 & x < 1) {
+asv_mat_round <- apply(asv_mat, c(1, 2), function(x){
+  if (x > 0 & x < 1){
     return(1L)
-  } else {
-    return(round(x,0))
+  }else{
+    return(round(x, 0))
   }
 })
 
 asv_norm_round <- otu_table(asv_mat_round, taxa_are_rows = taxa_are_rows(asv_multi_rare))
 
-write.table(asv_norm_round, "ASVs_counts_rounded.tsv",
-            sep="\t", quote=F, col.names=NA)
+write.table(asv_norm_round, "ASVs_counts_rounded.tsv", sep = "\t", quote = F,
+            col.names = NA)
 
 # Let's see how that changed our sequence counts
 sample_sums(asv_norm_round)
 min(sample_sums(asv_norm_round))
 max(sample_sums(asv_norm_round))
-# we "inflate" some samples with rare counts
+# we "inflated" some samples with rare counts
 
 # Rebuild phyloseq object with new count table
-ASV_physeq <- phyloseq(
-  asv_norm_round,
-  tax_table(tax_tab_phy),
-  sample_data(sample_info_tab_phy)
-)
+ASV_physeq <- phyloseq(asv_norm_round, tax_table(tax_tab_phy),
+                       sample_data(sample_info_tab_phy))
 ```
 
-Now we can continue our analysis. 
-
-## 🧪 Step 4: Plotting ASV abundance
+## Plotting ASV Abundance
 
 You've probably seen one of those barplot figures in a paper somewhere that shows how the richness and evenness of taxa differ between samples.
 Let's make one first before we assess any stats. We will need to turn our ASV counts into relative abundances, i.e., dividing each ASV’s count in a sample by the total number of sequences in that sample so that the values represent proportions that sum to one.
