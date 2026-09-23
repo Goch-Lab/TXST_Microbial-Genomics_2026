@@ -333,7 +333,7 @@ rownames(asv_tax) <- NULL # Removing sequence rownames for display only
 head(asv_tax)
 ```
 
-Convert the output object of class "Taxa" to a taxonomic matrix analogous to the output from the `assignTaxonomy()` function. Also generate a fasta file of our final ASV sequences and one the count table:
+Export the taxonomic matrix, a fasta file of the ASV sequences and the count table to files:
 
 ```R
 # Extract the output ------------------------------------------------------
