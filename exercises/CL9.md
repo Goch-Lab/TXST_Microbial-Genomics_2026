@@ -1,4 +1,4 @@
-# CL9: *16S* Amplicon Sequencing
+# CL9: *16S* Amplicon Sequencing I
 
 In this tutorial, we will be analyzing *16S* amplicon sequence data. To do this, we will work on [RStudio](https://posit.co/products/open-source/rstudio) in your local computer. We will use [DADA2](https://benjjneb.github.io/dada2), following a tutorial based on the [DADA2 tutorial](https://benjjneb.github.io/dada2/tutorial.html) and [Mike Lee's tutorial](https://astrobiomike.github.io/R).
 
