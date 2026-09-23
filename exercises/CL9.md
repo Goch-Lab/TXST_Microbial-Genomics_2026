@@ -409,3 +409,5 @@ write.table(asv_tab_no_contam, "ASVs_counts-no-contam.tsv",
 write.table(asv_tax_no_contam, "ASVs_taxonomy-no-contam.tsv",
             sep = "\t", quote = F, col.names = NA)
 ```
+
+This is the end of CL9!
