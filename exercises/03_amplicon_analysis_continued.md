@@ -24,6 +24,8 @@ library("psadd")
 library("dada2")
 library("phyloseq")
 library("vegan")
+library("ggplot2")
+library("RColorBrewer")
 
 # Set working directory
 setwd("<path/to/dada2>")
@@ -197,53 +199,44 @@ ASV_physeq <- phyloseq(asv_norm_round, tax_table(tax_tab_phy),
 
 ## Plotting ASV Abundance
 
-You've probably seen one of those barplot figures in a paper somewhere that shows how the richness and evenness of taxa differ between samples.
-Let's make one first before we assess any stats. We will need to turn our ASV counts into relative abundances, i.e., dividing each ASV’s count in a sample by the total number of sequences in that sample so that the values represent proportions that sum to one.
+You have probably seen one of those barplot figures in a paper somewhere that shows how the richness and evenness of taxa differ between samples. To make one, we need to turn our ASV counts into relative abundances, i.e., dividing each ASV’s count in a sample by the total number of sequences in that sample.
 
 ```R
 # Abundance Analysis ------------------------------------------------------
 
 asv_rel <- transform_sample_counts(ASV_physeq, function(x) x / sum(x))
 
-# check it worked. Should see that every sample sum is equal to 1
+# Check it worked. Should see that every sample sum equals 1
 colSums(otu_table(asv_rel)) %>% head()
 
-# prepare data for plotting
+# Prepare data for plotting
 
-# 1. Turn the phyloseq object into a numeric matrix for R to use
+# 1. Turn the phyloseq object into a numeric matrix
 asv_mat_rel <- as(otu_table(asv_rel), "matrix")
 
 # 2. Collapse ASVs to the phylum level
-asv_phylum <- tax_glom(asv_rel, "Phylum", NArm=FALSE)
+asv_phylum <- tax_glom(asv_rel, "Phylum", NArm = F)
 View(asv_phylum)
 
 # 3. “Melt” the phyloseq object into a long-format data frame for ggplot.
 df <- psmelt(asv_phylum)
 View(df)
 
-# 4. Make the plot
-library(ggplot2)
-
+# 4. Plot
 ggplot(df, aes(x = Sample, y = Abundance, fill = Phylum)) +
-  geom_bar(stat = "identity") +
-  theme_bw() +
+  geom_bar(stat = "identity") + theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-# default colors are awful, let's change that
-
-library(RColorBrewer)
-
-n <- length(unique(df$Phylum))   # number of phyla in your data
+# Default colors are awful, let's change that
+n <- length(unique(df$Phylum)) # Number of phyla in your data
 mycols <- colorRampPalette(brewer.pal(12, "Paired"))(n)
 
 ggplot(df, aes(x = Sample, y = Abundance, fill = Phylum)) +
-  geom_bar(stat = "identity") +
-  scale_fill_manual(values = mycols) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  geom_bar(stat = "identity") + scale_fill_manual(values = mycols) +
+  theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-# Now, for better visualization, it could be beneficial to collapse rare taxa (<1% abundant) into their own category "Other", like so:
-threshold <- 0.01  # collapse anything <1% abundance 
+# For better visualization, collapse rare taxa (<1% abundant) into the category "Other"
+threshold <- 0.01 # Collapse anything <1% abundance 
 df$Phylum2 <- df$Phylum
 df$Phylum2[df$Abundance < threshold] <- "Other"
 
@@ -254,9 +247,9 @@ ggplot(df, aes(x = Sample, y = Abundance, fill = Phylum2)) +
   geom_bar(stat="identity") +
   scale_fill_manual(values = mycols) +
   theme_bw()
-
 ```
-## 🧪 Step 5: Calculate alpha diversity
+
+## Calculate Alpha Diversity
 
 A diversity index is a quantitative measure that is used to assess the level of diversity or variety within a particular system, such as a microbial community. 
 
