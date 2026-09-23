@@ -314,9 +314,9 @@ Microbiome data is compositional and generally violates many assumptions in stat
 
 Kruskal–Wallis and Wilcoxon rank-sum are rank-based statistical tests. They require each group to have at least two observations so ranks can be meaningfully compared.
 
-> Kruskal-Wallis compares multiple groups, i.e., _Is diversity different across water, glassy, and altered rocks?_
-> Wilcoxon compares two groups, i.e., _Is diversity different between rock versus water samples?_
-> Pairwise-Wilcoxon compares groups to one another, i.e., _Does diversity differ between water versus glassy, water versus altered, or glassy versus altered?_
+- Kruskal-Wallis compares multiple groups, i.e., _Is diversity different across water, glassy, and altered rocks?_
+- Wilcoxon compares two groups, i.e., _Is diversity different between rock versus water samples?_
+- Pairwise-Wilcoxon compares groups to one another, i.e., _Does diversity differ between water versus glassy, water versus altered, or glassy versus altered?_
 
 >[NOTE!]
 >Because multiple pairwise comparisons can inflate the chance of false positives, a multiple-testing correction should be applied to the p-value. Here, we use the Benjamini–Hochberg (BH) procedure, which controls the false discovery rate (FDR) by adjusting p-values so that the expected proportion of false positives among the declared significant results remains below a chosen threshold (typically 0.05). 
