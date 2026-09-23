@@ -267,55 +267,52 @@ class(seqtab) # matrix
 dim(seqtab) # 20 2521, means 20 samples, 2521 ASVs
 View(seqtab)
 
-# The numbers may vary a little, this might happen due to different versions being used from when this was initially put together.
+# The numbers may vary a little. This might happen due to different versions being used from when this tutorial was initially put together.
 ```
 
 The count table is a matrix with rows corresponding to (and named by) the samples, and columns corresponding to (and named by) the sequence variants. 
 
-## 🧪 Step 8: Remove chimeras
-Chimeras are separate, individual sequences that were accidentally joined in the process somewhere (sequencing or bioinfomatically). The frequency of chimeric sequences varies substantially from dataset to dataset, and depends on factors including experimental procedures and sample complexity. DADA2 identifies likely chimeras by aligning each sequence with those that were recovered in greater abundance and then seeing if there are any lower-abundance sequences that can be made exactly by mixing left and right portions of two of the more-abundant ones. 
-> ![image](https://github.com/user-attachments/assets/210b6caf-5af1-4a86-bbef-f58bfd62d880)
+## Removing Chimeras
+
+Chimeras originate from separate, individual sequences that were accidentally joined at some point, either during sequencing or bioinfomatically. The frequency of chimeric sequences varies substantially from dataset to dataset, and depends on factors including experimental procedures and sample complexity. DADA2 identifies putative chimeras by aligning each sequence with those that were recovered in greater abundance and then seeing if there are any lower-abundance sequences that can be made exactly by mixing left and right portions of two of the more-abundant ones.
+
 ```R
 # Removing chimeras -------------------------------------------------------
 
-seqtab.nochim <- removeBimeraDenovo(seqtab, verbose=T) # Identified 17 bimeras out of 2521 input sequences.
+seqtab.nochim <- removeBimeraDenovo(seqtab, verbose = TRUE) # Identified 17 bimeras out of 2521 input sequences.
 
-# though we only lost 17 sequences, we don't know if they held a lot in terms of abundance, this is one quick way to look at that
-sum(seqtab.nochim)/sum(seqtab) # 0.993133 # in this case we barely lost any in terms of abundance
+# Though we only lost 17 sequences, we do not know their abundance.
+# Let's check:
+sum(seqtab.nochim)/sum(seqtab) # 0.993133 # We barely lost any data in terms of abundance
 
 ```
-Let's take a look at what has happened to our input for each sample
+
+Let's take a look at what has happened to our input for each sample:
+
 ```R
 # Count Overview ----------------------------------------------------------
 
-# set a little function to get the unique ASVs detected in "x" and their abundances (number of reads)
+# Set a little function to get the unique ASVs detected in "x" and their abundances (read count)
 getN <- function(x) sum(getUniques(x))
 
-# making a little table
-summary_tab <- data.frame(row.names=samples, dada2_input=filtered_out[,1],
-               filtered=filtered_out[,2], dada_f=sapply(dada_forward, getN),
-               dada_r=sapply(dada_reverse, getN), merged=sapply(merged_amplicons, getN),
-               nonchim=rowSums(seqtab.nochim),
-               final_perc_reads_retained=round(rowSums(seqtab.nochim)/filtered_out[,1]*100, 1))
-
-summary_tab <- data.frame(
-  row.names = samples,
-  dada2_input = filtered_out[,1],                          # Reads input to filtering
-  filtered   = filtered_out[,2],                           # Reads that passed filtering
-  dada_f     = sapply(dada_forward, getN),                 # Reads after forward denoising
-  dada_r     = sapply(dada_reverse, getN),                 # Reads after reverse denoising
-  merged     = sapply(merged_amplicons, getN),             # Reads after merging pairs
-  nonchim    = rowSums(seqtab.nochim),                     # Reads remaining after chimera removal
-  final_perc_reads_retained = round(
-    rowSums(seqtab.nochim) / filtered_out[,1] * 100, 1)    # % retained from input
+# Making a summary table
+summary_tab <- data.frame(row.names = samples,
+                          dada2_input = filtered_out[ ,1], # Reads input for filtering
+                          filtered = filtered_out[ ,2], # Reads that passed filtering
+                          dada_f = sapply(dada_forward, getN), # Reads after forward denoising
+                          dada_r = sapply(dada_reverse, getN), # Reads after reverse denoising
+                          merged = sapply(merged_amplicons, getN), # Reads after merging pairs
+                          nonchim  = rowSums(seqtab.nochim), # Reads remaining after chimera removal
+                          final_perc_reads_retained = round(rowSums(seqtab.nochim) / filtered_out[ ,1] * 100, 1) # % retained from input
 )
 
 summary_tab
 
 # write this table to a file to save
-write.table(summary_tab, "read-count-tracking.tsv", quote=FALSE, sep="\t", col.names=NA)
- 
+write.table(summary_tab, "read-count-tracking.tsv", quote = FALSE, sep = "\t",
+            col.names = NA) 
 ```
+
 ## 🧪 Step 9: Assign taxonomy (finally the cool stuff!)
 The `assignTaxonomy` function takes as input a set of sequences to be classified and a training set of reference sequences with known taxonomy, and outputs taxonomic assignments with at least `minBoot` bootstrap confidence.
 We will use the default of 50, or 50% =, which is the proportion of times that the classifier reaches the same taxonomic assignment across these resampled subsets. You can increase this to be more stringent if you want. 
