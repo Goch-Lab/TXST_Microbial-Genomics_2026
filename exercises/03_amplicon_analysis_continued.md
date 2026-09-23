@@ -91,29 +91,25 @@ tax_table()   Taxonomy Table:    [ 2457 taxa by 7 taxonomic ranks ]
 
 ## Data Normalization
 
-First, let's check the sequence abundance at all our sites and graph it for visualization. Sequence runs don't always go as planned, so we should expect some differences in sampling depths in our samples, which is most likely not truly reflective of that sample's true sequence abundance. 
+Let's check the sequence abundance at all our sites and plot it for visualization. Sequence runs do not always go as planned, so we should expect some differences in sampling depth across our samples, which is most likely not necessarily reflective of true sequence abundance. 
 
 ```R
 # Normalize data ----------------------------------------------------------
 seqs_per_sample <- sample_sums(ASV_physeq)
 seqs_per_sample
 
-# make that into a dataframe
+# Turn into a data frame
 sample_richness <- data.frame(Sequences = seqs_per_sample, Sample_Site = "Group")
 ```
 
-You see, we have almost a whole order of magnitude difference in sequence abundances. If we compare diversity metrics directly without accounting for these differences, the results could be biased toward the deeper sequenced samples, which may appear artificially more diverse simply because more sequences were recovered.
-
-To make fair statistical comparisons across samples, we need to account for these differences in sequencing depth. Rarefaction does this by subsampling each sample down to the same number of sequences, repeated many times, and averaging across the subsamplings. This ensures that observed differences in diversity reflect biology rather than uneven sequencing effort
+There is almost a whole order of magnitude difference between sequence abundances. If we compare diversity metrics directly without accounting for these differences, the results could be biased toward the deeper sequenced samples, which may appear artificially more diverse simply because more sequences were recovered. To make fair statistical comparisons across samples, we need to account for these differences in sequencing depth. Rarefaction does this by subsampling each sample down to the same number of sequences, repeated many times, and averaging across the subsets. This ensures that observed differences in diversity reflect biology rather than uneven sequencing effort.
 
 > [!NOTE]
-> There has been some debate in the field about what normalization methods to apply.
+> There has been some controversy in the field about what the best normalization method is.
 >
-> McMurdie & Holmes 2014 claim that too much data is lost when you use rarefaction, and instead suggest using the Variance Stabilizing Transformation offered through DESeq2. But many microbial environments are extremely variable in microbial composition, which would *violate* DESeq normalization assumptions of a constant abundance of a majority of species and of a balance of increased/decreased abundance for those species that do change. (paper here: https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003531)
+> [McMurdie & Holmes 2014](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003531) claim that too much data is lost when using rarefaction, and instead suggest using the Variance Stabilizing Transformation offered by [DESeq2](https://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html). However, many microbial environments are extremely variable in microbial composition, which would *violate* DESeq2 normalization assumptions of a constant abundance of a majority of species and of a balance of increased/decreased abundance for those species that do change.
 >
->Indeed, Dr. Pat Schloss at the University of Michigan, a microbial ecologist who wrote one of the OG 16S amplicon softwares (Mothur) and is very knowledgeable in this field, wrote a rebuttal to that paper, providing evidence that *true* rarefaction/subsampling is still superior in dealing with uneven sequence depth. (paper 1: https://journals.asm.org/doi/10.1128/msphere.00355-23?url_ver=Z39.88-2003&rfr_id=ori:rid:crossref.org&rfr_dat=cr_pub%20%200pubmed, paper 2: https://journals.asm.org/doi/full/10.1128/msphere.00354-23) 
->
->He has also published a few Youtube videos on this and other stuff, I suggest checking it out if interested. https://www.youtube.com/watch?v=t5qXPIS-ECU&list=PLmNrK_nkqBpJuhS93PYC-Xr5oqur7IIWf&index=2&ab_channel=RiffomonasProject
+>Indeed, Dr. Pat Schloss at the University of Michigan, a microbial ecologist who wrote one of the pioneering *16S* amplicon analysis software ([mothur](https://mothur.org)) and very knowledgeable in the field, wrote a couple of rebuttals (papers [1](https://journals.asm.org/doi/10.1128/msphere.00355-23?url_ver=Z39.88-2003&rfr_id=ori:rid:crossref.org&rfr_dat=cr_pub%20%200pubmed) and [2](https://journals.asm.org/doi/full/10.1128/msphere.00354-23)), providing evidence that *true* rarefaction/subsampling is superior in dealing with uneven sequence depth. He has also published a few [Youtube videos](https://www.youtube.com/watch?v=t5qXPIS-ECU&list=PLmNrK_nkqBpJuhS93PYC-Xr5oqur7IIWf&index=2&ab_channel=RiffomonasProject) on this and other topics. Checkthem out if interested!
 
 Before using rarefaction (with multiple sampling!) to normalize our data, let's look at a rarefaction curve to get a sense of how sequencing depth relates to observed diversity of ASVs.
 
