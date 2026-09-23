@@ -27,6 +27,7 @@ library("vegan")
 library("ggplot2")
 library("RColorBrewer")
 library("tidyverse")
+library("dendextend")
 
 # Set working directory
 setwd("<path/to/dada2>")
@@ -252,71 +253,61 @@ ggplot(df, aes(x = Sample, y = Abundance, fill = Phylum2)) +
 
 ## Calculate Alpha Diversity
 
-A diversity index is a quantitative measure that is used to assess the level of diversity or variety within a particular system, such as a microbial community. 
+A diversity index is a quantitative measure used to assess the level of diversity or variety within a particular system, such as a microbial community. 
 
-**Alpha diversity** describes the diversity within a single community/sample. It considers the number of different species in that sample (also referred to as species richness). Additionally, it can take the abundance of each species into account to measure how evenly taxa are distributed across the sample (also referred to as species evenness). 
+**Alpha diversity** describes the diversity within a single community/sample. It considers the number of different species in that sample (also referred to as *species richness*). Additionally, it can take the abundance of each species into account to measure how evenly taxa are distributed across the sample (also referred to as *species evenness*). 
 
-* Chao1 = Measures total _richness_, so observed + rare taxa inferred from singletons/doubletons. The higher the value, the greater the number of ASVs. 
-* Shannon's = Measures _diversity_ as both richness and evenness (relative proportions of our ASVs). The value increases as you add more taxa, even if they are rare.
-* Simpson's = also measures both richness and evenness, but weights more on dominant taxa and is less sensitive to rare ones. 1 = very even; close to 0 = one or a few taxa dominate.
+* Chao1 Estimator: measures total _richness_, so observed + rare taxa inferred from singletons/doubletons. The higher the value, the greater the number of ASVs. 
+* Shannon Index: measures diversity as both _richness_ and _evenness_ (relative proportions of our ASVs). The value increases as you add more taxa, even if they are rare.
+* Simpson's Index: also measures diversity as both _richness_ and _evenness_, but weights more on dominant taxa and is less sensitive to rare ones. 1 = very even; close to 0 = one or a few taxa dominate.
 
-To compare alpha diversity across samples, would be to ask if the mean or median of these calculated indices differs across groups.
+To compare alpha diversity across samples, we ask whether the mean or median of these calculated indices differs across groups.
 
 > [WARNING!]
-> These are just some metrics to help compare & contrast our samples within an experiment, and should **not** be considered “true” values of any ASV.
-> 
+> These are just some metrics to help compare and contrast our samples within an experiment, and should **not** be considered “true” values of any ASV.
 
-## Continue from Thursday
-
-If you need to reload your environment and did not save it, start here. Otherwise, you will continue with the 2nd code block.
+Load the files produced during [CL9: *16S* Amplicon Sequencing I](./CL9.md):
 
 ```R
-# Make sure you are in your dada2 folder, otherwise you need to set your working directory there:
-getwd()
-setwd("path")
+# Load files from previous computer lab --------------------------------------------------
 
-# Load programs
+# Make sure you are in your dada2 folder
+count_tab <- as.matrix(read.table("ASVs_counts_rounded.tsv", header = T,
+                                  row.names = 1, check.names = F, sep = "\t"))
 
-library(phyloseq)
-library(vegan)
-library(ggplot2)
-library(dendextend)
+tax_tab <- as.matrix(read.table("ASVs_taxonomy-no-contam.tsv", header = T,
+                                row.names = 1, check.names = F, sep = "\t"))
 
-# Make a Phyloseq object --------------------------------------------------
+sample_info_tab <- read.table("sample_info.tsv", header = T, row.names = 1,
+                              check.names = F, sep = "\t")
 
-count_tab <- as.matrix(read.table("ASVs_counts_rounded.tsv", header=T,
-                                  row.names=1, check.names=F, sep="\t"))
-
-tax_tab <- as.matrix(read.table("ASVs_taxonomy-no-contam.tsv", header=T,
-                                row.names=1, check.names=F, sep="\t"))
-
-sample_info_tab <- read.table("sample_info.tsv", header=T, row.names=1,
-                              check.names=F, sep="\t")
-
-
-count_tab_phy <- otu_table(count_tab, taxa_are_rows=T)
+count_tab_phy <- otu_table(count_tab, taxa_are_rows = T)
 sample_info_tab_phy <- sample_data(sample_info_tab)
 tax_tab_phy <- tax_table(tax_tab)
 ASV_physeq <- phyloseq(count_tab_phy, tax_tab_phy, sample_info_tab_phy)
 ASV_physeq
-
 ```
 
-Ok, now we can calculate diversity indices. 
+Calculate diversity indices:
 
 ```R
 # Alpha diversity ---------------------------------------------------------
 
-# We call on phyloseq's estimate_richness() function to calculate alpha diversity using Chao1, Shannon, and Simpson
+# Call on phyloseq's estimate_richness() function to calculate alpha diversity using Chao1, Shannon, and Simpson
 asv_alpha <- estimate_richness(ASV_physeq, measures = c("Observed", "Chao1", "Shannon", "Simpson"))
 
-# add sample info and save output
+# Add sample information and save output
 asv_alpha <- cbind(asv_alpha, as(sample_data(ASV_physeq), "data.frame"))
-write.table(asv_alpha, "ASVs_alpha-diversity.tsv", sep="\t", quote=F, col.names=NA)
+write.table(asv_alpha, "ASVs_alpha-diversity.tsv", sep = "\t", quote = F,
+            col.names = NA)
 
-# We call on phyloseq's plot_richness() function on our phyloseq object to plot the data
-plot_richness(ASV_physeq , color="char", measures=c("Observed", "Chao1", "Shannon", "Simpson")) + scale_color_manual(values=unique(sample_info_tab$color[order(sample_info_tab$char)])) + theme_bw() + theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+# Call on phyloseq's plot_richness() function to plot the data
+plot_richness(ASV_physeq , color = "char",
+              measures = c("Observed", "Chao1", "Shannon", "Simpson")) +
+  scale_color_manual(values = unique(sample_info_tab$color[order(sample_info_tab$char)])) +
+  theme_bw() + theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
+
 What can we say about alpha diversity across the samples?
 
 We can also ask: are samples _significantly_ different based on sample type or sample alteration ("char")? 
