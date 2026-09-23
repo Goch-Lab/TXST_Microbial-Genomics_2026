@@ -1,6 +1,6 @@
-# Week 04: 16S Amplicon analysis - Part 2
+# CL9: *16S* Amplicon Sequencing II
 
-In this tutorial, we will continue working with 16S amplicon data, this time comparing samples and performing statistical analysis. We will continue working in R, but handing off our Dada2 processed samples to the package Phyloseq. 
+In this tutorial, we will continue working with *16S* amplicon data, this time comparing samples and performing statistical analysis. We will continue working in R, but handing off our DADA2 processed samples to the package [phyloseq](https://joey711.github.io/phyloseq). 
 
 We will continue following Dada2's tutorial + Mike Lee's tutorial on Dada2, using Mike's data (with some modifications) below. Thanks all for the great documentation!
 https://benjjneb.github.io/dada2/tutorial_1_8.html 
