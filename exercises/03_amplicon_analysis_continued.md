@@ -26,6 +26,7 @@ library("phyloseq")
 library("vegan")
 library("ggplot2")
 library("RColorBrewer")
+library("tidyverse")
 
 # Set working directory
 setwd("<path/to/dada2>")
