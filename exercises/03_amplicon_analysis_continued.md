@@ -2,77 +2,70 @@
 
 In this tutorial, we will continue working with *16S* amplicon data, this time comparing samples and performing statistical analysis. We will continue working in R, but handing off our DADA2 processed samples to the package [phyloseq](https://joey711.github.io/phyloseq). 
 
-We will continue following Dada2's tutorial + Mike Lee's tutorial on Dada2, using Mike's data (with some modifications) below. Thanks all for the great documentation!
-https://benjjneb.github.io/dada2/tutorial_1_8.html 
-https://astrobiomike.github.io/amplicon/dada2_workflow_ex#differential-abundance-analysis-with-deseq2
-https://blogs.oregonstate.edu/earthmotes/2021/09/28/dada2-pipeline-for-16s-datasets-in-r/
+We will continue following a tutorial based on the [DADA2 tutorial](https://benjjneb.github.io/dada2/tutorial.html) and [Mike Lee's tutorial](https://astrobiomike.github.io/R).
 
 ---
 ## 🧠 Learning Objectives
 
-By the end of this exercise, you should be able to:
+By the end of this tutorial, you should be able to:
 
 - Understand why normalization is important for amplicon data.
 - Visualize and discuss community differences using diversity metrics.
 - Interpret diversity indices to describe within and between sample differences.
 
-## 🧪 Step 1: Setting up the working environment and reading in the data
-Open a new script to work in and start by loading dada2 and these other packages:
+## Setting Up Working Environment and Data
+
+Open a new script to work in and start by loading DADA2 and other packages:
+
 ```R
 install.packages("remotes")
 remotes::install_github("cpauvert/psadd")
 library("psadd")
+library("dada2")
 
-# If you are not already in the dada2 directory, setwd to get there
-setwd("[insert path to directory you want to be in]")
+# Set working directory
+setwd("<path/to/dada2>")
 
-list.files() # make sure our files from last time are here
-
-# ok, now moving on
-
+# Make sure our files from last time are here
+list.files() 
 
 # Read in data ------------------------------------------------------------
 
-# blanks are removed, i.e. -c(1:4), because we already decontaminated the data
-# this also creates ASVs with no counts in any other sample, so we need to remove them
-count_tab <- read.table("ASVs_counts-no-contam.tsv", header=T, row.names=1, check.names=F, sep="\t")[ , -c(1:4)]
+# The removal of blanks cause some ASVs to have no counts in other samples, so we need to remove them
+count_tab <- read.table("ASVs_counts-no-contam.tsv", header = T, row.names = 1,
+                        check.names = F, sep = "\t")[ , -c(1:4)]
 count_tab <- count_tab[rowSums(count_tab) > 0, ]
-
-tax_tab <- as.matrix(read.table("ASVs_taxonomy-no-contam.tsv", header=T, row.names=1, check.names=F, sep="\t"))
-
+tax_tab <- as.matrix(read.table("ASVs_taxonomy-no-contam.tsv", header = T,
+                                row.names = 1, check.names = F, sep = "\t"))
 ```
 
-We will also need a file Mike provided from the data_dir. Open the terminal in R and let's `cp` it here.
-```bash
-cp ../../data_dir/sample_info.tsv .
-```
+We need a metadata file (`sample_info.tsv`) that can be downloaded from Canvas. Make sure to save it in the `dada2` directory and load it:
 
-Ok, proceed with loading it:
 ```R
-sample_info_tab <- read.table("sample_info.tsv", header=T, row.names=1, check.names=F, sep="\t")
+# Load metadata
+sample_info_tab <- read.table("sample_info.tsv", header = T, row.names = 1,
+                              check.names = F, sep = "\t")
   
-# Setting the color column to be of type "character", which helps later
+# Set the color column to be of type "character"
 sample_info_tab$color <- as.character(sample_info_tab$color)
 
-# take a peek at the data we have on each sample.
-
+# Have a look at the sample metadata
 sample_info_tab
 
-# The rownames of the sample_info_tab must be the same as the column names of the count table for graphing later on. This should be the sample sites in the same order.
-
+# The row names of the `sample_info_tab` data frame must be the same as the column names of the count table and in the same order for plotting later on
 count_tab
-
 ```
 
-Taking a look at the `sample_info_tab`, we see it has the 16 samples as rows, and four columns: 
+The `sample_info_tab` data frame containts the 16 samples as rows and four columns:
+
   1) “temperature” for the temperature of the venting water was where collected;
-  2) “type” indicating if that sample is a water sample, rock, or biofilm;
-  3) a characteristics column called “char” that just serves to distinguish between the main types of rocks (glassy, altered, or carbonate);
-  4) “color”, which has different R colors we can use later for plotting.
+  2) “type” indicating if that sample is water, rock, or a biofilm;
+  3) “char” that serves to distinguish between the main types of rocks (glassy, altered, or carbonate);
+  4) “color” that has different R colors for plotting later.
 
-This table can be made anywhere (e.g. in R, in excel, at the command line), you just need to make sure you read it into R properly (which you should always check just like we did here to make sure it came in correctly).
+This table can be made anywhere (e.g., in R, Excel, the command line); we just need to make sure we read it into R properly (which we should always verify).
 
-## 🧪 Step 2: Make a Phyloseq Object
+## Creating a Phyloseq Object
 Phyloseq is an R package to import, store, analyze, and graphically display complex phylogenetic sequencing data that has already been clustered into OTUs or ASVs. It leverages and builds upon many of the tools available in R for ecology and phylogenetic analysis (vegan, ade, ape), while also using advanced/flexible graphic systems (ggplot2) to easily produce publication-quality graphics. Check out more, including tutorials on what else it can do: https://joey711.github.io/phyloseq/ 
 
 It stores sequencing data as a single, self-consistent, self-describing experiment-level object, making it easier to use. Let's make that "object". 
