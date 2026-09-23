@@ -308,38 +308,33 @@ plot_richness(ASV_physeq , color = "char",
   theme_bw() + theme(legend.title = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
-What can we say about alpha diversity across the samples?
+What can we say about alpha diversity across the samples? We can also ask: are samples _significantly_ different based on sample type or sample alteration? 
 
-We can also ask: are samples _significantly_ different based on sample type or sample alteration ("char")? 
+Microbiome data is compositional and generally violates many assumptions in statistical analyses, especially that of normality, so non-parametric tests (i.e., those that do not rely on assumptions about the distribution of the data) are often used. 
 
-Microbiome data is compositional and generally violates many assumptions in statistical analyses, especially that of normality, so nonparametric tests (i.e., those that do not rely on assumptions about the distribution of the data) are often used. 
+Kruskal–Wallis and Wilcoxon rank-sum are rank-based statistical tests. They require each group to have at least two observations so ranks can be meaningfully compared.
 
-Kruskal–Wallis and Wilcoxon rank-sum are rank-based statistical tests. They require each group to have at least two observations so ranks can be meaningfully compared. 
-> Kruskal compares multiple groups, i.e. _Is diversity different across water, glassy, and altered rocks?_
-> Wilcoxon compares two groups, i.e.  _Is diversity different between rock vs water samples?_
-> Pairwise-wilcoxon compares groups to one another, i.e. _Does diversity differ between water vs glassy, water vs altered, or glassy vs altered?_
+> Kruskal-Wallis compares multiple groups, i.e., _Is diversity different across water, glassy, and altered rocks?_
+> Wilcoxon compares two groups, i.e., _Is diversity different between rock versus water samples?_
+> Pairwise-Wilcoxon compares groups to one another, i.e., _Does diversity differ between water versus glassy, water versus altered, or glassy versus altered?_
 
 >[NOTE!]
->Because multiple pairwise comparisons can inflate the chance of false positives, a multiple-testing correction should be applied to the P-value. Here, we use the Benjamini–Hochberg (BH) procedure, which controls the false discovery rate (FDR) by adjusting P-values so that the expected proportion of false positives among the declared significant results remains below a chosen threshold (typically 0.05). 
+>Because multiple pairwise comparisons can inflate the chance of false positives, a multiple-testing correction should be applied to the p-value. Here, we use the Benjamini–Hochberg (BH) procedure, which controls the false discovery rate (FDR) by adjusting p-values so that the expected proportion of false positives among the declared significant results remains below a chosen threshold (typically 0.05). 
 
 ```R
-# Now let's subset the data to remove biofilm and carbonate since they have only one sample
-
-asv_sub <- subset(asv_alpha, char %in% c("water","glassy","altered"))
+# Let's subset the data to remove biofilm and carbonate since they each have only one sample
+asv_sub <- subset(asv_alpha, char %in% c("water", "glassy", "altered"))
 asv_sub
 
 # Test differences based on Chao1 metrics
-kruskal.test(Chao1 ~ char, data=asv_sub)
+kruskal.test(Chao1 ~ char, data = asv_sub)
 
-pairwise.wilcox.test(
-  asv_sub$Chao1,
-  asv_sub$char,
-  p.adjust.method = "BH")
+pairwise.wilcox.test(asv_sub$Chao1, asv_sub$char, p.adjust.method = "BH")
 ```
-Where do we see significant differences? 
-Do the results differ for Shannon and Simpson?
 
-## 🧪 Step 6: Calculate beta diversity
+Where do we see significant differences? Do the results differ for Shannon and Simpson?
+
+## Calculate Beta Diversity
 
 **Beta diversity**, also called "between-sample diversity", is a measurement of the distance, or difference, between samples. It involves calculating metrics such as distances or dissimilarities based on pairwise comparisons of samples so we can relate samples to each other. What stats do for us is determine the overall variation in the distance matrix and test whether groups of samples differ in community composition. 
 
