@@ -12,7 +12,7 @@ This repo contains course materials, tutorials, and example scripts for [Texas S
 - 🧬 [CL7: Ortholog Analysis](exercises/CL7.md)
 - ⭕️ [CL8: Pangenomes](exercises/CL8.md)
 - 🦠 [CL9: *16S* Amplicon Sequencing I](exercises/CL9.md)
-- 🦠 [CL10: *16S* Amplicon Sequencing II](exercises/CL10)
+- 🦠 [CL10: *16S* Amplicon Sequencing II](exercises/CL10.md)
 - 🧫 [CL11: Metagenomics](exercises/CL11)
 - 🪾 [CL12: Traditional Phylogenomics](exercises/CL12)
 - 🌳 [CL13: Alignment-Free Phylogenomics](exercises/CL13)
