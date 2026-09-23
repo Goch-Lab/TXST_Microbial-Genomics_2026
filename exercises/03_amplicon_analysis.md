@@ -191,13 +191,11 @@ plotErrors(err_reverse_reads, nominalQ=TRUE)
 ```
 The red line is what is expected based on the quality score, the black line represents the estimated, and the black dots represent the observed errors. Generally speaking, you want the observed (black dots) to fit the estimated (black line) error rate. So, things look good and we can move on!
 
-## 🧪 Step 4: Dereplication
+## Dereplication
 
-Dereplication is a common step in many amplicon processing workflows. Instead of keeping 100 identical sequences and doing all downstream processing to all 100, you can keep/process one of them, and just attach the number 100 to it. When DADA2 dereplicates sequences, it also generates a new quality-score profile of each unique sequence based on the average quality scores of each base of all of the sequences that were replicates of it. 
+Dereplication is a common step in many amplicon processing workflows. Instead of keeping 100 identical sequences and doing all downstream processing to all 100, we can process one of them, and just assign the number 100 to it. When DADA2 dereplicates sequences, it also generates a new quality-score profile of each unique sequence based on the average quality scores of each base of all of the replicate sequences. 
 
-The dereplication step is technically no longer listed as part of the standard dada2 tutorial, as it is performed by the dada() step if given filenames.
-But, it can be lighter on memory requirements to run them as separate steps like done here, so it is left this way here for the sake of keeping things going. 
-Verbose=TRUE, just tells R that we want to see progress messages, summaries, and warnings to monitor the command as it runs.
+The dereplication step is technically no longer listed as part of the standard DADA2 tutorial, as it is performed by the `dada()` function by default. However, it can be lighter on memory requirements to run it as a separate step like done here:
 
 ```R
 # Dereplication -----------------------------------------------------------
@@ -208,15 +206,12 @@ derep_reverse <- derepFastq(filtered_reverse_reads, verbose=TRUE)
 names(derep_reverse) <- samples
 ```
 
-## 🧪 Step 5: Inferring ASVs
-We are now ready to apply the core algorithim, `dada`, and see what it was made to do, that is to do its best to infer true biological sequence variants. 💪
-
-The dada2 tool will inspect every sequence and decide, based on the error model, if a sequence is a real biological sequence with no errors or a sequence that contains errors.
-This step can be run on individual samples, which is the least computationally intensive manner but most tedious for us, or on all samples together, which increases the function’s ability to resolve low-abundance ASVs. 
+## Inferring ASVs
+We are now ready to apply the core algorithim `dada()` to infer sequence variants. The DADA2 function will inspect every sequence and decide, based on the error model, if a sequence is a real biological sequence with no errors or a sequence that contains errors. This step can be run on individual samples, which is the least computationally intensive manner but most tedious for us, or on all samples together, which increases the function’s ability to resolve low-abundance ASVs. 
 
 >Imagine Sample A has 10,000 copies of sequence Z, and Sample B has 1 copy of sequence Z. Sequence Z would likely be filtered out of Sample B even though it was a “true” singleton among perhaps thousands of spurious singletons we needed to remove.
 
-But because running all samples together on large datasets can become impractical computationally, the developers also added a way to try to combine the best of both worlds which they refer to as *pseudo-pooling*, which is explained very nicely here: https://benjjneb.github.io/dada2/pseudo.html#Pseudo-pooling. 
+But because running all samples together on large datasets can become impractical computationally, the developers also added a way to try to combine the best of both worlds which they refer to as *pseudo-pooling*, which is explained very nicely [here](https://benjjneb.github.io/dada2/pseudo.html#Pseudo-pooling). 
 
 <img width="1319" height="481" alt="image" src="https://github.com/user-attachments/assets/aa256b22-4896-444a-a84a-97abd691fb26" />
 
