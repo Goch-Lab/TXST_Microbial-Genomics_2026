@@ -229,30 +229,36 @@ dada_reverse <- dada(derep_reverse, err = err_reverse_reads, pool = "pseudo", mu
 ```
 
 ## Merging Forward and Reverse Reads
-Now DADA2 merges the forward and reverse ASVs to reconstruct our full target amplicon, requiring the overlapping region to be identical between the two. By default, it requires that at least 12 bps overlap, but in our case the overlap should be much greater. If you remember above we trimmed the forward reads to 250 and the reverse to 200, and our primers were 515f–806r (291 bp). After cutting off the primers we’re expecting a typical amplicon size of around 260 bases, so our typical overlap should be up around 190 bp. However, that’s estimated based on E. coli 16S rRNA gene positions and very back-of-the-envelope-esque of course, so to allow for true biological variation and such I’m going to set the `minOverlap` for this dataset to 170 bp. I’m also setting the `trimOverhang` option to TRUE in case any of our reads go past their opposite primers (which I wouldn’t expect based on our trimming, but is possible due to the region and sequencing method).
+
+DADA2 can merge overlapping forward and reverse ASVs to reconstruct the full target amplicon, requiring the overlapping region to be identical between the two. By default, it requires that at least 12 bp overlap, but in our case the overlap should be much greater. If you remember, we trimmed the forward reads to 250 and the reverse to 200, and our primers were 515f–806r (291 bp). After cutting off the primers we are expecting a typical amplicon size of ~260 bp, so our typical overlap should be up around 190 bp. However, that is estimated based on the *E. coli 16S* rRNA gene positions and very back-of-the-envelope-esque, so to allow for true biological variation we are going to set the `minOverlap` argument for this dataset to 170 bp. We will also set the `trimOverhang` option to TRUE in case any of our reads go past their opposite primers, which is not expected based on our trimming, but is possible due to the region and sequencing method.
 
 ```R
 # Merging Reads -----------------------------------------------------------
 
 merged_amplicons <- mergePairs(dada_forward, derep_forward, dada_reverse,
-                    derep_reverse, trimOverhang=TRUE, minOverlap=170)
+                    derep_reverse, trimOverhang = TRUE, minOverlap = 170)
 
-# this object merged_amplicons holds a lot of information, so it may be the first place you'd want to look if you want to start poking under the hood.
+# The object merged_amplicons holds a lot of information,
+# so it may be the first object you would want to inspect.
+
 View(merged_amplicons)
 class(merged_amplicons) # list
 length(merged_amplicons) # 20 elements in this list, one for each of our samples
 names(merged_amplicons) # the names() function gives us the name of each element of the list
 
-# each element of the list is a dataframe that can be accessed and manipulated like any ordinary dataframe, the $ sign says we only want info from sample B1
+# Each element of the list is a data frame that can be accessed and manipulated
+# like any ordinary data frame. The '$' sign says we only want info from sample B1
 class(merged_amplicons$B1) 
 
-# the names() function on a dataframe gives you the column names for each dataframe
+# The names() function on a dataframe gives you the column names for each dataframe
 names(merged_amplicons$B1) 
 # "sequence"  "abundance" "forward"   "reverse"   "nmatch"    "nmismatch" "nindel"    "prefer"    "accept"
 ```
 
-## 🧪 Step 7: Generating a count table
-Now we can generate an ASV count table with the `makeSequenceTable()` function. This is one of the main outputs from processing an amplicon dataset. You may have also heard this referred to as a biome table, or an OTU matrix.
+## Generating a Count Table
+
+Now we can generate an ASV count table with the `makeSequenceTable()` function. This is one of the main outputs from processing an amplicon dataset. This can also be referred to as a "biome table", or as an "OTU matrix" for OTUs.
+
 ```R
 # Generate a Count Table --------------------------------------------------
 
@@ -261,7 +267,7 @@ class(seqtab) # matrix
 dim(seqtab) # 20 2521, means 20 samples, 2521 ASVs
 View(seqtab)
 
-# Don't worry if the numbers vary a little, this might happen due to different versions being used from when this was initially put together
+# The numbers may vary a little, this might happen due to different versions being used from when this was initially put together.
 ```
 
 The count table is a matrix with rows corresponding to (and named by) the samples, and columns corresponding to (and named by) the sequence variants. 
