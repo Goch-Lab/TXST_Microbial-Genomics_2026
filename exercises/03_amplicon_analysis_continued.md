@@ -1,4 +1,4 @@
-# CL9: *16S* Amplicon Sequencing II
+# CL10: *16S* Amplicon Sequencing II
 
 In this tutorial, we will continue working with *16S* amplicon data, this time comparing samples and performing statistical analysis. We will continue working in R, but handing off our DADA2 processed samples to the package [phyloseq](https://joey711.github.io/phyloseq). 
 
