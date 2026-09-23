@@ -388,15 +388,7 @@ contam_asvs <- row.names(contam_df[contam_df$contaminant == TRUE, ])
 asv_tax[row.names(asv_tax) %in% contam_asvs, ]
 ```
 
-These microbes are common contaminants, but of course not all the time (e.g., *Burkholderia*, *Pseudomonas*). 
-
-Let's extract the contaminant sequences from the fasta files and blast against NCBI so we can possibly get an idea of what the NAs are. To do this, we can use the Terminal in R:
-
-```bash
-grep -w -A1 "^>ASV_104\|^>ASV_219\|^>ASV_230\|^>ASV_274\|^>ASV_285\|^>ASV_622" ASVs.fasta
-```
-
-Now paste into [NCBI Blast](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome). Create new files excluding the contaminants: 
+These microbes are common contaminants, but of course not all the time (e.g., *Burkholderia*, *Pseudomonas*). Create new files excluding the contaminants: 
 
 ```R
 # Remove contaminants and make new files
