@@ -68,7 +68,7 @@ Before examining the output, let's run it again with different settings. We can 
 megahit -r data/SRS014464-Anterior_nares.fasta -o output/min1 --min-count 1
 ```
 
-This will likely result in many more shorter contigs due to trusting every *k*-mer as informative. In other words, since we have ignored the effect of noise, we will likely have a range of contigs that only differ by a few bases, which are likely result of sequencing errors.
+This will likely result in many more shorter contigs due to treating every *k*-mer as informative. In other words, since we have ignored the effect of noise, we will likely have a range of contigs that only differ by a few bases, which are likely result of sequencing errors.
 
 Alternatively, we could change the range of *k*-mer sizes to use. In general, the larger the *k*-mer size, the more specific (and less sensitive) the assembly will be. In practice, this can result in the assembly of high abundance organisms. Inversely, the smaller the *k*-mer size, the more sensitive (but less specific) the assembly will be (i.e., you may get a bunch of really short contigs):
 
