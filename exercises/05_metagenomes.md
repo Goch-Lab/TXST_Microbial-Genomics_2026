@@ -8,12 +8,11 @@ This tutorial is based on the [metagenomics tutorial](https://github.com/Penn-St
 ## 🧠 Learning Objectives
 
 By the end of this exercise, you should be able to:
-- Understand the difference between a genome and a metagenome.
-- Assess differential coverage and detection of genes across metagenomes. 
-- Compare genes across metagenome samples.
-- Assesses differences in SNVs across genes.
 
-## 🧪 Step 1: Reading in the data and setting up the working environment
+- Distinguish between genome and metagenome assembly.
+- Understand how genome binning works. 
+
+## Metagenome Assembly
 
 1. Navigate to the `microgenomics-2025` directory you made last week.
 2. Make a new directory called `week5` and move into that directory.
