@@ -16,7 +16,7 @@ By the end of this exercise, you should be able to:
 
 Metagenome assembly is one of the most computationally intensive part of WGS metagenomic analysis. This is due in part to how tangled the assembly graphs can look. For an illustration, here is a de Bruijn graph with a *k*-mer size of 50 for a mock metagenome consisting of 113 microorganisms:
 
-<img width="957" height="718" alt="image" src="https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/CL11/128256031-fb788323-583b-41b8-b02c-8c0a2ed86d74.png" />
+<img width="1080" height="1085" alt="image" src="https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/CL11/128256031-fb788323-583b-41b8-b02c-8c0a2ed86d74.png" />
 
 Disentangling such a big knot into linear contigs requires complex algorithmic approaches; this is one the reasons why metagenome assembly is still a field of active development. One of the most successful current approaches is to construct de Bruijn graphs with multiple *k*-mer sizes. We will use the best-performing assembler from the CAMI2 competition: [MEGAHIT](https://github.com/voutcn/MEGAHIT). Since we don't want to wait hours to days to complete the assemblies, we will be using small datasets. This might give you the impression that the tools are not resource intensive, but do not be deceived! The amount of resources required does not scale linearly with the number of reads (it grows much faster than that).
 
