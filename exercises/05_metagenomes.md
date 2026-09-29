@@ -1,9 +1,8 @@
-# Week 5: Gene-centric metagenomics
+# CL11: Metagenomics I–Assembly and Binning
 
-In this tutorial, we will explore the presence of _Enterococcus faecalis_ across metagenome samples from the Human Microbiome Project (HMP), specifically infant guts (pub here: https://www.nature.com/articles/s41467-017-02018-w). 
+This tutorial is based on the [metagenomics tutorial](https://github.com/Penn-State-Microbiome-Center/KickStart-Workshop-2026/tree/main/Day3-Shotgun) of the KickStart Workshop from the [Penn State One Health Microbiome Center](https://www.huck.psu.edu/research/centers-institutes/one-health-microbiome-center). It will cover a few of the basic computational approaches to studying WGS metagenomic data. In contrast to *16S* amplicon sequencing, there is no agreed-upon "all-in-one" analysis platform for WGS metagenomic analysis. Because of that, we will be covering some of the state-of-the-art stand-alone tools [according to the Initiative for the Critical Assessment of Metagenome Interpretation (CAMI)](https://doi.org/10.1038/s41592-022-01431-4).
 
-_E. faecalis_ is a Gram-positive, commensal bacterium naturally inhabiting the gastrointestinal tracts of humans. Like other species in the genus Enterococcus, E. faecalis is typically found in healthy humans but it is also an opportunistic pathogen capable of causing severe infections, especially in a hospital setting.(https://en.wikipedia.org/wiki/Enterococcus_faecalis) 
-We are adapting a tutorial made for Anvio by Murat Eren (thank you 😊) 
+
 
 ---
 ## 🧠 Learning Objectives
