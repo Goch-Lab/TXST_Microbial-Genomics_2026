@@ -18,40 +18,63 @@ Metagenome assembly is one of the most computationally intensive part of WGS met
 
 <img width="1080" height="1085" alt="image" src="https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/CL11/128256031-fb788323-583b-41b8-b02c-8c0a2ed86d74.png" />
 
-Disentangling such a big knot into linear contigs requires complex algorithmic approaches; this is one the reasons why metagenome assembly is still a field of active development. One of the most successful current approaches is to construct de Bruijn graphs with multiple *k*-mer sizes. We will use the best-performing assembler from the CAMI2 competition: [MEGAHIT](https://github.com/voutcn/MEGAHIT). Since we don't want to wait hours to days to complete the assemblies, we will be using small datasets. This might give you the impression that the tools are not resource intensive, but do not be deceived! The amount of resources required does not scale linearly with the number of reads (it grows much faster than that).
+Disentangling such a big knot into linear contigs requires complex algorithmic approaches. One of the most successful current approaches is to construct de Bruijn graphs with multiple *k*-mer sizes. However, metagenome assembly remains a field of active development. Since we don't want to wait hours to days to complete the assemblies, we will be using small datasets. This might give you the impression that the tools are not resource intensive, but do not be deceived! The amount of resources required does not scale linearly with the number of reads (it grows much faster than that).
+
+In this tutorial, we will use the best-performing assembler from the CAMI2 competition: [MEGAHIT](https://github.com/voutcn/MEGAHIT). MEGAHIT is a *de novo* assembler first introduced in 2015. It utilizes multiple *k*-mer sizes when building a de Bruijn graph along with a strategy to rescue low-coverage regions while attempting to account for sequencing errors:
+
+<img width="385" height="440" alt="image" src="https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/CL11/bioinformatics_31_10_1674_f2.gif" />
+
+Login onto LEAP2 and create a working directory in your `microbial genomics` directory:
 
 ```bash
-curl -L -o INFANT-GUT-TUTORIAL.tar.gz \
-     -H "User-Agent: Chrome/115.0.0.0" \
-     https://figshare.com/ndownloader/files/45076909
+cd <path/to/microbial_genomics>
+mkdir metagenome_assembly
+cd metagenome_assembly
 ```
+
+Create a `data` directory and download and decompress the data:
+
 ```bash
-tar -zxvf INFANT-GUT-TUTORIAL.tar.gz && cd INFANT-GUT-TUTORIAL
+mkdir data
+cd data
+wget -i https://raw.githubusercontent.com/Penn-State-Microbiome-Center/KickStart-Workshop-2022/main/Day5-Shotgun/Data/file_list.txt
+ls *.gz | xargs -P6 -I{} gunzip {}
 ```
 
-If you type `ls`in the dataset directory, you will see that the data-pack contains a lot of data. A lot of this we will use next week, but let's go ahead navigate to the `work_dir` to get the data we need today and activate the anvio conda environment. 
+Create a Conda environment for the metagenomics tutorials and install MEGAHIT in there:
+
 ```bash
-cd ../../work_dir/
-conda activate anvio-8
+conda create -n metagenomics bioconda::megahit
+conda activate metagenomics
+megahit -h
+conda deactivate
+cd ..
 ```
 
-Make a shortcut (symlink) to the files we will use today here.
+There are a variety of parameters that can be specified with MEGAHIT. However, the main ones we will focus on specify if the input data (which must be fasta or fastq) is paired end in separate (`-1` and `-2` flags) or interleaved (`-12` flag) files, or `-r` single-end, as well as the specification of the output directory with `-o`.
+
+Run MEGAHIT using the default parameters on one of the samples from an interactive shell:
+
 ```bash
-ln -s ../data_dir/INFANT-GUT-TUTORIAL/additional-files/e_faeealis_across_hmp/* .
-ls
+sinteractive -p shared -n 4 --mem-per-cpu=10G --time=2:00:00
+conda activate metagenomics
+mkdir output
+megahit -r data/SRS014464-Anterior_nares.fasta -o output/default
 ```
 
-> You should see an anvi’o contigs database of our reference genome, an anvi’o merged profile database that describes 20 gut metagenomes, and other additional data that are required by various sections in this tutorial. Here are some simple descriptions for some of these files and how they were generated.
-> 
-> An anvi’o contigs database was generated using the program `anvi-gen-contigs-database`. This special anvi’o database keeps all the information related to your contigs: positions of open reading frames, k-mer frequencies for each contig, functional and taxonomic annotation of genes, etc. The contigs database is an essential component of everything related to anvi’o metagenomic workflow.
-> 
-> A merged anvi’o profile database was also generated using the program `anvi-profile`. In contrast to the contigs database, anvi’o profile databases store sample-specific information about contigs. A mapping/alignment tool (like Bowtie) was used to map the metagenome short reads to our reference, creating a BAM file. Profiling a BAM file with anvi’o creates a single profile that reports properties for each contig in a single sample based on mapping results.
-> Each profile database automatically links to a contigs database, and anvi’o can merge single profiles that link to the same contigs database into an anvi’o merged profile (which is what you will work with during this tutorial), using the program `anvi-merge`.
->
-> When generating a profile with `anvi-profile`, we can ask it to profile the SNVs in our reads.
-> 
-> To assign functions, the `anvi-run-ncbi-cogs` was run on the contigs database before, which stored functions for genes in the contigs database. 
+Before examining the output, let's run it again with different settings. We can take into account the graphs from all *k*-mer sizes by setting the minimum *k*-mer count to 1:
 
+```bash
+megahit -r data/SRS014464-Anterior_nares.fasta -o output/min1 --min-count 1
+```
+
+This will likely result in many more shorter contigs due to trusting every *k*-mer as informative. In other words, since we have ignored the effect of noise, we will likely have a range of contigs that only differ by a few bases, which are likely result of sequencing errors.
+
+Alternatively, we could change the range of *k*-mer sizes to use. In general, the larger the *k*-mer size, the more specific (and less sensitive) the assembly will be. In practice, this can result in the assembly of high abundance organisms. Inversely, the smaller the *k*-mer size, the more sensitive (but less specific) the assembly will be (i.e., you may get a bunch of really short contigs):
+
+```bash
+megahit -r data/SRS014464-Anterior_nares.fasta -o output/ksize15-51-10 --k-min 15 --k-max 51 --k-step 10
+```
 
 ## 🧪 Step 2: Gene presence-absence
 
