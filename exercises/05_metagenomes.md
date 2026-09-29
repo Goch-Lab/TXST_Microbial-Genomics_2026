@@ -14,11 +14,9 @@ By the end of this exercise, you should be able to:
 
 ## Metagenome Assembly
 
-1. Navigate to the `microgenomics-2025` directory you made last week.
-2. Make a new directory called `week5` and move into that directory.
-3. Now make two new directories, `data_dir` and `work_dir`.
-4. Move into the `data_dir`.
-5. Download and unpack the data like so:
+Metagenome assembly is one of the most computationally intensive part of WGS metagenomic analysis. This is due in part to how tangled the assembly graphs can look. For an illustration, here is a de Bruijn graph with a *k*-mer size of 50 for a mock metagenome consisting of 113 microorganisms:
+
+<img width="957" height="718" alt="image" src="https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/CL11/128754520-4e2852aa-52b4-43a5-9e68-4e6f4f030379.png" />
 
 ```bash
 curl -L -o INFANT-GUT-TUTORIAL.tar.gz \
