@@ -2,7 +2,7 @@
 
 This tutorial is based on the [metagenomics tutorial](https://github.com/Penn-State-Microbiome-Center/KickStart-Workshop-2026/tree/main/Day3-Shotgun) of the KickStart Workshop from the [Penn State One Health Microbiome Center](https://www.huck.psu.edu/research/centers-institutes/one-health-microbiome-center). It will cover a few of the basic computational approaches to studying WGS metagenomic data. In contrast to *16S* amplicon sequencing, there is no agreed-upon "all-in-one" analysis platform for WGS metagenomic analysis. Because of that, we will be covering some of the state-of-the-art stand-alone tools [according to the Initiative for the Critical Assessment of Metagenome Interpretation (CAMI)](https://doi.org/10.1038/s41592-022-01431-4).
 
-<img width="957" height="718" alt="image" src="https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/CL11/128754520-4e2852aa-52b4-43a5-9e68-4e6f4f030379.png" />
+<img width="957" height="718" alt="image" src="https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/CL11/128256031-fb788323-583b-41b8-b02c-8c0a2ed86d74.png" />
 
 ---
 ## 🧠 Learning Objectives
@@ -17,6 +17,8 @@ By the end of this exercise, you should be able to:
 Metagenome assembly is one of the most computationally intensive part of WGS metagenomic analysis. This is due in part to how tangled the assembly graphs can look. For an illustration, here is a de Bruijn graph with a *k*-mer size of 50 for a mock metagenome consisting of 113 microorganisms:
 
 <img width="957" height="718" alt="image" src="https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/CL11/128754520-4e2852aa-52b4-43a5-9e68-4e6f4f030379.png" />
+
+Disentangling such a big knot into linear contigs requires complex algorithmic approaches; this is one the reasons why metagenome assembly is still a field of active development. One of the most successful current approaches is to construct de Bruijn graphs with multiple *k*-mer sizes. We will use the best-performing assembler from the CAMI2 competition: [MEGAHIT](https://github.com/voutcn/MEGAHIT). Since we don't want to wait hours to days to complete the assemblies, we will be using small datasets. This might give you the impression that the tools are not resource intensive, but do not be deceived! The amount of resources required does not scale linearly with the number of reads (it grows much faster than that).
 
 ```bash
 curl -L -o INFANT-GUT-TUTORIAL.tar.gz \
