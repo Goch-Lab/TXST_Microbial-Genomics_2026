@@ -122,8 +122,18 @@ ln -s ../../assembly/output/min1/final.contigs.fa MEGAHIT_min1_contigs.fasta
 cd ..
 ```
 
+Note that since we are using a small demonstration sample, CONCOCT will say there are no bins at all. So we must artificially increase our contig lengths. The following takes each contig and copies it 5 times:
+
 ```bash
-anvi-interactive -p PROFILE.db -c CONTIGS.db
+awk '!/^>/{next}{getline s} length(s) >= 1 { print $0 "\n" s s s s s}' data/MEGAHIT_default_contigs.fasta > data/MEGAHIT_default_contigs_longer.fasta
+awk '!/^>/{next}{getline s} length(s) >= 1 { print $0 "\n" s s s s s}' data/MEGAHIT_min1_contigs.fasta > data/MEGAHIT_min1_contigs_longer.fasta
+```
+
+CONCOCT would also like multiple samples from the same environment (i.e., replicates) to incrase accuracy, but we don't have that with our demo data. Install CONCOCT
+
+```bash
+conda activate metagenomics
+conda install concoct
 ```
 
 Instead of doing this per-contig basis, we can look at the distribution patterns of genes. Don't worry, you will see warnings because it's our first time running this, and it needs to generate the gene database for us.
