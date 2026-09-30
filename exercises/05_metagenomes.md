@@ -134,22 +134,55 @@ Keep in mind that CONCOCT would like multiple samples from the same environment 
 ```bash
 conda activate metagenomics
 bwa index data/MEGAHIT_default_contigs_longer.fasta
-bwa mem -t 4 data/MEGAHIT_default_contigs_longer.fasta data/SRS014464-Anterior_nares.fastq > output/on_MEGAHIT/SRS014464-Anterior_nares.sam
+bwa mem -t 4 data/MEGAHIT_default_contigs_longer.fasta data/SRS014464-Anterior_nares.fastq > output_default/SRS014464-Anterior_nares.sam
 ```
 
 Convert, sort, and index the resulting BAM file:
 
 ```bash
-samtools view -S -b output/on_MEGAHIT/SRS014464-Anterior_nares.sam > output/on_MEGAHIT/SRS014464-Anterior_nares.bam
-samtools sort output/on_MEGAHIT/SRS014464-Anterior_nares.bam -o output/on_MEGAHIT/SRS014464-Anterior_nares.sorted.bam
-samtools index output/on_MEGAHIT/SRS014464-Anterior_nares.sorted.bam
+cd output_default
+samtools view -S -b SRS014464-Anterior_nares.sam > SRS014464-Anterior_nares.bam
+samtools sort SRS014464-Anterior_nares.bam -o SRS014464-Anterior_nares.sorted.bam
+samtools index SRS014464-Anterior_nares.sorted.bam
+cd ..
 ```
 
 CONCOCT suggest cutting our contigs into 10 kbp chunks (so that the PCA works better). However, the contigs in our demo data are quite short, so let's chop them into 1 kbp chunks instead:
 
 ```bash
-cut_up_fasta.py data/MEGAHIT_default_contigs_longer.fasta -c 1000 -o 0 --merge_last -b output/on_MEGAHIT/contigs_1000.bed > output/on_MEGAHIT/contigs_1000.fa
+cut_up_fasta.py data/MEGAHIT_default_contigs_longer.fasta -c 1000 -o 0 --merge_last -b output_default/contigs_1000.bed > output_default/contigs_1000.fasta
 ```
+
+We need to keep track of where the alignments to the original contigs went when we cut them up into smaller chunks:
+
+```bash
+concoct_coverage_table.py output_default/contigs_1000.bed output_default/SRS014464-Anterior_nares.sorted.bam > output_default/coverage_table.tsv
+```
+
+Run CONCOCT using the default settings:
+
+```bash
+concoct --composition_file output_default/contigs_1000.fasta --coverage_file output_default/coverage_table.tsv -b output_default --threads 4
+```
+
+Now that CONCOCT has done its thing, let's get the output into a more useful format. Specifically, it would be nice if each bin was in its own FASTA file. That way, we could use CheckM and/or BUSCO to check for conserved genes in each bin, look for contamination, etc. After that, we could then use a prokaryote gene finder like GeneMarkS or MetaGeneMark (but don't use the web versions, these tools come packaged in other platforms, eg. even QUAST has these inside of it).
+
+Undo the cutting up
+Now that we've binned the "cut up" contigs, we can do the following to merge the pieces back together:
+
+merge_cutup_clustering.py output/on_MEGAHIT/clustering_gt1000.csv > output/on_MEGAHIT/clustering_merged.csv
+Note that missassemblies can result in different 1Kbp pieces ending up in different bins (this can be ok and can be thought of as "undoing" the missassembly).
+
+Put each bin in its own FASTA file
+Now we can place each bin in its own FASTA file, easing downstream analysis:
+
+mkdir output/on_MEGAHIT/fasta_bins
+extract_fasta_bins.py data/MEGAHIT_default_contigs.fasta output/on_MEGAHIT/clustering_merged.csv --output_path output/on_MEGAHIT/fasta_bins
+Analyzing the bins
+For sake of time, let's just use the NCBI BLAST website to take a look at one of the bins. Please DO NOT DO THIS WITH REAL DATA. The next section gives a much better and more accurate way to do this. But in any case, let's take a look at the bin 1.fa. Any guesses what organism this bin originates from? What could we have done differently to avoid this sort of situation? (hint: this tool or perhaps this one, or that one).
+
+Putting it all together
+Let's now put everything into a script so we can run it with a single command. As usual, we will place this in a bash script in the scripts folder and make it executable. Let's call the file run_CONCOCT.sh
 
 ## 🧪 Step 3: SNVs
 
