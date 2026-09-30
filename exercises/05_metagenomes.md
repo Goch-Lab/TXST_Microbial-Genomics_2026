@@ -48,7 +48,6 @@ Create a Conda environment for the metagenomics tutorials and install MEGAHIT in
 ```bash
 conda create -n metagenomics python=3 bioconda::megahit bioconda::concoct
 conda activate metagenomics
-conda install bioconda::concoct
 megahit -h
 conda deactivate
 ```
