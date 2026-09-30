@@ -74,11 +74,23 @@ Alternatively, we could change the range of *k*-mer sizes to use. In general, th
 
 ```bash
 megahit -r data/SRS014464-Anterior_nares.fasta -o output/ksize15-51-10 --k-min 15 --k-max 51 --k-step 10
+conda deactivate
 ```
 
-## 🧪 Step 2: Gene presence-absence
+Now that we have produced multiple assemblies for one of the samples, we can go ahead and assess their quality using QUAST:
 
-First, this data was prepared with an older version of Anvi'o, so we need to migrate the data to work with our version like so:
+```bash
+conda activate quast
+for folder in `ls -d output/*`; do quast -o ${folder}/quast_out -m 250 --circos --glimmer --rna-finding --single data/SRS014464-Anterior_nares.fasta ${folder}/final.contigs.fa; done
+conda deactivate
+```
+
+Download the QUAST reports and compare the quality of the different assemblies. [TIP: you may want to rename each report file name]. Which assembly worked best?
+
+## Metagenomic Binning
+
+Metagenomic binning is the process of taking contigs and placing them in *bins*. These bins can either be assigned a taxon each taxa (aka taxonomic binning) or else labeled as separate genomes (aka genome binning). Importantly, taxonomic binning is not the same as taxonomic profiling: the process of assign taxa to individual reads or partition individual reads. 
+
 ```bash
 anvi-migrate --migrate-safely *.db
 ```
