@@ -89,7 +89,11 @@ Download the QUAST reports and compare the quality of the different assemblies. 
 
 ## Metagenomic Binning
 
-Metagenomic binning is the process of taking contigs and placing them in *bins*. These bins can either be assigned a taxon each taxa (aka taxonomic binning) or else labeled as separate genomes (aka genome binning). Importantly, taxonomic binning is not the same as taxonomic profiling: the process of assign taxa to individual reads or partition individual reads. 
+Metagenomic binning is the process of taking contigs and placing them in *bins*. These bins can either be assigned a taxon each taxa (aka taxonomic binning) or else labeled as separate genomes (aka genome binning). Importantly, *taxonomic binning* is not the same as *taxonomic profiling*: the process of assign taxa to individual reads or partition individual reads. We will learn further about both approaches tomorrow.
+
+[CONCOCT](https://github.com/binpro/concoct) is a genome binning tool first introduced in 2014. While it is not the most recent or accurate tool, it serves as the starting point for a number of other tools (such as MetaBinner, MetaWrap, and UltraBinner). CONCOCT uses a combination of alignment covererage information, *k*-mer frequecies and a Gaussian mixture model to partition the contigs in a space of dimensional reduction (i.e., PCA). The following figure depicts different genome bins with different colors along with the mixture model used to partition them (the legend corresponds to individual genomes):
+
+<img width="693" height="726" alt="image" src="https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/CL11/128550107-4e9ad699-1221-40d4-ad88-63e74f356352.png" />
 
 ```bash
 anvi-migrate --migrate-safely *.db
