@@ -14,6 +14,10 @@ By the end of this exercise, you should be able to:
 - Combine manual and automatic binning.
 
 ## 🧪 Step 1: Reading in the data and setting up the working environment
+
+*Currently, taxonomic profiling is highly inaccurate for all data except that from long-read sequencing technologies. This has led to a fair bit of confusion though, and we will explore the impact this can have on your analysis by using a contig binner Kraken incorrectly by using it on short reads rather than on contigs.*
+
+The following figure describes the current state of analysis for short read sequences:
 1. Navigate to the `microgenomics-2025` directory.
 2. Make a new directory called `week6` and move into that directory.
 3. Let's just make a `work_dir` since we will use last week's `data_dir`. 
