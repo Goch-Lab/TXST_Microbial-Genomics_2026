@@ -179,7 +179,7 @@ mkdir fasta_bins
 extract_fasta_bins.py ../data/MEGAHIT_default_contigs.fasta clustering_merged.csv --output_path fasta_bin
 ```
 
-Use the bin `0.fa` for a similarity searches on the [NCBI BLAST online portal](https://blast.ncbi.nlm.nih.gov/Blast.cgi). Any guess of what organism this bin originates from? What could we have done differently to avoid this sort of situation?
+Use the bin `0.fa` for a similarity search on the [NCBI BLAST online portal](https://blast.ncbi.nlm.nih.gov/Blast.cgi). Any guess of what organism this bin originates from? What could we have done differently to avoid this sort of situation?
 
 Now run all the step steps for genome binning for the other MEGAHIT assembly on your own.
 
