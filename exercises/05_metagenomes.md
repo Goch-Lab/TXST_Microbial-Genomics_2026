@@ -28,8 +28,9 @@ Login onto LEAP2 and create a working directory in your `microbial genomics` dir
 
 ```bash
 cd <path/to/microbial_genomics>
-mkdir metagenome_assembly
-cd metagenome_assembly
+mkdir metagenomics
+cd metagenomics
+mkdir assembly
 ```
 
 Create a `data` directory and download and decompress the data:
@@ -38,7 +39,8 @@ Create a `data` directory and download and decompress the data:
 mkdir data
 cd data
 wget -i https://raw.githubusercontent.com/Penn-State-Microbiome-Center/KickStart-Workshop-2022/main/Day5-Shotgun/Data/file_list.txt
-ls *.gz | xargs -P6 -I{} gunzip {}
+gunzip *.gz
+cd ..
 ```
 
 Create a Conda environment for the metagenomics tutorials and install MEGAHIT in there:
@@ -48,7 +50,6 @@ conda create -n metagenomics bioconda::megahit
 conda activate metagenomics
 megahit -h
 conda deactivate
-cd ..
 ```
 
 There are a variety of parameters that can be specified with MEGAHIT. However, the main ones we will focus on specify if the input data (which must be fasta or fastq) is paired end in separate (`-1` and `-2` flags) or interleaved (`-12` flag) files, or `-r` single-end, as well as the specification of the output directory with `-o`.
@@ -59,6 +60,7 @@ Run MEGAHIT using the default parameters on one of the samples from an interacti
 sinteractive -p shared -n 4 --mem-per-cpu=10G --time=2:00:00
 conda activate metagenomics
 mkdir output
+ln -s SRS014464-Anterior_nares.fasta
 megahit -r data/SRS014464-Anterior_nares.fasta -o output/default
 ```
 
@@ -83,6 +85,7 @@ Now that we have produced multiple assemblies for one of the samples, we can go 
 conda activate quast
 for folder in `ls -d output/*`; do quast -o ${folder}/quast_out -m 250 --circos --glimmer --rna-finding --single data/SRS014464-Anterior_nares.fasta ${folder}/final.contigs.fa; done
 conda deactivate
+cd ..
 ```
 
 Download the QUAST reports and compare the quality of the different assemblies. [TIP: you may want to rename each report file name]. Which assembly worked best?
@@ -95,19 +98,30 @@ Metagenomic binning is the process of taking contigs and placing them in *bins*.
 
 <img width="693" height="726" alt="image" src="https://github.com/Goch-Lab/TXST_Microbial-Genomics_2026/blob/main/data/CL11/128550107-4e9ad699-1221-40d4-ad88-63e74f356352.png" />
 
+Create a working directory within the `metagenomics` directory:
+
 ```bash
-anvi-migrate --migrate-safely *.db
+mkdir genome_binning
+cd genome_binning
 ```
 
-Let’s take a first look at the dataset and put our _E. faecalis_ contigs in the context of 20 infant gut metagenomes.
+Download the sequence read data:
+
 ```bash
-anvi-interactive -p PROFILE.db -c CONTIGS.db
+mkdir data
+cd data
+wget -i https://raw.githubusercontent.com/Penn-State-Microbiome-Center/KickStart-Workshop-2021/main/Day5-Shotgun/Data/file_list_fastq.txt
+gunzip *.gz
 ```
 
-We have some additional data to add that tells us more about the sample:
+Create symlinks to a couple of the assemblies:
+
 ```bash
-anvi-import-misc-data additional_layers_table.txt -p PROFILE.db -t layers
+ln -s ../../assembly/output/default/final.contigs.fa MEGAHIT_default_contigs.fasta
+ln -s ../../assembly/output/min1/final.contigs.fa MEGAHIT_min1_contigs.fasta
+cd ..
 ```
+
 ```bash
 anvi-interactive -p PROFILE.db -c CONTIGS.db
 ```
