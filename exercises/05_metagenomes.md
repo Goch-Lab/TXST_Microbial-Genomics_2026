@@ -43,11 +43,12 @@ gunzip *.gz
 cd ..
 ```
 
-Create a Conda environment for the metagenomics tutorials and install MEGAHIT in there:
+Create a Conda environment for the metagenomics tutorials, installing several of the programs we will use including MEGAHIT:
 
 ```bash
 conda create -n metagenomics python=3 bioconda::megahit bioconda::concoct
 conda activate metagenomics
+conda install bioconda::bwa
 megahit -h
 conda deactivate
 ```
@@ -128,15 +129,10 @@ awk '!/^>/{next}{getline s} length(s) >= 1 { print $0 "\n" s s s s s}' data/MEGA
 awk '!/^>/{next}{getline s} length(s) >= 1 { print $0 "\n" s s s s s}' data/MEGAHIT_min1_contigs.fasta > data/MEGAHIT_min1_contigs_longer.fasta
 ```
 
-CONCOCT would also like multiple samples from the same environment (i.e., replicates) to incrase accuracy, but we don't have that with our demo data. Install CONCOCT:
+Keep in mind that CONCOCT would like multiple samples from the same environment (i.e., replicates) to incrase accuracy, but we don't have that with our demo data. CONCOCT also requires a coverage profile and a *k*-mer spectrum before running. To create the coverage profile, we need to align the reads to the assembly. We will use [BWA](https://bio-bwa.sourceforge.net) for the alignment. Let's index the contigs and run the alignment:
 
 ```bash
 conda activate metagenomics
-```
-
-CONCOCT requires a coverage profile and a *k*-mer spectrum before running. To create the coverage profile, we need to align the reads to the assembly. We will use [BWA](https://bio-bwa.sourceforge.net) for the alignment. Let's index the contigs and run the alignment:
-
-```bash
 bwa index data/MEGAHIT_default_contigs_longer.fasta
 bwa mem -t 4 data/MEGAHIT_default_contigs_longer.fasta data/SRS014464-Anterior_nares.fastq > output/on_MEGAHIT/SRS014464-Anterior_nares.sam
 ```
