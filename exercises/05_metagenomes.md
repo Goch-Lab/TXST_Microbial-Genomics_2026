@@ -46,8 +46,9 @@ cd ..
 Create a Conda environment for the metagenomics tutorials and install MEGAHIT in there:
 
 ```bash
-conda create -n metagenomics bioconda::megahit
+conda create -n metagenomics python=3 bioconda::megahit bioconda::concoct
 conda activate metagenomics
+conda install bioconda::concoct
 megahit -h
 conda deactivate
 ```
@@ -132,7 +133,6 @@ CONCOCT would also like multiple samples from the same environment (i.e., replic
 
 ```bash
 conda activate metagenomics
-conda install concoct
 ```
 
 CONCOCT requires a coverage profile and a *k*-mer spectrum before running. To create the coverage profile, we need to align the reads to the assembly. We will use [BWA](https://bio-bwa.sourceforge.net) for the alignment. Let's index the contigs and run the alignment:
@@ -150,12 +150,10 @@ samtools sort output/on_MEGAHIT/SRS014464-Anterior_nares.bam -o output/on_MEGAHI
 samtools index output/on_MEGAHIT/SRS014464-Anterior_nares.sorted.bam
 ```
 
-If you right-click any of the genes, you can see that this menu has more options, including viewing gene context. 
+CONCOCT suggest cutting our contigs into 10 kbp chunks (so that the PCA works better). However, the contigs in our demo data are quite short, so let's chop them into 1 kbp chunks instead:
 
-
-Let's output some data files on gene coverage and detection for you to use for the assignment:
 ```bash
-anvi-export-gene-coverage-and-detection -c CONTIGS.db -p PROFILE.db -O efae
+cut_up_fasta.py data/MEGAHIT_default_contigs_longer.fasta -c 1000 -o 0 --merge_last -b output/on_MEGAHIT/contigs_1000.bed > output/on_MEGAHIT/contigs_1000.fa
 ```
 
 ## 🧪 Step 3: SNVs
