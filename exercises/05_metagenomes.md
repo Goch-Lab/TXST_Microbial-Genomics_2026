@@ -60,7 +60,6 @@ Run MEGAHIT using the default parameters on one of the samples from an interacti
 sinteractive -p shared -n 4 --mem-per-cpu=10G --time=2:00:00
 conda activate metagenomics
 mkdir output
-ln -s SRS014464-Anterior_nares.fasta
 megahit -r data/SRS014464-Anterior_nares.fasta -o output/default
 ```
 
@@ -129,17 +128,28 @@ awk '!/^>/{next}{getline s} length(s) >= 1 { print $0 "\n" s s s s s}' data/MEGA
 awk '!/^>/{next}{getline s} length(s) >= 1 { print $0 "\n" s s s s s}' data/MEGAHIT_min1_contigs.fasta > data/MEGAHIT_min1_contigs_longer.fasta
 ```
 
-CONCOCT would also like multiple samples from the same environment (i.e., replicates) to incrase accuracy, but we don't have that with our demo data. Install CONCOCT
+CONCOCT would also like multiple samples from the same environment (i.e., replicates) to incrase accuracy, but we don't have that with our demo data. Install CONCOCT:
 
 ```bash
 conda activate metagenomics
 conda install concoct
 ```
 
-Instead of doing this per-contig basis, we can look at the distribution patterns of genes. Don't worry, you will see warnings because it's our first time running this, and it needs to generate the gene database for us.
+CONCOCT requires a coverage profile and a *k*-mer spectrum before running. To create the coverage profile, we need to align the reads to the assembly. We will use [BWA](https://bio-bwa.sourceforge.net) for the alignment. Let's index the contigs and run the alignment:
+
 ```bash
-anvi-interactive -p PROFILE.db -c CONTIGS.db -C DEFAULT -b EVERYTHING --gene-mode
+bwa index data/MEGAHIT_default_contigs_longer.fasta
+bwa mem -t 4 data/MEGAHIT_default_contigs_longer.fasta data/SRS014464-Anterior_nares.fastq > output/on_MEGAHIT/SRS014464-Anterior_nares.sam
 ```
+
+Convert, sort, and index the resulting BAM file:
+
+```bash
+samtools view -S -b output/on_MEGAHIT/SRS014464-Anterior_nares.sam > output/on_MEGAHIT/SRS014464-Anterior_nares.bam
+samtools sort output/on_MEGAHIT/SRS014464-Anterior_nares.bam -o output/on_MEGAHIT/SRS014464-Anterior_nares.sorted.bam
+samtools index output/on_MEGAHIT/SRS014464-Anterior_nares.sorted.bam
+```
+
 If you right-click any of the genes, you can see that this menu has more options, including viewing gene context. 
 
 
