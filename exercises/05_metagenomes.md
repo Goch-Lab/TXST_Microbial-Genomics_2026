@@ -176,50 +176,11 @@ Place each bin in its own FASTA file:
 ```bash
 cd output_default
 mkdir fasta_bins
-extract_fasta_bins.py ../data/MEGAHIT_default_contigs.fasta clustering_merged.csv --output_path fasta_bins
+extract_fasta_bins.py ../data/MEGAHIT_default_contigs.fasta clustering_merged.csv --output_path fasta_bin
 ```
 
-Analyzing the bins
-For sake of time, let's just use the NCBI BLAST website to take a look at one of the bins. Please DO NOT DO THIS WITH REAL DATA. The next section gives a much better and more accurate way to do this. But in any case, let's take a look at the bin 1.fa. Any guesses what organism this bin originates from? What could we have done differently to avoid this sort of situation? (hint: this tool or perhaps this one, or that one).
+Use the bin `0.fa` for a similarity searches on the [NCBI BLAST online portal](https://blast.ncbi.nlm.nih.gov/Blast.cgi). Any guess of what organism this bin originates from? What could we have done differently to avoid this sort of situation?
 
-Putting it all together
-Let's now put everything into a script so we can run it with a single command. As usual, we will place this in a bash script in the scripts folder and make it executable. Let's call the file run_CONCOCT.sh
+Now run all the step steps for genome binning for the other MEGAHIT assembly on your own.
 
-## 🧪 Step 3: SNVs
-
-Now let's assess SNVs. As you can imagine, there are a lot of SNVs across all this data. We can get some context by looking at particular genes. 
-```bash
-anvi-interactive -p PROFILE.db -c CONTIGS.db -C DEFAULT -b EVERYTHING --gene-mode
-```
-
-We can export the data, but it would be just too much. So instead let's look at SAAVS (perhaps a bit more meaningful). 
-```
-anvi-gen-variability-profile -c CONTIGS.db -p PROFILE.db -C DEFAULT -b EVERYTHING --engine AA --min-coverage-in-each-sample 5 --quince-mode --compute-gene-coverage-stats -o snvs.txt 
-```
-
-Some info on settings:
-* --engine = will define the output profile you will get from this program. The engine can focus on nucleotides (NT), codons (CDN), or
-  an amino acids (AA).
-* --min-coverage-in-each-sample = Minimum coverage of a given variable nucleotide position in all samples. If a nucleotide position is covered less than this value even in one
-                        sample, it will be removed from the analysis. Default is 0.
-* --quince-mode = The default behavior is to report allele frequencies only at positions where variation was reported during profiling (which by default uses
-                        some heuristics to minimize the impact of error-driven variation). So, if there are 10 samples, and a given position has been reported as a
-                        variable site during profiling in only one of those samples, there will be no information will be stored in the database for the remaining 9.
-                        When this flag is used, we go back to each sample, and report allele frequencies for each sample at this position, even if they do not vary.
-                        It will take considerably longer to report when this flag is on, and the use of it will increase the file size dramatically, however it is
-                        inevitable for some statistical approaches and visualizations.
-* --compute-gene-coverage-stats = If provided, gene coverage statistics will be appended for each entry in variability report. This is very useful information, but will not be
-                        included by default because it is an expensive operation, and may take some additional time.
-
-
-Finally, so you can link where SAAVs are to function, output the assigned gene functions to a file and the fastas for each gene
-```bash
-anvi-export-functions -c CONTIGS.db -o cog_functions.txt --annotation-sources COG14_CATEGORY,COG14_FUNCTION
-anvi-get-sequences-for-gene-calls -c contigs.db -o genes_nt.fa
-```
-
-
-## 📝 Assignment due next class on Canvas
-1. Do you find genes that are present in C-section, not present in vaginal birth samples, or vis versa? (Use the gene_detection file and additional layer file)
-2. Give me the top three genes with the most AA variation? Normalize by gene length because longer genes have more sites, so raw counts SAAVs will look bigger just due to length, not biology. Normalizing by length lets you compare apples to apples. (Use the snvs.txt file)
-3. What are these genes and what functions are involved in? (Use fasta file and cog_functions.txt) 
+This is the end of CL11!
