@@ -165,19 +165,20 @@ Run CONCOCT using the default settings:
 concoct --composition_file output_default/contigs_1000.fasta --coverage_file output_default/coverage_table.tsv -b output_default --threads 4
 ```
 
-Now that CONCOCT has done its thing, let's get the output into a more useful format. Specifically, it would be nice if each bin was in its own FASTA file. That way, we could use CheckM and/or BUSCO to check for conserved genes in each bin, look for contamination, etc. After that, we could then use a prokaryote gene finder like GeneMarkS or MetaGeneMark (but don't use the web versions, these tools come packaged in other platforms, eg. even QUAST has these inside of it).
+It would be useful to have each bin in its own FASTA file. This way, we could use [CheckM](https://ecogenomics.github.io/CheckM) and/or [BUSCO](https://busco.ezlab.org/busco_userguide.html) to check for conserved genes in each bin, look for contamination, etc. After that, we could then use a prokaryote genome annotator like [Bakta](https://github.com/oschwengers/bakta). Now that we have binned the "chopped" contigs, we can merge the pieces back together:
 
-Undo the cutting up
-Now that we've binned the "cut up" contigs, we can do the following to merge the pieces back together:
+```bash
+merge_cutup_clustering.py output_default/clustering_gt1000.csv > output_default/clustering_merged.csv
+```
 
-merge_cutup_clustering.py output/on_MEGAHIT/clustering_gt1000.csv > output/on_MEGAHIT/clustering_merged.csv
-Note that missassemblies can result in different 1Kbp pieces ending up in different bins (this can be ok and can be thought of as "undoing" the missassembly).
+Place each bin in its own FASTA file:
 
-Put each bin in its own FASTA file
-Now we can place each bin in its own FASTA file, easing downstream analysis:
+```bash
+cd output_default
+mkdir fasta_bins
+extract_fasta_bins.py ../data/MEGAHIT_default_contigs.fasta clustering_merged.csv --output_path fasta_bins
+```
 
-mkdir output/on_MEGAHIT/fasta_bins
-extract_fasta_bins.py data/MEGAHIT_default_contigs.fasta output/on_MEGAHIT/clustering_merged.csv --output_path output/on_MEGAHIT/fasta_bins
 Analyzing the bins
 For sake of time, let's just use the NCBI BLAST website to take a look at one of the bins. Please DO NOT DO THIS WITH REAL DATA. The next section gives a much better and more accurate way to do this. But in any case, let's take a look at the bin 1.fa. Any guesses what organism this bin originates from? What could we have done differently to avoid this sort of situation? (hint: this tool or perhaps this one, or that one).
 
