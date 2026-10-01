@@ -20,6 +20,29 @@ mkdir taxonomic_profiling
 cd taxonomic_profiling
 ```
 
+Install MetaPhlAn:
+
+```bash
+sinteractive -p shared -n 4 --mem-per-cpu=10G --time=2:00:00
+conda activate metagenomics
+conda install -c bioconda metaphlan
+metaphlan -h
+```
+
+Install the MetaPhlAn database (this is going to take a while):
+
+```bash
+mkdir database
+metaphlan --install --db_dir database
+```
+
+Download the data:
+
+```bash
+mkdir data
+cd data
+```
+
 ## 🧪 Step 2: Inferring taxonomy
 Let's take a first look at the merged profile database for the infant gut dataset metagenome. 
 ```bash
