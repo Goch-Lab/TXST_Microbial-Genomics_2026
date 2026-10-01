@@ -64,6 +64,37 @@ mkdir output
 metaphlan data/SRS014476-Supragingival_plaque.fasta --input_type fasta --force --bowtie2db database --index mpa_v30_CHOCOPhlAn_201901 --bowtie2out output/SRS014476-Supragingival_plaque.fasta.bowtie2out.txt -o output/SRS014476-Supragingival_plaque_profile.txt --nproc 4
 ```
 
+This will create two output files:
+
+- `SRS014476-Supragingival_plaque.fasta.bowtie2out.txt`: This file contains the intermediate mapping results to unique gene markers. Alignments are listed one per line in tab-separated columns of read and gene marker.
+- `SRS014476-Supragingival_plaque_profile.txt`: This file contains the final computed organism abundances. Organism abundances are listed one clade per line, tab-separated from the clade's percent abundance:
+  - The file has a 4-line header:
+    - The first line lists the reference marker genes database that MetaPhlAn uses. There are ~1.1M unique clade-specific marker genes identified from ~100k reference genomes (~99,500 bacterial and archaeal and ~500 eukaryotic).
+    - The second line lists the path to the tool, the name of the input file and the arguments that were used.
+    - The fourth line has the column headers for the columns below.
+  - The first column lists clades, ranging from taxonomic kingdoms (Bacteria, Archaea, etc.) to species. The taxonomic level of each clade is prefixed to indicate its level: Kingdom: k__, Phylum: p__, Class: c__, Order: o__, Family: f__, Genus: g__, Species: s__. Let us examine these more clearly by listing them by taxonomic hierarchy:
+
+```bash
+grep "s__" -m1 output/SRS014476-Supragingival_plaque_profile.txt | cut -f1 | sed 's/|/\n/g'
+```
+
+This `grep` command will look for lines which contain the pattern "s__" that is associated with species and print the first match with the `-m1` argument. This file have 4 tab-separated columns and the taxonomy is listed in the first; so we will use `cut -f1` to extract the first column only (the field at position 1). Finally, the taxonomic levels are separated by the `|` character, which we replace with the new line character `\n`.
+
+The second column lists the corresponding NCBI taxon ID. The third column lists relative abundances. Since sequence-based profiling is relative and does not provide absolute cellular abundance measures, clades are hierarchically summed. Each level will sum to 100%; that is, the sum of all kingdom-level clades is 100%, the sum of all genus-level clades (including unclassified) is also 100%, and so forth. OTU equivalents can be extracted by using only the species-level "s__" clades from this file (again, making sure to include clades unclassified at this level).
+Let us check if all orders add up to 100% using `grep`. The orders 'Corynebacteriales' and 'Micrococcales' are in the class 'Actinobacteria'.
+
+```bash
+grep o__ output/SRS014476-Supragingival_plaque_profile.txt | grep -v f__
+```
+
+Similarly, the families must sum to 100%. In this example, let us also display the fields of interest, i.e., taxonomy names and percentages for ease of viewing:
+
+```bash
+grep f__ output/SRS014476-Supragingival_plaque_profile.txt | grep -v g__ | cut -f1,3
+```
+
+The fourth column lists additional species for cases where the metagenome profile contains clades that represent multiple species. The species listed in column 1 is the representative species in such cases.
+
 ## 🧪 Step 2: Inferring taxonomy
 Let's take a first look at the merged profile database for the infant gut dataset metagenome. 
 ```bash
