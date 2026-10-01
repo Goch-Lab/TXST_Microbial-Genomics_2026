@@ -120,7 +120,7 @@ cd ..
 
 Install Kraken2:
 
-```
+```bash
 conda create -y -n kraken2 kraken2
 conda activate kraken2
 kraken2 -h
@@ -147,6 +147,7 @@ Run Kraken:
 ```bash
 mkdir output
 kraken2 kraken2 --db k2train8gb --threads 4 --output output/kraken_default_output.txt --classified-out output/kraken_classified_sequences.fq --use-names --report output/kraken_report.txt data/MEGAHIT_default_contigs.fasta
+conda deactivate
 ```
 
 Explore the content of the lines in the `output` directory:
@@ -166,7 +167,43 @@ See how this makes sense considering the BLAST results we saw earlier? In genera
 
 To assign taxonomy to the genome bins generated during [CL11](./CL11.md), we will be using [GTDB-Tk](https://github.com/ecogenomics/gtdbtk). This toolkit is based on the [Genome Database Taxonomy (GTDB)](https://gtdb.ecogenomic.org) and it is designed to work with recent advances that allow hundreds or thousands of metagenome-assembled genomes (MAGs) to be obtained directly from environmental samples. It can also be applied to isolate and single-cell genomes.
 
+Setup working directory:
+
 ```bash
-anvi-interactive -p PROFILE.db -c CONTIGS.db
+cd <path/to/microbial_genomics/metagenomics>
+mkdir taxonomic_annotation
+cd taxonomic_annotation
+ln -s ../genome_binning/output_default/fasta_bins/
 ```
 
+Install GTDB-Tk:
+
+```bash
+conda create -n gtdbtk -c conda-forge -c bioconda gtdbtk=2.7.2
+conda activate gtdbtkg
+gtdbtk -h
+```
+
+For the purpose of this tutorial, we will download a mock, smaller database and not the entire GTDB:
+
+```bash
+mkdir gtdb_mock_db
+cd gtdb_mock_db
+wget https://data.gtdb.ecogenomic.org/releases/latest/auxillary_files/gtdbtk_package/mockup_db/mockup.tar.gz
+tar -xvzf mockup.tar.gz
+cd ..
+export GTDBTK_DATA_PATH=gtdb_mock_db/release232_mockup
+```
+
+Run GTDB-Tk:
+
+```bash
+gtdbtk classify_wf --genome_dir fasta_bins --extension fa --out_dir output --full_tree --cpus 4
+```
+
+Have a look at the files in your `output` directory. The key files to look for are:
+
+- `gtdbtk.bac120.summary.tsv`: The final taxonomic assignments for bacterial genomes.
+- `gtdbtk.bac120.classify.tree.1.tree`: A Newick-formatted phylogenetic tree containing your query genomes placed among the reference strains.
+
+This is the end of CL12!
