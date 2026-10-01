@@ -62,6 +62,7 @@ MetaPhlAn accepts as input short reads from a shotgun metagenomic sequencing exp
 ```bash
 mkdir output
 metaphlan data/SRS014476-Supragingival_plaque.fasta --input_type fasta --force --bowtie2db database --index mpa_v30_CHOCOPhlAn_201901 --bowtie2out output/SRS014476-Supragingival_plaque.fasta.bowtie2out.txt -o output/SRS014476-Supragingival_plaque_profile.txt --nproc 4
+conda deactivate
 ```
 
 This will create two output files:
@@ -117,119 +118,36 @@ gunzip *.gz
 cd ..
 ```
 
-### Installing Kraken2
+Install Kraken2:
 
-If you are using OnDemand, Kraken2 is already installed and you can activate it via:
-```bash
-module use /gpfs/group/RISE/sw7/modules
-module load anaconda
-conda deactivate
-conda activate microbiome1
 ```
-
-If you are on a different system, then Kraken2 is available on conda and is quite straightforward to install:
-```
-conda deactivate
 conda create -y -n kraken2 kraken2
 conda activate kraken2
+kraken2 -h
 ```
 
-After this, you need to choose what sort of database to use with Kraken. A mechanism is built in that downloads the default database (which is ~100GB in size), but alternate databases are available at: https://github.com/BenLangmead/aws-indexes/blob/master/docs/k2.md
+For the purpose of this tutorial, we will be using the smallest Kraken2 database, which includes archaea, bacteria, viruses, plasmids, human sequences, and UniVec_Core (vector contamination). For a real research project, you should use either the default database or one of the other [availabe databases](https://github.com/BenLangmead/aws-indexes/blob/master/docs/k2.md). Even though this database is smallish, it may take a while to download, so you can copy it over from my account:
 
-We will be using the smallest database for the sake of time (it includes archaea, bacteria, viruses, plasmids, human sequences, and UniVec_Core (vector contamination). It is capped to only 8GB in size though, so shouldn't be used for serious research (I'd suggest using the default or the "PlusPF" database).
-
-Even though this database is small-ish, it will likely make you exceed your home directory quota, so I've pre-downloaded the folder to the following location: `/gpfs/group/RISE/training/2021_microbiome/day5/k2train8gb`. We will make a symbolic link to this folder so that it looks like it's in the right place in your folder structure
 ```bash
-ln -s /gpfs/group/RISE/training/2022_microbiome/k2train8gb data/
+scp -r vgz25@leap2.txstate.edu:/mmfs1/home/vgz25/microbial_genomics/taxonomic_binning/k2train8gb .
 ```
 
-So please **_do not_** run the following command unless you direct it to some location where you have more disk quota available. The training data can be obtained and decompressed via:
+Ask for the instructor's login details. Alternatively, run this command (it will take longer):
+
 ```bash
-wget https://genome-idx.s3.amazonaws.com/kraken/k2_standard_8gb_20210517.tar.gz -P data/k2train8gb
-tar -xzvf data/k2train8gb/k2_standard_8gb_20210517.tar.gz -C data/k2train8gb
+mkdir k2train8gb
+cd k2train8gb
+wget https://genome-idx.s3.amazonaws.com/kraken/k2_standard_8gb_20210517.tar.gz
+tar -xzvf k2_standard_8gb_20210517.tar.gz
+cd ..
 ```
-This will take some time to download.
 
-## Running Kraken2
+Run Kraken:
 
-Running Kraken is quite straightforward (i.e. a single line of code), so we will jump directly to creating a script that will do all our analysis for us. First though, let's check out the Kraken parameters:
-```
-Usage: kraken2 [options] <filename(s)>
-
-Options:
-  --db NAME               Name for Kraken 2 DB
-                          (default: none)
-  --threads NUM           Number of threads (default: 1)
-  --quick                 Quick operation (use first hit or hits)
-  --unclassified-out FILENAME
-                          Print unclassified sequences to filename
-  --classified-out FILENAME
-                          Print classified sequences to filename
-  --output FILENAME       Print output to filename (default: stdout); "-" will
-                          suppress normal output
-  --confidence FLOAT      Confidence score threshold (default: 0.0); must be
-                          in [0, 1].
-  --minimum-base-quality NUM
-                          Minimum base quality used in classification (def: 0,
-                          only effective with FASTQ input).
-  --report FILENAME       Print a report with aggregrate counts/clade to file
-  --use-mpa-style         With --report, format report output like Kraken 1's
-                          kraken-mpa-report
-  --report-zero-counts    With --report, report counts for ALL taxa, even if
-                          counts are zero
-  --report-minimizer-data With --report, report minimizer and distinct minimizer
-                          count information in addition to normal Kraken report
-  --memory-mapping        Avoids loading database into RAM
-  --paired                The filenames provided have paired-end reads
-  --use-names             Print scientific names instead of just taxids
-  --gzip-compressed       Input files are compressed with gzip
-  --bzip2-compressed      Input files are compressed with bzip2
-  --minimum-hit-groups NUM
-                          Minimum number of hit groups (overlapping k-mers
-                          sharing the same minimizer) needed to make a call
-                          (default: 2)
-  --help                  Print this message
-  --version               Print version information
-```
-We will want to specify the database we downloaded with the `--db` flag, and save the following output files: `--classified-out` (the sequences that were classified along with their classification), `--output` (the normal output of Kraken2), and `--report` the summary of which clades were found in the input according to Kraken.
-
-Let's go ahead and run Kraken on both assemblies, as well as the raw reads. We will put all of this in a script to execute everything in one go:
 ```bash
-touch scripts/run_kraken.sh
-chmod +x scripts/run_kraken.sh
-nano scripts/run_kraken.sh
+mkdir output
+kraken2 kraken2 --db k2train8gb --threads 4 --output output/kraken_default_output.txt --classified-out output/kraken_classified_sequences.fq --use-names --report output/kraken_report.txt data/MEGAHIT_default_contigs.fasta
 ```
-Then put the following into that file:
-```
-#!/usr/bin/env bash
-set -e  # exit if there is an error
-set -u  # exit if a variable is undefined
-
-scriptFolder=`dirname $0`  #<<-- where this script is located
-baseDir=$(dirname $scriptFolder)  #<<-- the main analysis folder (one up from the script folder)
-dataDir=${baseDir}/data
-trainingDir=${dataDir}/k2train8gb
-outputDir=${baseDir}/output
-# The following is one way to do a for loop with pairs (similar to python's `zip` function): 
-# I use a sequence of space-delimited strings like "A B" "C D". The for loop will take each string and split it up into an array. 
-# Hence the loop args will look like:
-# loop 1: args==["A" "B"]
-# loop 2: args==["C" "D"] etc.
-#for inOut in "MEGAHIT_default_contigs.fasta on_MEGAHIT" "GATB_default_contigs.fasta on_GATB" "SRS014464-Anterior_nares.fastq on_raw_reads";
-for inOut in "MEGAHIT_default_contigs.fasta on_MEGAHIT" "SRS014464-Anterior_nares.fastq on_raw_reads";
-do
-  args=( $inOut );
-  input=${dataDir}/${args[0]}
-  output=${outputDir}/${args[1]}
-  kraken2 kraken2 --db ${trainingDir} --threads 4 --output ${output}/kraken_default_output.txt --classified-out ${output}/kraken_classified_sequences.fq --use-names --report ${output}/kraken_report.txt ${input}
-done
-```
-We can then run this script in the following fashion:
-```bash
-./scripts/run_kraken.sh
-```
-
-## Analyzing the output
 
 The `kraken_classified_sequences.fq` files contain fastq formatted files of the reads/contigs with an NCBI taxID in the header of each sequence. This can be helpful for determining the correspondence between contigs and what organisms they originated from.
 
