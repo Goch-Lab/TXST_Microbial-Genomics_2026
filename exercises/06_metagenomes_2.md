@@ -149,12 +149,10 @@ mkdir output
 kraken2 kraken2 --db k2train8gb --threads 4 --output output/kraken_default_output.txt --classified-out output/kraken_classified_sequences.fq --use-names --report output/kraken_report.txt data/MEGAHIT_default_contigs.fasta
 ```
 
-The `kraken_classified_sequences.fq` files contain fastq formatted files of the reads/contigs with an NCBI taxID in the header of each sequence. This can be helpful for determining the correspondence between contigs and what organisms they originated from.
-
-The `kraken_default_output.txt` contains a compressed-ish version of the above, but with additional information about what led to Kraken's inference. More details can be found [here](https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown#standard-kraken-output-format).
-
-Lastly, the `kraken_report.txt` is what led to some interpreting Kraken2 as usable as a taxonomic profiler (it sure looks like a profile!). The first number is the percent of sequences that covered this taxon, followed by the number assigned to that clade, then to that taxon, a rank code, and then an NCBI taxID. More info can be found [here](https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown#sample-report-output-format) about the format.
-Let's dig in a bit more:
+Explore the content of the lines in the `output` directory:
+- The `kraken_classified_sequences.fq` files contain fastq formatted files of the contigs with an NCBI taxID in the header of each sequence. This can be helpful for determining the correspondence between contigs and what organisms they originated from.
+- The `kraken_default_output.txt` contains a more-compacted version of the one above, but with additional information about what led to Kraken's inference. More details can be found [here](https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown#standard-kraken-output-format).
+- In the `kraken_report.txt`, the first number is the percent of sequences that covered this taxon, followed by the number assigned to that clade, then to that taxon, a rank code, and then an NCBI taxID. More info can be found [here](https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown#sample-report-output-format) about the format.
 
 ### Kraken2 on contigs
 Take a look at the `kraken_report.txt` in the `output/on_MEGAHIT` folder by using the command:
