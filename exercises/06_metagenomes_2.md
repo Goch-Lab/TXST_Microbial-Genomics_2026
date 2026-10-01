@@ -154,98 +154,16 @@ Explore the content of the lines in the `output` directory:
 - The `kraken_default_output.txt` contains a more-compacted version of the one above, but with additional information about what led to Kraken's inference. More details can be found [here](https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown#standard-kraken-output-format).
 - In the `kraken_report.txt`, the first number is the percent of sequences that covered this taxon, followed by the number assigned to that clade, then to that taxon, a rank code, and then an NCBI taxID. More info can be found [here](https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown#sample-report-output-format) about the format.
 
-### Kraken2 on contigs
-Take a look at the `kraken_report.txt` in the `output/on_MEGAHIT` folder by using the command:
+Take a look at the `kraken_report.txt`file:
+
 ```bash
-grep -w S output/on_MEGAHIT/kraken_report.txt | rev | cut -f1 |rev | sed 's/^ *//g'
+grep -w S output/kraken_report.txt | rev | cut -f1 |rev | sed 's/^ *//g'
 ```
 
-```
-Homo sapiens
-Moraxella nonliquefaciens
-```
-See how this makes sense considering the BLAST results we saw earlier? In general, _this_ is what you want to be using instead of BLAST when you want to identify the taxa of each of your contigs. 
+See how this makes sense considering the BLAST results we saw earlier? In general, *this* is what you want to be using instead of BLAST when you want to identify the taxa of each of your contigs.
 
+# Taxonomic Annotation of Genome Bins
 
-Now, let's contrast this to what happens when we look at the report in the raw reads directory: `output/on_raw_reads`.
-```bash
-grep -w S output/on_raw_reads/kraken_report.txt | rev | cut -f1 |rev | sed 's/^ *//g'
-```
-We get the following species:
-```
-Moraxella nonliquefaciens
-Moraxella catarrhalis
-Moraxella bovis
-Moraxella bovoculi
-Moraxella ovis
-Pseudomonas tolaasii
-Escherichia coli
-Klebsiella aerogenes
-Xanthomonas euvesicatoria
-Haemophilus parainfluenzae
-Methylophilus medardicus
-Dolosigranulum pigrum
-Streptococcus oralis
-Staphylococcus epidermidis
-Staphylococcus sp. SB1-57
-Staphylococcus warneri
-Paenibacillus kribbensis
-Finegoldia magna
-Fastidiosipila sanguinis
-Cutibacterium acnes
-Cutibacterium avidum
-Corynebacterium propinquum
-Corynebacterium segmentosum
-Corynebacterium macginleyi
-Corynebacterium sp. FDAARGOS 1242
-Corynebacterium sp. LMM-1652
-Corynebacterium kefirresidentii
-Corynebacterium stationis
-Corynebacterium glucuronolyticum
-Corynebacterium epidermidicanis
-Corynebacterium kutscheri
-Corynebacterium diphtheriae
-Corynebacterium xerosis
-Lawsonella clevelandensis
-Streptomyces tsukubensis
-Prevotella denticola
-Homo sapiens
-Propionibacterium virus Ouroboros
-Propionibacterium virus PHL041M10
-```
-This is what the Braken paper was refering to when it said not to trust the species classifications. Of course one could take a look higher ranks, like the Genus level:
-```
-Moraxella
-Pseudomonas
-Escherichia
-Klebsiella
-Xanthomonas
-Haemophilus
-Pseudoalteromonas
-Neisseria
-Methylophilus
-Sphingobium
-Dolosigranulum
-Streptococcus
-Staphylococcus
-Paenibacillus
-Finegoldia
-Fastidiosipila
-Cutibacterium
-Corynebacterium
-Lawsonella
-Streptomyces
-Bacteroides
-Prevotella
-Homo
-Pahexavirus
-```
-but here again we see lots of false positives. One is left to determine on their own what is an acceptable threshold of "% reads classified." Moral of the story? Use Kraken for taxonomic binning of contigs, use Braken (or MetaPhlAn3, or mOTUs2) for taxonomic profiling.
-
-# Congrats on finishing the "intro to WGS metagenomics" tutorial!
-
-
-# Congrats on finishing the "intro to WGS metagenomics" tutorial!
 Let's take a first look at the merged profile database for the infant gut dataset metagenome. 
 ```bash
 anvi-interactive -p PROFILE.db -c CONTIGS.db
