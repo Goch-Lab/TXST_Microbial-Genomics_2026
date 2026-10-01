@@ -25,7 +25,7 @@ Install MetaPhlAn:
 ```bash
 sinteractive -p shared -n 4 --mem-per-cpu=10G --time=2:00:00
 conda activate metagenomics
-conda install -c bioconda metaphlan
+conda install -c bioconda metaphlan=3.1.0
 metaphlan -h
 ```
 
@@ -33,7 +33,7 @@ Install the MetaPhlAn database (this is going to take a while):
 
 ```bash
 mkdir database
-metaphlan --install --db_dir database
+metaphlan --install --index mpa_v30_CHOCOPhlAn_201901 --bowtie2db database
 ```
 
 Download the data:
@@ -41,7 +41,15 @@ Download the data:
 ```bash
 mkdir data
 cd data
+wget -i https://raw.githubusercontent.com/Penn-State-Microbiome-Center/KickStart-Workshop-2022/main/Day5-Shotgun/Data/file_list.txt
+gunzip *.gz
+cd ..
 ```
+
+The basic steps of MetaPhlAn are:
+
+<img width="444" height="300" alt="image" src="https://github.com/biobakery/biobakery/blob/master/images/2526749054-MetaPhlAn2.png" />
+
 
 ## 🧪 Step 2: Inferring taxonomy
 Let's take a first look at the merged profile database for the infant gut dataset metagenome. 
