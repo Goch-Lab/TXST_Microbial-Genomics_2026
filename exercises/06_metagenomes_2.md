@@ -1,32 +1,23 @@
-# Week 6: Genome-centric metagenomics
+# CL12: Metagenomics II: Taxonomic Analyses
 
-In this tutorial, we will be using a different part of the Infant Gut Dataset containing 11 feacal samples from a premature infant collected between Day 15 and Day 24 of her life in a time-series manner. 
+In this tutorial, we will explore community profiling (taxonomic assignment) in three different modalities: *taxonomic profiling*, *taxonomic binning*, and *taxonomic annotation*. This tutorial is also based on [metagenomics tutorial](https://github.com/Penn-State-Microbiome-Center/KickStart-Workshop-2026/tree/main/Day3-Shotgun) of the KickStart Workshop from the [Penn State One Health Microbiome Center](https://www.huck.psu.edu/research/centers-institutes/one-health-microbiome-center).
 
 ## 🧠 Learning Objectives
 
-By the end of this exercise, you should be able to:
-- Familiarize yourself with the Anvi'o interface for binning. 
-- Inspect contigs in the context of their metagenomic signal.
-- Characterize bins by manual binning.
-- Summarize manual binning results for downstream analyses.
-- Manually curate individual bins for quality control. 
-- Import and visualize external binning results.
-- Combine manual and automatic binning.
+By the end of this tutorial, you should be able to:
 
-## 🧪 Step 1: Reading in the data and setting up the working environment
+- Distinguish different methods to taxonomically profile microbial communities from metagenomic data.
 
-*Currently, taxonomic profiling is highly inaccurate for all data except that from long-read sequencing technologies. This has led to a fair bit of confusion though, and we will explore the impact this can have on your analysis by using a contig binner Kraken incorrectly by using it on short reads rather than on contigs.*
+## Taxonomic Profiling
 
-The following figure describes the current state of analysis for short read sequences:
-1. Navigate to the `microgenomics-2025` directory.
-2. Make a new directory called `week6` and move into that directory.
-3. Let's just make a `work_dir` since we will use last week's `data_dir`. 
-4. `cd` into the `work_dir` you just made.
-5. Activate the `anvio-8` conda environment.
-6. Make a shortcut (symlink) to the files we will use today here.
+Taxonomic profiling is usually done to answer the question: "Which taxa are present in my metagenome and what is their abundance?". Currently, taxonomic profiling is quite inaccurate for short-read sequence data. Here, we will use [MetaPhlAn](https://github.com/biobakery/metaphlan) (<ins>Meta</ins>genomic <ins>Ph</ins>y<ins>l</ins>ogenetic <ins>An</ins>alysis) for taxonomic profiling.
+
+Login into LEAP2 and create a working directory:
+
 ```bash
-ln -s ../../week5/data_dir/INFANT-GUT-TUTORIAL/* .
-ls
+cd <path/to/microbial_genomics>
+mkdir taxonomic_profiling
+cd taxonomic_profiling
 ```
 
 ## 🧪 Step 2: Inferring taxonomy
