@@ -24,8 +24,9 @@ Install MetaPhlAn:
 
 ```bash
 sinteractive -p shared -n 4 --mem-per-cpu=10G --time=2:00:00
-conda activate metagenomics
-conda install -c bioconda metaphlan=3.1.0
+conda create -n metaphlan3 -c bioconda metaphlan=3.1.0
+conda activate metaphlan3
+conda install setuptools
 metaphlan -h
 ```
 
@@ -33,6 +34,12 @@ Install the MetaPhlAn database (this is going to take a while):
 
 ```bash
 mkdir database
+scp -r vgz25@leap2.txstate.edu:/mmfs1/home/vgz25/microbial_genomics/taxonomic_profiling/database .
+```
+
+Ask the instructor to provide their password. Alternatively, you can try the following command, but it will take a long while:
+
+```bash
 metaphlan --install --index mpa_v30_CHOCOPhlAn_201901 --bowtie2db database
 ```
 
@@ -50,6 +57,12 @@ The basic steps of MetaPhlAn are:
 
 <img width="444" height="300" alt="image" src="https://github.com/biobakery/biobakery/blob/master/images/2526749054-MetaPhlAn2.png" />
 
+MetaPhlAn accepts as input short reads from a shotgun metagenomic sequencing experiment in several formats (`.fasta`, `.fastq`, `.bowtie2out` and `.sam`) and outputs the list of detected microbes and their relative abundances. Profile a metagenome from raw reads:
+
+```bash
+mkdir output
+metaphlan data/SRS014476-Supragingival_plaque.fasta --input_type fasta --force --bowtie2db database --index mpa_v30_CHOCOPhlAn_201901 --bowtie2out output/SRS014476-Supragingival_plaque.fasta.bowtie2out.txt -o output/SRS014476-Supragingival_plaque_profile.txt --nproc 4
+```
 
 ## 🧪 Step 2: Inferring taxonomy
 Let's take a first look at the merged profile database for the infant gut dataset metagenome. 
