@@ -9,7 +9,6 @@ By the end of this tutorial, you should be able to:
 * Interpret phylogenetic trees in the context of evolutionary relationships.
 * Recognize limitations and sources of bias in genome-based phylogenetic inferece.
 
-
 ## Pipeline Overview
 
 For this tutorial, we will follow one of the most common phylogenomics pipelines:
@@ -25,44 +24,69 @@ To do this, we will be using [GToTree](https://doi.org/10.1093/bioinformatics/bt
 
 <img width="950" height="573" alt="image" src="https://astrobiomike.github.io/images/GToTree-Overview.png" />
 
-Like the last few weeks, you need to make a new `week8` directory inside your `microgenomics-2025` directory. 
-Download the `work_dir` for this week from Canvas under Module Week 8 into 'week8` directory. 
-To unpack it:
-```
-unzip work_dir.zip
-```
-Move into `work_dir`.
+## Setting Up Working Directory and Environment
 
-Last thing, don't forget to activate your anvio conda environment. 
+Login onto LEAP2 and create a working directory in your `microbial_genomics` directory:
 
-## 🧪 Step 2: Ensure you have the correct bins
-```
-anvi-show-collections-and-bins -p PROFILE.db
-
-```
-You should see at least the "default" collection:
-```
-Collection: "default"
-===============================================
-Collection ID ................................: default
-Number of bins ...............................: 13
-Number of splits described ...................: 4,451
-Bin names ....................................: Aneorococcus_sp, C_albicans, E_facealis, F_magna, L_citreum, P_acnes, P_avidum,
-                                                P_rhinitidis, S_aureus, S_epidermidis, S_hominis, S_lugdunensis, Streptococcus
+```bash
+cd <path/to/microbial_genomics>
+mkdir phylogenomics
+cd phylogenomics
 ```
 
-If not, run this to import it:
-```
-anvi-import-collection additional-files/collections/merens.txt \
-                       --bins-info additional-files/collections/merens-info.txt \
-                       -p PROFILE.db \
-                       -c CONTIGS.db \
-                       -C default
+Install GToTree:
+
+```bash
+conda create -y -n gtotree -c conda-forge -c bioconda -c defaults -c astrobiomike gtotree
+conda activate gtotree
+gtt-hmms
 ```
 
-## 🧪 Step 3: Select genes from an HMM profile
-In order to do the phylogenomic analysis, we will need a FASTA file of concatenated SCGs. And to get that FASTA file out of our anvi’o databases, we will primarily use the program `anvi-get-sequences-for-hmm-hits`.
-We first need to identify an HMM profile, and then select some gene names from this profile to play with. Let’s start by looking at what HMM profiles are available to us: 
+## Data
+*Synechococcus* is one of the abundant cyanobacterium found throughout the ocean and a major component of the phytoplankton. Years ago, a project generated genome sequence data for several marine *Synechococcus*. One of the goals of this project was to place these "new *Synechococcus*" in the evolutionary landscape of the known *Synechococcus*. A taxonomy assignment tool would tell indeed classify these genomes as belonging to *Synechococcus*; a necessary first step. However, the project aimed to identify which *Synechococcus* the samples were more closely related to. This is where a *de novo* phylogenomic tree comes in handy.'
+
+Download the tutorial data:
+
+```bash
+curl -L -o syn-gtotree-example.tar.gz https://ndownloader.figshare.com/files/23629763
+tar -xvzf syn-gtotree-example.tar.gz
+mv syn-gtotree-example data
+cd data
+```
+
+Look at the `ref-syn-accs.txt` file:
+
+```bash
+wc -l ref-syn-accs.txt
+head ref-syn-accs.txt
+```
+
+There are 20 NCBI assembly accessions in there. These include 19 marine *Synechococcus* references, and one for *Gloeobacter violaceus* (a more distant cyanobacterium) that we can use as an outgroup to root our tree.
+
+We have 12 our of newly generated genomes in fasta files:
+
+```bash
+ls *.fa | wc -l
+```
+
+Create a file that lists these files to use as input for GToTree:
+
+```bash
+ls *.fa > our-genome-fasta-files.txt
+head our-genome-fasta-files.txt
+```
+
+Since we are working with *Synechococcus*, which are Cyanobacteria, we can use the Cyanobacteria Hidden Markov Model (HMM) set for Cyanobacteria included with GToTree that holds 251 single-copy genes:
+
+```bash
+gtt-hmms
+```
+
+> [!NOTE]
+> Why are we focusing on single-copy genes shared across *Synechococcus*?
+
+There are 2 required things we need to tell GToTree: 1) which genomes we want to work on; and 2) which target genes we want to use to build our phylogenomic tree.
+
 ```
 anvi-get-sequences-for-hmm-hits -c CONTIGS.db \
                                 -p PROFILE.db \
