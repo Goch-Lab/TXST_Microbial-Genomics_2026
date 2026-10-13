@@ -72,9 +72,9 @@ ls *.fa | wc -l
 Create a file that lists these files to use as input for GToTree:
 
 ```bash
-ls *.fa > our-genome-fasta-files.txt
-head our-genome-fasta-files.txt
 cd ..
+ls data/*.fa > our-genome-fasta-files.txt
+head our-genome-fasta-files.txt
 ```
 
 Since we are working with *Synechococcus*, which are Cyanobacteria, we can use the Cyanobacteria Hidden Markov Model (HMM) set for Cyanobacteria included with GToTree that holds 251 single-copy genes:
@@ -101,7 +101,7 @@ Run GToTree:
 
 ```bash
 conda activate gtotree
-GToTree -a data/ref-syn-accs.txt -f data/our-genome-fasta-files.txt -H Cyanobacteria -o output -t -L Species -n 4  -j 4
+GToTree -a data/ref-syn-accs.txt -f our-genome-fasta-files.txt -H Cyanobacteria -o output -t -L Species -n 4  -j 4
 ```
 
 Code breakdown:
