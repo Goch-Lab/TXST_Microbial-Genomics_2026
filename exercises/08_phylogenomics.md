@@ -23,7 +23,7 @@ For this tutorial, we will follow one of the most common phylogenomics pipelines
 
 To do this, we will be using [GToTree](https://doi.org/10.1093/bioinformatics/btz188), a user-friendly phylogenomics workflow.
 
-<img width="950" height="573" alt="image" src="https://academic.oup.com/view-large/figure/394115167/BIOINFORMATICS_35_20_4162_f1.png" />
+<img width="950" height="573" alt="image" src="https://astrobiomike.github.io/images/GToTree-Overview.png" />
 
 Like the last few weeks, you need to make a new `week8` directory inside your `microgenomics-2025` directory. 
 Download the `work_dir` for this week from Canvas under Module Week 8 into 'week8` directory. 
