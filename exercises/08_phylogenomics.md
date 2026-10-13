@@ -127,3 +127,44 @@ In this example, GToTree:
 8. Performs automated trimming of alignments with [Trimal](https://vicfero.github.io/trimal)
 9. Concatenates all alignments together
 10. Builds trees using [FastTree](https://morgannprice.github.io/fasttree)
+
+Explore each of the files in the `output` directory and try to make sense of each of them. There you will find:
+
+- The concatenated-alignment file
+- A genome summary table that contains information on each genome, like:
+  - Estimated percent completeness and redundancy
+  - Lineage information
+  - Input label
+  - Final label
+  - Etc.
+- A single-copy gene hit table with counts per target gene per genome
+- A run log
+- A partitions file enabling making trees with mixed models
+- A citations file listing all programs used and associated citations
+
+## Visualizing the Phylogenetic Tree
+
+Make a color-mapping file to easily highlight the newly generated genomes on the [Interactive Tree of Life (iToL) site](https://itol.embl.de):
+
+```bash
+cut -f 2 -d '/' our-genome-fasta-files.txt | cut -f1 -d'.'  > labels-to-color.txt
+```
+
+Use a GToTree program to make the iToL-compatible tree file:
+
+```bash
+gtt-gen-itol-map -g labels-to-color.txt -o iToL-colors.txt
+conda deactivate
+exit
+```
+
+To visualize the tree, follow these steps:
+
+1. Download the `output.tre` and `iToL-colors.txt` files to your local computer.
+2. Upload the tree file to the [Interactive Tree of Life (iToL) website](https://itol.embl.de/upload.cgi).
+3. Root the tree using *Gloeobacter violaceus*.
+4. Drag and drop the `iToL-colors.txt` file onto the tree to highlight our genomes.
+
+Feel free to play around with the different options of the tree explorer. Once you are done make sure to export the tree as a PDF file and save it somewhere you can easily retrieve it from later (we will use it next week).
+
+This is the end of CL14!
