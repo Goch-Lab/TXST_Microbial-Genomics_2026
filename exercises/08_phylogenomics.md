@@ -39,7 +39,7 @@ Install GToTree:
 ```bash
 conda create -y -n gtotree -c conda-forge -c bioconda -c defaults -c astrobiomike gtotree
 conda activate gtotree
-gtt-hmms
+GToTree -h
 ```
 
 ## Data
@@ -74,25 +74,49 @@ Create a file that lists these files to use as input for GToTree:
 ```bash
 ls *.fa > our-genome-fasta-files.txt
 head our-genome-fasta-files.txt
+cd ..
 ```
 
 Since we are working with *Synechococcus*, which are Cyanobacteria, we can use the Cyanobacteria Hidden Markov Model (HMM) set for Cyanobacteria included with GToTree that holds 251 single-copy genes:
 
 ```bash
 gtt-hmms
+conda deactivate
 ```
 
 > [!NOTE]
 > Why are we focusing on single-copy genes shared across *Synechococcus*?
 
-There are 2 required things we need to tell GToTree: 1) which genomes we want to work on; and 2) which target genes we want to use to build our phylogenomic tree.
+## Running GToTree
 
+Here we’ll start the command, and then breakdown the code and what GToTree is doing while it’s running. As run here, the largest time spent is by far in making the alignments (running with more threads means more alignments can run concurrently, which leads to a large improvement in runtime). With aligning and treeing the full 251 genes from the Cyanobacteria HMM set, this took ~6 minutes on my laptop and 25 minutes on the Binder. If we’d like this to run much faster just for this example’s sake, we can just target the 15 genes in the Universal HMM set, which then takes < 1 minute on my laptop and 6 minutes on the binder (though we may be sacrificing some ability to resolve their relationships by using a much smaller gene set than is ideal for our target breadth of diversity).There are 2 required things we need to tell GToTree: 1) which genomes we want to work on; and 2) which target genes we want to use to build our phylogenomic tree.
+
+Start an interactive shell:
+
+```bash
+sinteractive -p shared -n 4 --mem-per-cpu=10G --time=2:00:00
 ```
-anvi-get-sequences-for-hmm-hits -c CONTIGS.db \
-                                -p PROFILE.db \
-                                -o seqs-for-phylogenomics.fa \
-                                --list-hmm-sources
+
+Run GToTree:
+
+```bash
+conda activate gtotree
+GToTree -a data/ref-syn-accs.txt -f data/our-genome-fasta-files.txt -H Cyanobacteria -o output -t -L Species -n 4  -j 4
 ```
+
+Code breakdown:
+
+- `-a`: file containing the input genomes we are providing as NCBI assembly accessions
+- `-f`: file containing the input genomes we are providing as fasta files
+- `-H`: the target genes we want to search for
+- `-o`: set the name of the output directory
+- `-t`: add taxonony information to the labels of the reference genomes
+- `-L`: specify the taxonomy level we want in our labels. “Species” actually includes genus, species, and strain designations from NCBI
+- `-n`: sets the number of CPUs to use
+- `-j`: sets the number of jobs to run in parallel where possible (e.g.m download and search 4 genomes at a time, and run 4 alignments at a time)
+
+
+
 `Bacteria_71` is a collection that anvi’o developers curated by taking Mike Lee’s bacterial SCGs collection, first released in GToTree, which is another easy-to-use phylogenomics workflow.
 Let’s see what genes do we have in `Bacteria_71`:
 ```
