@@ -1,17 +1,25 @@
-# Week 8: Phylogenomics
+# CL14: Phylogenomics
 
-In this tutorial, we will put our genomes in a phylogenomic context to compare them to each other. 
-The common practice is to concatenate aligned sequences of single-copy core genes for each genome of interest, and generate a phylogenomic tree by analyzing the resulting alignment.
+In this tutorial, we will put our genomes in a phylogenomic context to elucidate the evolutionary relationships among each other. This tutorial is based on the [Happy Belly Bioinformatics](https://astrobiomike.github.io)' [Introduction to Phylogenomics tutorial](https://astrobiomike.github.io/genomics/phylogenomics).
 
 ## 🧠 Learning Objectives
 
-By the end of this exercise, you should be able to:
+By the end of this tutorial, you should be able to:
 * Explain how single-copy core genes are identified and used in phylogenomics.
 * Interpret phylogenetic trees in the context of evolutionary relationships.
-* Recognize limitations and sources of bias in genome-based phylogenetic inference.
+* Recognize limitations and sources of bias in genome-based phylogenetic inferece.
 
 
-## 🧪 Step 1: Reading in the data and setting up the working environment
+## Pipeline Overview
+
+For this tutorial, we will follow one of the most common phylogenomics pipelines:
+
+1. Identify target gene from genomes of interest
+2. Align each set of genes
+3. Concatenate the alignments
+4. Reconstruct the phylogenetic tree
+
+<img width="1000" height="2550" alt="image" src="https://astrobiomike.github.io/images/phylo-img.png" />
 
 Like the last few weeks, you need to make a new `week8` directory inside your `microgenomics-2025` directory. 
 Download the `work_dir` for this week from Canvas under Module Week 8 into 'week8` directory. 
