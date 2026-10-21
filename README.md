@@ -17,4 +17,4 @@ This repo contains course materials, tutorials, and example scripts for [Texas S
 - 🧫 [CL12: Metagenomics II: Taxonomic Analyses](exercises/CL12.md)
 - 🧫 [CL13: Metagenomics III: Functional Analyses](exercises/CL13.md)
 - 🪾 [CL14: Phylogenomics](exercises/CL14.md)
-- 📊 [CL15: Data Visualization](exercises/CL15)
+- 📊 [CL15: Data Visualization](exercises/CL15.md)
